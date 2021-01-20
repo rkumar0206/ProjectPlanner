@@ -1,7 +1,8 @@
-package com.rohitthebest.projectplanner
+package com.rohitthebest.projectplanner.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.rohitthebest.projectplanner.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
