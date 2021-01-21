@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.rohitthebest.projectplanner.Constants.FALSE
 import com.rohitthebest.projectplanner.Constants.TRUE
 import com.rohitthebest.projectplanner.R
@@ -18,6 +20,7 @@ import com.rohitthebest.projectplanner.ui.adapters.TopicAdapter
 import com.rohitthebest.projectplanner.ui.viewModels.ProjectViewModel
 import com.rohitthebest.projectplanner.utils.Functions.Companion.generateKey
 import com.rohitthebest.projectplanner.utils.Functions.Companion.hide
+import com.rohitthebest.projectplanner.utils.Functions.Companion.hideKeyBoard
 import com.rohitthebest.projectplanner.utils.Functions.Companion.setDateInTextView
 import com.rohitthebest.projectplanner.utils.Functions.Companion.show
 import com.rohitthebest.projectplanner.utils.Functions.Companion.showToast
@@ -70,7 +73,6 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
                         Log.i(TAG, "observeChanges: ${it.topics}")
                         setUpTopicRecyclerView(it.topics)
                     }
-
                 }
             }
         } catch (e: Exception) {
@@ -106,6 +108,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
         //todo : handle topic click
     }
 
+    //adding new topic
     override fun addOnTopicButtonClicked() {
 
         project?.let {
@@ -132,37 +135,89 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
         }
     }
 
+    //deleting the topic
     override fun onClearTopicButtonClicked(topic: Topic, position: Int) {
 
         project?.let {
 
-            it.topics.remove(topic)
-
-            projectViewModel.updateProject(it)
-
-            Log.i(TAG, "onClearTopicButtonClicked: ${topicAdapter.itemCount}")
-
             //if the item is the first item and also it is the only item then deleting the whole project
-            if (position == 0 && topicAdapter.itemCount < 1) {
+            if (position == 0 && topicAdapter.itemCount <= 1) {
 
-                projectViewModel.deleteProject(it)
-                project = null
-                showAddBtnAndHideRV()
-            }
+                MaterialAlertDialogBuilder(requireContext())
+                        .setTitle("Are you sure?")
+                        .setMessage("This with delete the only topic in your project.")
+                        .setPositiveButton("Delete") { dialog, _ ->
 
-            // updating the second last position of the item so that it can have the button for adding topic
-            if (position - 1 != RecyclerView.NO_POSITION) {
+                            projectViewModel.deleteProject(it)
+                            project = null
+                            showAddBtnAndHideRV()
 
-                topicAdapter.notifyItemChanged(position -1)
-                topicAdapter.notifyItemRemoved(position)
+                            dialog.dismiss()
+                        }
+                        .setNegativeButton("Cancel") { dialog, _ ->
+
+                            dialog.dismiss()
+                        }
+                        .create()
+                        .show()
+
             } else {
 
-                topicAdapter.notifyItemRemoved(position)
+                it.topics.remove(topic)
+
+                projectViewModel.updateProject(it)
+
+                Log.i(TAG, "onClearTopicButtonClicked: ${topicAdapter.itemCount}")
+
+                // updating the second last position of the item so that it can have the button for adding topic
+                if (position - 1 != RecyclerView.NO_POSITION) {
+
+                    topicAdapter.notifyItemChanged(position - 1)
+                    topicAdapter.notifyItemRemoved(position)
+                } else {
+
+                    topicAdapter.notifyItemRemoved(position)
+                }
+
+                Snackbar.make(binding.root, "Topic Deleted", Snackbar.LENGTH_LONG)
+                        .setAction("Undo") { _ ->
+
+                            it.topics.add(position, topic)
+
+                            projectViewModel.updateProject(it)
+
+                            topicAdapter.notifyItemInserted(position)
+
+                            if (position - 1 != RecyclerView.NO_POSITION) {
+
+                                topicAdapter.notifyItemChanged(position - 1)
+                            }
+                        }
+                        .show()
+
             }
-            showToast(requireContext(), "Topic deleted")
         }
     }
 
+    /*  MaterialAlertDialogBuilder(requireContext())
+    .setTitle("Are you sure?")
+    .setMessage("This with delete the only topic in your project.")
+    .setPositiveButton("Delete") { dialog, _ ->
+
+        projectViewModel.deleteProject(it)
+        project = null
+        showAddBtnAndHideRV()
+
+        dialog.dismiss()
+    }
+    .setNegativeButton("Cancel") { dialog, _ ->
+
+        dialog.dismiss()
+    }
+
+*/
+
+    //updating if the topic is completed or in completed
     override fun onTopicCheckChanged(topic: Topic, position: Int, isChecked: Boolean) {
 
         project?.let {
@@ -170,6 +225,8 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
             it.topics[position].isCompleted = if (isChecked) TRUE else FALSE
 
             projectViewModel.updateProject(it)
+
+            //todo : calculate the progress here
 
             try {
 
@@ -181,6 +238,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
         }
     }
 
+    //updating the topic name as soon as it is changed
     override fun onTopicNameChanged(topicName: String, position: Int, topic: Topic) {
 
         project?.let {
@@ -207,6 +265,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
 
                 if (includeBinding.etProjectName.text.toString().trim().isNotEmpty()) {
 
+                    project = null
                     addProjectToDatabase()
                     hideAddBtnAndShowRV()
                 } else {
@@ -216,8 +275,12 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
                 }
             }
         }
+
+        hideKeyBoard(requireActivity())
     }
 
+
+    //adding empty project to the database
     private fun addProjectToDatabase() {
 
         Log.i(TAG, "addProjectToDatabase: ")
@@ -244,19 +307,6 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
                 projectKey = projectKey,
                 markDown = ""
         )
-
-/*
-        project?.apply {
-
-            modifiedOn = System.currentTimeMillis()
-            projectName = includeBinding.etProjectName.text.toString().trim()
-            projectProgress = 0
-            topics = arrayListOf(topic)
-            urls = ArrayList()
-            this.projectKey = projectKey
-            markDown = ""
-        }
-*/
 
         projectViewModel.insertProject(project!!)
 
