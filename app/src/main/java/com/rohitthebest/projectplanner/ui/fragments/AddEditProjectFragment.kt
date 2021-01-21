@@ -6,7 +6,9 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.rohitthebest.projectplanner.Constants.FALSE
+import com.rohitthebest.projectplanner.Constants.TRUE
 import com.rohitthebest.projectplanner.R
 import com.rohitthebest.projectplanner.databinding.AddEditProjectLayoutBinding
 import com.rohitthebest.projectplanner.databinding.FragmentAddEditProjectBinding
@@ -147,9 +149,47 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
                 project = null
                 showAddBtnAndHideRV()
             }
-            topicAdapter.notifyItemRemoved(position)
 
+            // updating the second last position of the item so that it can have the button for adding topic
+            if (position - 1 != RecyclerView.NO_POSITION) {
+
+                topicAdapter.notifyItemChanged(position -1)
+                topicAdapter.notifyItemRemoved(position)
+            } else {
+
+                topicAdapter.notifyItemRemoved(position)
+            }
             showToast(requireContext(), "Topic deleted")
+        }
+    }
+
+    override fun onTopicCheckChanged(topic: Topic, position: Int, isChecked: Boolean) {
+
+        project?.let {
+
+            it.topics[position].isCompleted = if (isChecked) TRUE else FALSE
+
+            projectViewModel.updateProject(it)
+
+            try {
+
+                topicAdapter.notifyItemChanged(position)
+            } catch (e: Exception) {
+
+                e.printStackTrace()
+            }
+        }
+    }
+
+    override fun onTopicNameChanged(topicName: String, position: Int, topic: Topic) {
+
+        project?.let {
+
+            it.topics[position].topicName = topicName
+
+            projectViewModel.updateProject(it)
+
+            Log.i(TAG, "onTopicNameChanged: project updating...")
         }
     }
 
