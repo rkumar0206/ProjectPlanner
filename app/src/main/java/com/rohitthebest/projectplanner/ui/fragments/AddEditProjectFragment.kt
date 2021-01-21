@@ -143,24 +143,36 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
             //if the item is the first item and also it is the only item then deleting the whole project
             if (position == 0 && topicAdapter.itemCount <= 1) {
 
-                MaterialAlertDialogBuilder(requireContext())
-                        .setTitle("Are you sure?")
-                        .setMessage("This with delete the only topic in your project.")
-                        .setPositiveButton("Delete") { dialog, _ ->
+                if (topic.topicName.trim().isEmpty()) {
 
-                            projectViewModel.deleteProject(it)
-                            project = null
-                            showAddBtnAndHideRV()
+                    it.topics.remove(topic)
+                    topicAdapter.notifyItemRemoved(position)
 
-                            dialog.dismiss()
-                        }
-                        .setNegativeButton("Cancel") { dialog, _ ->
+                    projectViewModel.deleteProject(it)
+                    project = null
+                    showAddBtnAndHideRV()
+                } else {
 
-                            dialog.dismiss()
-                        }
-                        .create()
-                        .show()
+                    MaterialAlertDialogBuilder(requireContext())
+                            .setTitle("Are you sure?")
+                            .setMessage("This with delete the only topic in your project.")
+                            .setPositiveButton("Delete") { dialog, _ ->
 
+                                it.topics.remove(topic)
+                                topicAdapter.notifyItemRemoved(position)
+
+                                projectViewModel.deleteProject(it)
+                                project = null
+                                showAddBtnAndHideRV()
+                                dialog.dismiss()
+                            }
+                            .setNegativeButton("Cancel") { dialog, _ ->
+
+                                dialog.dismiss()
+                            }
+                            .create()
+                            .show()
+                }
             } else {
 
                 it.topics.remove(topic)
@@ -198,24 +210,6 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
             }
         }
     }
-
-    /*  MaterialAlertDialogBuilder(requireContext())
-    .setTitle("Are you sure?")
-    .setMessage("This with delete the only topic in your project.")
-    .setPositiveButton("Delete") { dialog, _ ->
-
-        projectViewModel.deleteProject(it)
-        project = null
-        showAddBtnAndHideRV()
-
-        dialog.dismiss()
-    }
-    .setNegativeButton("Cancel") { dialog, _ ->
-
-        dialog.dismiss()
-    }
-
-*/
 
     //updating if the topic is completed or in completed
     override fun onTopicCheckChanged(topic: Topic, position: Int, isChecked: Boolean) {
