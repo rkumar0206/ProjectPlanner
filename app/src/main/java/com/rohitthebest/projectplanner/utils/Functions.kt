@@ -1,5 +1,6 @@
 package com.rohitthebest.projectplanner.utils
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -296,11 +297,14 @@ class Functions {
             this.setTextColor(ContextCompat.getColor(context, color))
         }
 
-        fun TextView.setDateInTextView(timeStamp: Long?, pattern: String = "dd-MM-yyyy") {
+        @SuppressLint("SetTextI18n")
+        fun TextView.setDateInTextView(timeStamp: Long?, pattern: String = "dd-MM-yyyy", startingText: String = "") {
 
-            this.text = WorkingWithDateAndTime().convertMillisecondsToDateAndTimePattern(
-                timeStamp, pattern
-            )
+            this.text = "$startingText${
+                WorkingWithDateAndTime().convertMillisecondsToDateAndTimePattern(
+                        timeStamp, pattern
+                )
+            }"
 
         }
 
