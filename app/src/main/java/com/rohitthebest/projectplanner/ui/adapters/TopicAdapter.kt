@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.rohitthebest.projectplanner.databinding.AdapterTopicLayoutBinding
 import com.rohitthebest.projectplanner.db.entity.Topic
+import com.rohitthebest.projectplanner.utils.Functions.Companion.hide
+import com.rohitthebest.projectplanner.utils.Functions.Companion.show
 
 class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCallback()) {
 
@@ -14,12 +16,51 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
 
     inner class TopicViewHolder(val binding: AdapterTopicLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
 
+        init {
+
+            binding.addAnotherTopicBtn.setOnClickListener {
+
+                if (checkForNullability(absoluteAdapterPosition)) {
+
+                    if (binding.etTopicName.text.toString().trim().isNotEmpty()) {
+
+                        mListener!!.addOnTopicButtonClicked()
+                    } else {
+
+                        binding.etTopicName.requestFocus()
+                        binding.etTopicName.error = "Specify this topic before adding another topic!!!"
+                    }
+                }
+            }
+
+            binding.clearTopicButton.setOnClickListener {
+
+                if (checkForNullability(absoluteAdapterPosition)) {
+
+                    mListener!!.onClearTopicButtonClicked(getItem(absoluteAdapterPosition), absoluteAdapterPosition)
+                }
+            }
+        }
+
         fun setData(topic: Topic?) {
 
             topic?.let {
 
                 binding.etTopicName.setText(it.topicName)
             }
+
+            if (absoluteAdapterPosition == itemCount - 1) {
+
+                binding.addAnotherTopicBtn.show()
+            } else {
+
+                binding.addAnotherTopicBtn.hide()
+            }
+        }
+
+        fun checkForNullability(position: Int): Boolean {
+
+            return position != RecyclerView.NO_POSITION && mListener != null
         }
     }
 
@@ -45,6 +86,10 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
     interface OnClickListener {
 
         fun onItemClick(topic: Topic)
+
+        fun addOnTopicButtonClicked()
+
+        fun onClearTopicButtonClicked(topic: Topic, position: Int)
     }
 
     fun setOnClickListener(listener: OnClickListener) {
