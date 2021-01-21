@@ -4,9 +4,12 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.rohitthebest.projectplanner.R
 import com.rohitthebest.projectplanner.databinding.FragmentHomeBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private var _binding: FragmentHomeBinding? = null
@@ -19,7 +22,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         binding.addProjectButton.setOnClickListener {
 
-            Toast.makeText(requireContext(), "Project added", Toast.LENGTH_SHORT).show()
+            findNavController().navigate(R.id.action_homeFragment_to_addEditProjectFragment)
         }
     }
 
