@@ -19,4 +19,6 @@ class ProjectRepository @Inject constructor(
     suspend fun updateProject(project: Project) = dao.updateProject(project)
 
     fun getAllProjects() = dao.getAllProjects()
+
+    fun getProjectByProjectKey(projectKey: String) = dao.getProjectByProjectKey(projectKey)
 }

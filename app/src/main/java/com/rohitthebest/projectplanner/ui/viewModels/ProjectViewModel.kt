@@ -37,6 +37,8 @@ class ProjectViewModel @ViewModelInject constructor(
         repository.deleteAllProjects()
     }
 
+    fun getProjectByProjectKey(projectKey: String) = repository.getProjectByProjectKey(projectKey)
+
     val projects = repository.getAllProjects().asLiveData()
 
 }

@@ -1,5 +1,6 @@
 package com.rohitthebest.projectplanner.db.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.rohitthebest.projectplanner.db.entity.Project
 import kotlinx.coroutines.flow.Flow
@@ -24,6 +25,9 @@ interface ProjectDao {
 
     @Query("SELECT * FROM project_table ORDER BY modifiedOn DESC")
     fun getAllProjects(): Flow<List<Project>>
+
+    @Query("SELECT * FROM project_table WHERE projectKey= :projectKey")
+    fun getProjectByProjectKey(projectKey: String): LiveData<Project>
 
     /* @Query("SELECT topics FROM project_table WHERE projectKey = :projectKey")
      fun getAllTopicsOfTheProject(projectKey: String): Flow<List<Topic>>*/
