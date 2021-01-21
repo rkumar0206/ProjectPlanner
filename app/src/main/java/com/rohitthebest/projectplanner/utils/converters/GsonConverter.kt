@@ -22,34 +22,34 @@ class GsonConverter {
     }
 
     @TypeConverter
-    fun convertTopicToString(topic: Topic): String = gson.toJson(topic)
+    fun convertListOfTopicToString(topics: List<Topic>): String = gson.toJson(topics)
 
     @TypeConverter
-    fun convertJsonStringToTopic(jsonString: String): Topic {
+    fun convertJsonStringToTopicList(jsonString: String): List<Topic> {
 
-        val type = object : TypeToken<Topic>() {}.type
+        val type = object : TypeToken<List<Topic>>() {}.type
 
         return gson.fromJson(jsonString, type)
     }
 
     @TypeConverter
-    fun convertSubTopicToString(subTopic: SubTopic): String = gson.toJson(subTopic)
+    fun convertListOfSubTopicToString(subTopics: List<SubTopic>): String = gson.toJson(subTopics)
 
     @TypeConverter
-    fun convertJsonStringToSubTopic(jsonString: String): SubTopic {
+    fun convertJsonStringToSubTopicList(jsonString: String): List<SubTopic> {
 
-        val type = object : TypeToken<SubTopic>() {}.type
+        val type = object : TypeToken<List<SubTopic>>() {}.type
 
         return gson.fromJson(jsonString, type)
     }
 
     @TypeConverter
-    fun convertUrlToString(url: Url): String = gson.toJson(url)
+    fun convertListOfUrlToString(urls: List<Url>): String = gson.toJson(urls)
 
     @TypeConverter
-    fun convertJsonStringToUrl(jsonString: String): Url {
+    fun convertJsonStringToUrlList(jsonString: String): List<Url> {
 
-        val type = object : TypeToken<Url>() {}.type
+        val type = object : TypeToken<List<Url>>() {}.type
 
         return gson.fromJson(jsonString, type)
     }

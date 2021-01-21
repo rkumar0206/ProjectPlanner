@@ -7,7 +7,7 @@ import com.rohitthebest.projectplanner.Constants.FALSE
 @Entity(tableName = "project_table")
 data class Project(
     val timeStamp: Long = System.currentTimeMillis(),
-    @PrimaryKey(autoGenerate = true) val id: Int? = null,
+    @PrimaryKey(autoGenerate = true) var id: Int? = null,
     var modifiedOn: Long = timeStamp,
     var projectName: String,
     var projectProgress: Int = 0,

@@ -2,7 +2,6 @@ package com.rohitthebest.projectplanner.db.dao
 
 import androidx.room.*
 import com.rohitthebest.projectplanner.db.entity.Project
-import com.rohitthebest.projectplanner.db.entity.Topic
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -24,8 +23,8 @@ interface ProjectDao {
     suspend fun deleteAllProjects()
 
     @Query("SELECT * FROM project_table ORDER BY modifiedOn DESC")
-    suspend fun getAllProjects(): Flow<List<Project>>
+    fun getAllProjects(): Flow<List<Project>>
 
-    @Query("SELECT topics FROM project_table WHERE projectKey = :projectKey")
-    suspend fun getAllTopicsOfTheProject(projectKey: String): Flow<List<Topic>>
+    /* @Query("SELECT topics FROM project_table WHERE projectKey = :projectKey")
+     fun getAllTopicsOfTheProject(projectKey: String): Flow<List<Topic>>*/
 }
