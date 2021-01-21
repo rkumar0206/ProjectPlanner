@@ -18,6 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.random.Random
 
 class Functions {
 
@@ -306,6 +307,11 @@ class Functions {
                 )
             }"
 
+        }
+
+        fun generateKey(): String {
+
+            return "${System.currentTimeMillis().toStringM(69)}_${Random.nextLong(1000, 99999999).toStringM(69)}"
         }
 
     }

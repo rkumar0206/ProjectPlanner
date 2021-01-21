@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 interface ProjectDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertProject(project: Project) = Long
+    suspend fun insertProject(project: Project)
 
     @Insert
     suspend fun insertProjects(projects: List<Project>)

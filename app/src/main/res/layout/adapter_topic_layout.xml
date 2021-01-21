@@ -1,6 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/etTopicName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:hint="topic name"
+        android:inputType="textPersonName"
+        app:layout_constraintStart_toEndOf="@+id/checkBoxTopicName"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        app:cardCornerRadius="100dp"
+        app:cardElevation="10dp"
+        app:layout_constraintStart_toStartOf="@+id/etTopicName"
+        app:layout_constraintTop_toBottomOf="@+id/etTopicName"
+        tools:visibility="visible">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/addSubTopicBtn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:cardCornerRadius="100dp"
+            app:strokeColor="@color/color_primary"
+            app:strokeWidth="0.8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:drawablePadding="10dp"
+                    android:fontFamily="serif"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:text="Add sub topic  "
+                    android:textColor="@color/primary_text_color"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:drawableStartCompat="@drawable/ic_baseline_add_circle_outline_24" />
+
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </androidx.cardview.widget.CardView>
+
+    <CheckBox
+        android:id="@+id/checkBoxTopicName"
+        android:layout_width="35dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        app:layout_constraintBottom_toBottomOf="@+id/etTopicName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/etTopicName" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="@+id/etTopicName"
+        app:layout_constraintTop_toBottomOf="@+id/etTopicName"
+        tools:visibility="gone" />
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
+        app:cardCornerRadius="100dp"
+        app:cardElevation="10dp"
+        app:layout_constraintStart_toStartOf="@+id/etTopicName"
+        app:layout_constraintTop_toBottomOf="@+id/recyclerView2"
+        tools:visibility="visible">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/addAnotherTopicBtn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:cardCornerRadius="100dp"
+            app:strokeColor="@color/color_primary"
+            app:strokeWidth="0.8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:drawablePadding="10dp"
+                    android:fontFamily="serif"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:text="Add topic  "
+                    android:textColor="@color/primary_text_color"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:drawableStartCompat="@drawable/ic_baseline_add_circle_outline_24" />
+
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

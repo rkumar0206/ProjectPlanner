@@ -6,25 +6,27 @@ import com.rohitthebest.projectplanner.Constants.FALSE
 
 @Entity(tableName = "project_table")
 data class Project(
-    val timeStamp: Long = System.currentTimeMillis(),
-    @PrimaryKey(autoGenerate = true) var id: Int? = null,
-    var modifiedOn: Long = timeStamp,
-    var projectName: String,
-    var projectProgress: Int = 0,
-    var topics: List<Topic>,
-    var urls: List<Url>? = null,
-    var projectKey: String
+        val timeStamp: Long = System.currentTimeMillis(),
+        @PrimaryKey(autoGenerate = true) var id: Int? = null,
+        var modifiedOn: Long = timeStamp,
+        var projectName: String,
+        var projectProgress: Int = 0,
+        var topics: ArrayList<Topic>,
+        var urls: ArrayList<Url>? = null,
+        var projectKey: String,
+        var markDown: String? = null
 ) {
 
     constructor() : this(
-        System.currentTimeMillis(),
-        null,
-        0L,
-        "",
-        0,
-        emptyList(),
-        emptyList(),
-        ""
+            System.currentTimeMillis(),
+            null,
+            0L,
+            "",
+            0,
+            ArrayList(),
+            ArrayList(),
+            "",
+            ""
     )
 }
 
@@ -33,8 +35,8 @@ data class Topic(
     val projectKey: String,
     var topicName: String,
     var isCompleted: String = FALSE,
-    var subTopics: List<SubTopic>? = null,
-    var topicUrls: List<Url>? = null,
+    var subTopics: ArrayList<SubTopic>? = null,
+    var topicUrls: ArrayList<Url>? = null,
     var markdown: String? = "",
     var topicKey: String
 ) {
@@ -43,8 +45,8 @@ data class Topic(
         "",
         "",
         FALSE,
-        emptyList(),
-        emptyList(),
+        ArrayList(),
+        ArrayList(),
         "",
         ""
     )
@@ -54,14 +56,14 @@ data class SubTopic(
     val topicKey: String,
     var subTopicName: String,
     var isCompleted: String = FALSE,
-    var subTopicUrls: List<Url>? = null,
+    var subTopicUrls: ArrayList<Url>? = null,
 ) {
 
     constructor() : this(
         "",
         "",
         FALSE,
-        emptyList()
+        ArrayList()
     )
 }
 

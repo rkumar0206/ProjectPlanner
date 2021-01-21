@@ -14,7 +14,13 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
 
     inner class TopicViewHolder(val binding: AdapterTopicLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
 
+        fun setData(topic: Topic?) {
 
+            topic?.let {
+
+                binding.etTopicName.setText(it.topicName)
+            }
+        }
     }
 
     class DiffUtilCallback : DiffUtil.ItemCallback<Topic>() {
@@ -33,6 +39,7 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
 
     override fun onBindViewHolder(holder: TopicViewHolder, position: Int) {
 
+        holder.setData(getItem(position))
     }
 
     interface OnClickListener {
