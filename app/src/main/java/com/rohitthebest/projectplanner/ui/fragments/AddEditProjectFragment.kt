@@ -29,7 +29,8 @@ import dagger.hilt.android.AndroidEntryPoint
 private const val TAG = "AddEditProjectFragment"
 
 @AndroidEntryPoint
-class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), View.OnClickListener, TopicAdapter.OnClickListener {
+class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), View.OnClickListener,
+        TopicAdapter.OnClickListener {
 
     private val projectViewModel by viewModels<ProjectViewModel>()
 
@@ -245,7 +246,6 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
         }
     }
 
-
     private fun initListeners() {
 
         includeBinding.addTopicBtn.setOnClickListener(this)
@@ -272,7 +272,6 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
 
         hideKeyBoard(requireActivity())
     }
-
 
     //adding empty project to the database
     private fun addProjectToDatabase() {
@@ -309,7 +308,6 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
         showToast(requireContext(), "Project Added")
     }
 
-
     private fun showAddBtnAndHideRV() {
 
         try {
@@ -337,8 +335,14 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
     override fun onDestroyView() {
         super.onDestroyView()
 
+        try{
+
+            hideKeyBoard(requireActivity())
+        }catch (e : Exception) {
+            e.printStackTrace()
+        }
+
         _binding = null
     }
-
 
 }

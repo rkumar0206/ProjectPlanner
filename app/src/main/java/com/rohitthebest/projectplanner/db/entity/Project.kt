@@ -53,17 +53,19 @@ data class Topic(
 }
 
 data class SubTopic(
-    val topicKey: String,
-    var subTopicName: String,
-    var isCompleted: String = FALSE,
-    var subTopicUrls: ArrayList<Url>? = null,
+        val topicKey: String,
+        var subTopicName: String,
+        var isCompleted: String = FALSE,
+        var subTopicUrls: ArrayList<Url>? = null,
+        var subTopicKey: String
 ) {
 
     constructor() : this(
-        "",
-        "",
-        FALSE,
-        ArrayList()
+            "",
+            "",
+            FALSE,
+            ArrayList(),
+            ""
     )
 }
 

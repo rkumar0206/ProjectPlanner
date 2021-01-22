@@ -1,5 +1,6 @@
 package com.rohitthebest.projectplanner.ui.adapters
 
+import android.content.Context
 import android.text.Editable
 import android.text.SpannableStringBuilder
 import android.text.Spanned
@@ -8,6 +9,7 @@ import android.text.style.StrikethroughSpan
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.rohitthebest.projectplanner.Constants
@@ -21,9 +23,98 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
 
     private var mListener: OnClickListener? = null
 
+    private var viewPool = RecyclerView.RecycledViewPool()
+
+    private lateinit var context: Context
+
+    private lateinit var subTopicAdapter: SubTopicAdapter
+
     inner class TopicViewHolder(val binding: AdapterTopicLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
 
+        fun setData(topic: Topic?) {
+
+            topic?.let {
+
+                binding.etTopicName.setText(it.topicName)
+
+                val spannableStringBuilder = SpannableStringBuilder(it.topicName)
+                val strikeThroughSpan = StrikethroughSpan()
+
+                binding.checkBoxTopicName.isChecked = it.isCompleted == Constants.TRUE
+
+                //checking if the topic is completed
+                if (it.topicName.isNotEmpty() && it.isCompleted == Constants.TRUE) {
+
+                    binding.checkBoxTopicName.isChecked = true
+
+                    spannableStringBuilder.setSpan(
+                            strikeThroughSpan,
+                            0,
+                            it.topicName.length,
+                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+
+                    binding.etTopicName.text = spannableStringBuilder
+                }
+
+                try {
+
+                    it.subTopics?.let { subTopicList ->
+
+                        if (subTopicList.size <= 0) {
+
+                            binding.subTopicRV.hide()
+                            binding.addSubTopicBtn.show()
+                        } else {
+
+                            binding.subTopicRV.show()
+                            binding.addSubTopicBtn.hide()
+
+                            val managerLayout = LinearLayoutManager(binding.subTopicRV.context)
+                            managerLayout.initialPrefetchItemCount = subTopicList.size
+
+                            subTopicAdapter.submitList(subTopicList)
+
+                            binding.subTopicRV.apply {
+
+                                setHasFixedSize(true)
+                                adapter = subTopicAdapter
+                                layoutManager = managerLayout
+                            }
+
+                            binding.subTopicRV.setRecycledViewPool(viewPool)
+                        }
+                    }
+
+                } catch (e: Exception) {
+
+                    e.printStackTrace()
+                }
+
+            }
+
+            if (absoluteAdapterPosition == itemCount - 1) {
+
+                binding.addAnotherTopicBtn.show()
+            } else {
+
+                binding.addAnotherTopicBtn.hide()
+            }
+
+        }
+
+
         init {
+
+            subTopicAdapter = SubTopicAdapter()
+
+            binding.addSubTopicBtn.setOnClickListener {
+
+                if (checkForNullability(absoluteAdapterPosition)) {
+
+                    mListener!!.onAddSubTopicClicked(getItem(absoluteAdapterPosition), absoluteAdapterPosition)
+                }
+            }
 
             var job: Job? = null
 
@@ -123,41 +214,6 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
             }
         }
 
-        fun setData(topic: Topic?) {
-
-            topic?.let {
-
-                binding.etTopicName.setText(it.topicName)
-
-                val spannableStringBuilder = SpannableStringBuilder(it.topicName)
-                val strikeThroughSpan = StrikethroughSpan()
-
-                binding.checkBoxTopicName.isChecked = it.isCompleted == Constants.TRUE
-
-                if (it.topicName.isNotEmpty() && it.isCompleted == Constants.TRUE) {
-
-                    binding.checkBoxTopicName.isChecked = true
-
-                    spannableStringBuilder.setSpan(
-                            strikeThroughSpan,
-                            0,
-                            it.topicName.length,
-                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
-
-                    binding.etTopicName.text = spannableStringBuilder
-                }
-            }
-
-            if (absoluteAdapterPosition == itemCount - 1) {
-
-                binding.addAnotherTopicBtn.show()
-            } else {
-
-                binding.addAnotherTopicBtn.hide()
-            }
-        }
-
         fun checkForNullability(position: Int): Boolean {
 
             return position != RecyclerView.NO_POSITION && mListener != null
@@ -172,6 +228,8 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopicViewHolder {
+
+        context = parent.context
 
         val binding = AdapterTopicLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
@@ -194,6 +252,8 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
         fun onTopicCheckChanged(topic: Topic, position: Int, isChecked: Boolean)
 
         fun onTopicNameChanged(topicName: String, position: Int, topic: Topic)
+
+        fun onAddSubTopicClicked(topic: Topic, position: Int)
     }
 
     fun setOnClickListener(listener: OnClickListener) {
