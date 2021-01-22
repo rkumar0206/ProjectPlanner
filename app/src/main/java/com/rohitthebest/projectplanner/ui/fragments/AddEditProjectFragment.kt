@@ -137,6 +137,67 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
         }
     }
 
+    //updating if the topic is completed or in completed
+    override fun onTopicCheckChanged(topic: Topic, position: Int, isChecked: Boolean) {
+
+        project?.let {
+
+            it.topics[position].isCompleted = if (isChecked) TRUE else FALSE
+
+            projectViewModel.updateProject(it)
+
+            //todo : calculate the progress here
+
+            try {
+
+                topicAdapter.notifyItemChanged(position)
+            } catch (e: Exception) {
+
+                e.printStackTrace()
+            }
+        }
+    }
+
+    //updating the topic name as soon as it is changed
+    override fun onTopicNameChanged(topicName: String, position: Int, topic: Topic) {
+
+        project?.let {
+
+            it.topics[position].topicName = topicName
+
+            projectViewModel.updateProject(it)
+
+            Log.i(TAG, "onTopicNameChanged: project updating...")
+        }
+    }
+
+    //when add subtopic of the TopicAdapter is clicked we add the empty subTopic
+    override fun onAddSubTopicClicked(topic: Topic, position: Int) {
+
+        project?.let {
+
+            val subTopic = SubTopic(
+                    topic.topicKey,
+                    "",
+                    FALSE,
+                    ArrayList(),
+                    generateKey()
+            )
+
+            it.topics[position].subTopics = arrayListOf(subTopic)
+
+            projectViewModel.updateProject(it)
+
+            if (position == 0 && topicAdapter.itemCount <= 1) {
+
+                observeChanges()
+            } else {
+
+                topicAdapter.notifyItemChanged(position)
+            }
+        }
+    }
+
     //deleting the topic
     override fun onClearTopicButtonClicked(topic: Topic, position: Int) {
 
@@ -205,77 +266,17 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
         }
     }
 
-    //updating if the topic is completed or in completed
-    override fun onTopicCheckChanged(topic: Topic, position: Int, isChecked: Boolean) {
 
-        project?.let {
+    /** [Start of subtopic functions] **/
 
-            it.topics[position].isCompleted = if (isChecked) TRUE else FALSE
-
-            projectViewModel.updateProject(it)
-
-            //todo : calculate the progress here
-
-            try {
-
-                topicAdapter.notifyItemChanged(position)
-            } catch (e: Exception) {
-
-                e.printStackTrace()
-            }
-        }
-    }
-
-    //updating the topic name as soon as it is changed
-    override fun onTopicNameChanged(topicName: String, position: Int, topic: Topic) {
-
-        project?.let {
-
-            it.topics[position].topicName = topicName
-
-            projectViewModel.updateProject(it)
-
-            Log.i(TAG, "onTopicNameChanged: project updating...")
-        }
-    }
-
-    //when add subtopic of the TopicAdapter is clicked we add the empty subTopic
-    override fun onAddSubTopicClicked(topic: Topic, position: Int) {
-
-        project?.let {
-
-            val subTopic = SubTopic(
-                    topic.topicKey,
-                    "",
-                    FALSE,
-                    ArrayList(),
-                    generateKey()
-            )
-
-            it.topics[position].subTopics = arrayListOf(subTopic)
-
-            projectViewModel.updateProject(it)
-
-            if (position == 0 && topicAdapter.itemCount <= 1) {
-
-                observeChanges()
-            } else {
-
-                topicAdapter.notifyItemChanged(position)
-            }
-        }
-    }
-
-
-    //[Start of subtopic functions]
     override fun onSubTopicClick(subTopic: SubTopic) {
 
         //handle click on subtopic
     }
 
-    override fun onAddSubTopicBtnClickedBySubTopicAdapter(topic: Topic, position: Int) {
+    override fun onAddSubTopicBtnClickedBySubTopicAdapter(topic: Topic, position: Int, subTopicPosition: Int) {
 
-        //showToast(requireContext(), "add subtopic clicked")
+        showToast(requireContext(), "add subtopic clicked")
 
         project?.let {
 
@@ -296,7 +297,9 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
                 observeChanges()
             } else {
 
-                topicAdapter.notifyItemChanged(position)
+                topicAdapter.subTopicAdapter.notifyItemChanged(subTopicPosition)
+                topicAdapter.subTopicAdapter.notifyItemInserted(subTopicPosition + 1)
+                //topicAdapter.notifyItemChanged(position)
             }
         }
     }
@@ -315,7 +318,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
                 observeChanges()
             } else {
 
-                topicAdapter.notifyItemChanged(topicPosition)
+                topicAdapter.subTopicAdapter.notifyItemChanged(subTopicPosition)
             }
 
         }
@@ -333,8 +336,43 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
         }
     }
 
+    override fun onDeleteSubTopicClicked(subTopic: SubTopic, topicPosition: Int, subTopicPosition: Int) {
 
-    //[End og subtopic functions]
+        /*  project?.let {
+
+              it.topics[topicPosition].subTopics?.remove(subTopic)
+
+              projectViewModel.updateProject(it)
+
+              Log.i(TAG, "onDeleteSubTopicClicked: SubTopicPosition : $subTopicPosition")
+
+              if (subTopicPosition == 0 && topicAdapter.subTopicAdapter.itemCount < 1) {
+
+                  Log.i(TAG, "onDeleteSubTopicClicked: subTopic position is 0")
+
+                  it.topics[topicPosition].subTopics?.clear()
+                  it.topics[topicPosition].subTopics = null
+
+                  projectViewModel.updateProject(it)
+
+                  observeChanges()
+              } else {
+
+                  if (subTopicPosition - 1 != RecyclerView.NO_POSITION) {
+
+                      Log.i(TAG, "onDeleteSubTopicClicked: subTopic position is 0")
+
+                      topicAdapter.subTopicAdapter.notifyItemChanged(subTopicPosition - 1)
+                      topicAdapter.subTopicAdapter.notifyItemRemoved(subTopicPosition)
+                  } else {
+
+                      topicAdapter.subTopicAdapter.notifyItemRemoved(subTopicPosition)
+                  }
+              }
+          }*/
+    }
+
+    /** [End og subtopic functions] **/
 
     private fun initListeners() {
 
