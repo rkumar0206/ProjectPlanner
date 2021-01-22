@@ -273,6 +273,16 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
         }
     }
 
+    override fun onSubTopicClick(subTopic: SubTopic) {
+
+        //handle click on subtopic
+    }
+
+    override fun onAddSubTopicBtnClickedBySubTopicAdapter() {
+
+        showToast(requireContext(), "Clicked")
+    }
+
     private fun initListeners() {
 
         includeBinding.addTopicBtn.setOnClickListener(this)

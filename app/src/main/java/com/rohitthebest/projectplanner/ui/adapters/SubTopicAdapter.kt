@@ -26,8 +26,16 @@ class SubTopicAdapter : ListAdapter<SubTopic, SubTopicAdapter.SubTopicViewHolder
 
             binding.addAnotherSubTopicBtn.setOnClickListener {
 
-                //todo : add another subtopic
+                if(checkForNullability(absoluteAdapterPosition)) {
+
+                    mListener!!.onAddAnotherSubTopicClicked()
+                }
             }
+        }
+
+        fun checkForNullability(position: Int): Boolean {
+
+            return position != RecyclerView.NO_POSITION && mListener != null
         }
     }
 
@@ -55,6 +63,8 @@ class SubTopicAdapter : ListAdapter<SubTopic, SubTopicAdapter.SubTopicViewHolder
     interface OnClickListener {
 
         fun onItemClick(subTopic: SubTopic)
+
+        fun onAddAnotherSubTopicClicked()
     }
 
     fun setOnClickListener(listener: OnClickListener) {
