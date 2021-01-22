@@ -75,11 +75,12 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/subTopicRV"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
         android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/clearTopicButton"
         app:layout_constraintStart_toStartOf="@+id/etTopicName"
         app:layout_constraintTop_toBottomOf="@+id/etTopicName"
         tools:visibility="gone" />

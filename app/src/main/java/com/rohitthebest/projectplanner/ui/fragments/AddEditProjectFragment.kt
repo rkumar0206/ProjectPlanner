@@ -15,6 +15,7 @@ import com.rohitthebest.projectplanner.R
 import com.rohitthebest.projectplanner.databinding.AddEditProjectLayoutBinding
 import com.rohitthebest.projectplanner.databinding.FragmentAddEditProjectBinding
 import com.rohitthebest.projectplanner.db.entity.Project
+import com.rohitthebest.projectplanner.db.entity.SubTopic
 import com.rohitthebest.projectplanner.db.entity.Topic
 import com.rohitthebest.projectplanner.ui.adapters.TopicAdapter
 import com.rohitthebest.projectplanner.ui.viewModels.ProjectViewModel
@@ -243,6 +244,32 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
             projectViewModel.updateProject(it)
 
             Log.i(TAG, "onTopicNameChanged: project updating...")
+        }
+    }
+
+    override fun onAddSubTopicClicked(topic: Topic, position: Int) {
+
+        project?.let {
+
+            val subTopic = SubTopic(
+                    topic.topicKey,
+                    "",
+                    FALSE,
+                    ArrayList(),
+                    generateKey()
+            )
+
+            it.topics[position].subTopics = arrayListOf(subTopic)
+
+            projectViewModel.updateProject(it)
+
+            if (position == 0 && topicAdapter.itemCount <= 1) {
+
+                observeChanges()
+            } else {
+
+                topicAdapter.notifyItemChanged(position)
+            }
         }
     }
 
