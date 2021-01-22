@@ -321,6 +321,18 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
         }
     }
 
+    override fun onSubTopicNameChanged(subTopicName: String, topicPosition: Int, subTopicPosition: Int) {
+
+        project?.let {
+
+            it.topics[topicPosition].subTopics?.get(subTopicPosition)?.subTopicName = subTopicName
+
+            projectViewModel.updateProject(it)
+
+            Log.i(TAG, "onSubTopicNameChanged: project (subTopic Name) Updating...")
+        }
+    }
+
 
     //[End og subtopic functions]
 

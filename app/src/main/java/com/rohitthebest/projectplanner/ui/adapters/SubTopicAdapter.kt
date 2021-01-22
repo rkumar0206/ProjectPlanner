@@ -1,5 +1,7 @@
 package com.rohitthebest.projectplanner.ui.adapters
 
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -11,6 +13,7 @@ import com.rohitthebest.projectplanner.db.entity.SubTopic
 import com.rohitthebest.projectplanner.utils.Functions.Companion.hide
 import com.rohitthebest.projectplanner.utils.Functions.Companion.show
 import com.rohitthebest.projectplanner.utils.Functions.Companion.strikeThrough
+import kotlinx.coroutines.*
 
 class SubTopicAdapter : ListAdapter<SubTopic, SubTopicAdapter.SubTopicViewHolder>(DiffUtilCallback()) {
 
@@ -54,6 +57,44 @@ class SubTopicAdapter : ListAdapter<SubTopic, SubTopicAdapter.SubTopicViewHolder
                 }
             }
 
+            var job: Job? = null
+            binding.etSubTopicName.addTextChangedListener(object : TextWatcher {
+
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+                    try {
+
+                        if (job != null && job?.isActive == true) {
+
+                            job!!.cancel()
+                        }
+
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    } finally {
+
+                        job = GlobalScope.launch {
+
+                            delay(300)
+
+                            withContext(Dispatchers.Main) {
+
+                                if (checkForNullability(absoluteAdapterPosition)) {
+
+                                    mListener!!.onSubTopicNameChanged(
+                                            s.toString().trim(),
+                                            absoluteAdapterPosition
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
+                override fun afterTextChanged(s: Editable?) {}
+            })
+
             binding.checkBoxSubTopic.setOnCheckedChangeListener { _, isChecked ->
 
                 try {
@@ -73,6 +114,19 @@ class SubTopicAdapter : ListAdapter<SubTopic, SubTopicAdapter.SubTopicViewHolder
                     e.printStackTrace()
                 }
 
+            }
+
+            binding.etSubTopicName.setOnFocusChangeListener { v, hasFocus ->
+
+                try {
+                    if (!hasFocus) {
+
+                        notifyItemChanged(absoluteAdapterPosition)
+                    }
+                } catch (e: IllegalStateException) {
+
+                    e.printStackTrace()
+                }
             }
         }
 
@@ -109,6 +163,7 @@ class SubTopicAdapter : ListAdapter<SubTopic, SubTopicAdapter.SubTopicViewHolder
 
         fun onAddAnotherSubTopicClicked()
         fun onSubTopicCheckChanged(subTopic: SubTopic?, position: Int, isChecked: Boolean)
+        fun onSubTopicNameChanged(subTopicName: String, subTopicPosition: Int)
     }
 
     fun setOnClickListener(listener: OnClickListener) {

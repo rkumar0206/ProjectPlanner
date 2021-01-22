@@ -107,8 +107,6 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
                 }
             }
 
-            var job: Job? = null
-
             binding.addAnotherTopicBtn.setOnClickListener {
 
                 if (checkForNullability(absoluteAdapterPosition)) {
@@ -152,10 +150,10 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
                 }
             }
 
+            var job: Job? = null
             binding.etTopicName.addTextChangedListener(object : TextWatcher {
 
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
 
                     try {
@@ -210,6 +208,7 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
             return position != RecyclerView.NO_POSITION && mListener != null
         }
 
+
         //on subTopic click listener
         override fun onItemClick(subTopic: SubTopic) {
 
@@ -235,6 +234,18 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
                         isChecked,
                         absoluteAdapterPosition,
                         position
+                )
+            }
+        }
+
+        override fun onSubTopicNameChanged(subTopicName: String, subTopicPosition: Int) {
+
+            if (checkForNullability(absoluteAdapterPosition)) {
+
+                mListener!!.onSubTopicNameChanged(
+                        subTopicName,
+                        absoluteAdapterPosition,
+                        subTopicPosition
                 )
             }
         }
@@ -275,6 +286,7 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
         fun onSubTopicClick(subTopic: SubTopic)
         fun onAddSubTopicBtnClickedBySubTopicAdapter(topic: Topic, position: Int)
         fun onSubTopicCheckChanged(isChecked: Boolean, topicPosition: Int, subTopicPosition: Int)
+        fun onSubTopicNameChanged(subTopicName: String, topicPosition: Int, subTopicPosition: Int)
     }
 
     fun setOnClickListener(listener: OnClickListener) {
