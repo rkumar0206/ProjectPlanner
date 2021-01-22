@@ -2,10 +2,7 @@ package com.rohitthebest.projectplanner.ui.adapters
 
 import android.content.Context
 import android.text.Editable
-import android.text.SpannableStringBuilder
-import android.text.Spanned
 import android.text.TextWatcher
-import android.text.style.StrikethroughSpan
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -18,6 +15,7 @@ import com.rohitthebest.projectplanner.db.entity.SubTopic
 import com.rohitthebest.projectplanner.db.entity.Topic
 import com.rohitthebest.projectplanner.utils.Functions.Companion.hide
 import com.rohitthebest.projectplanner.utils.Functions.Companion.show
+import com.rohitthebest.projectplanner.utils.Functions.Companion.strikeThrough
 import kotlinx.coroutines.*
 
 class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCallback()) {
@@ -37,10 +35,6 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
             topic?.let {
 
                 binding.etTopicName.setText(it.topicName)
-
-                val spannableStringBuilder = SpannableStringBuilder(it.topicName)
-                val strikeThroughSpan = StrikethroughSpan()
-
                 binding.checkBoxTopicName.isChecked = it.isCompleted == Constants.TRUE
 
                 //checking if the topic is completed
@@ -48,16 +42,10 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
 
                     binding.checkBoxTopicName.isChecked = true
 
-                    spannableStringBuilder.setSpan(
-                            strikeThroughSpan,
-                            0,
-                            it.topicName.length,
-                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
-
-                    binding.etTopicName.text = spannableStringBuilder
+                    binding.etTopicName.strikeThrough(it.topicName)
                 }
 
+                //if subtopic list is not empty initializing the subTopic Adapter and recyclerView
                 try {
 
                     it.subTopics?.let { subTopicList ->
@@ -71,8 +59,8 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
                             binding.subTopicRV.show()
                             binding.addSubTopicBtn.hide()
 
-                            val managerLayout = LinearLayoutManager(binding.subTopicRV.context)
-                            managerLayout.initialPrefetchItemCount = subTopicList.size
+                            val subTopicRecyclerViewLayoutManager = LinearLayoutManager(binding.subTopicRV.context)
+                            subTopicRecyclerViewLayoutManager.initialPrefetchItemCount = subTopicList.size
 
                             subTopicAdapter.submitList(subTopicList)
 
@@ -80,7 +68,7 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
 
                                 setHasFixedSize(true)
                                 adapter = subTopicAdapter
-                                layoutManager = managerLayout
+                                layoutManager = subTopicRecyclerViewLayoutManager
                             }
 
                             binding.subTopicRV.setRecycledViewPool(viewPool)
@@ -144,7 +132,7 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
                 }
             }
 
-            binding.checkBoxTopicName.setOnCheckedChangeListener { buttonView, isChecked ->
+            binding.checkBoxTopicName.setOnCheckedChangeListener { _, isChecked ->
 
                 try {
 
@@ -233,9 +221,21 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
 
         override fun onAddAnotherSubTopicClicked() {
 
-            if(checkForNullability(absoluteAdapterPosition)) {
+            if (checkForNullability(absoluteAdapterPosition)) {
 
-                mListener!!.onAddSubTopicBtnClickedBySubTopicAdapter()
+                mListener!!.onAddSubTopicBtnClickedBySubTopicAdapter(getItem(absoluteAdapterPosition), absoluteAdapterPosition)
+            }
+        }
+
+        override fun onSubTopicCheckChanged(subTopic: SubTopic?, position: Int, isChecked: Boolean) {
+
+            if (checkForNullability(absoluteAdapterPosition)) {
+
+                mListener!!.onSubTopicCheckChanged(
+                        isChecked,
+                        absoluteAdapterPosition,
+                        position
+                )
             }
         }
     }
@@ -273,7 +273,8 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
 
         //subtopic functions
         fun onSubTopicClick(subTopic: SubTopic)
-        fun onAddSubTopicBtnClickedBySubTopicAdapter()
+        fun onAddSubTopicBtnClickedBySubTopicAdapter(topic: Topic, position: Int)
+        fun onSubTopicCheckChanged(isChecked: Boolean, topicPosition: Int, subTopicPosition: Int)
     }
 
     fun setOnClickListener(listener: OnClickListener) {

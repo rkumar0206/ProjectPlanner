@@ -142,39 +142,31 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
 
         project?.let {
 
+            Log.i(TAG, "position =$position, itemCount =  ${topicAdapter.itemCount}")
+
             //if the item is the first item and also it is the only item then deleting the whole project
             if (position == 0 && topicAdapter.itemCount <= 1) {
 
-                if (topic.topicName.trim().isEmpty()) {
+                MaterialAlertDialogBuilder(requireContext())
+                        .setTitle("Are you sure?")
+                        .setMessage("This with delete the only topic in your project.")
+                        .setPositiveButton("Delete") { dialog, _ ->
 
-                    it.topics.remove(topic)
-                    topicAdapter.notifyItemRemoved(position)
+                            it.topics.remove(topic)
+                            topicAdapter.notifyItemRemoved(position)
 
-                    projectViewModel.deleteProject(it)
-                    project = null
-                    showAddBtnAndHideRV()
-                } else {
+                            projectViewModel.deleteProject(it)
+                            project = null
+                            showAddBtnAndHideRV()
+                            dialog.dismiss()
+                        }
+                        .setNegativeButton("Cancel") { dialog, _ ->
 
-                    MaterialAlertDialogBuilder(requireContext())
-                            .setTitle("Are you sure?")
-                            .setMessage("This with delete the only topic in your project.")
-                            .setPositiveButton("Delete") { dialog, _ ->
+                            dialog.dismiss()
+                        }
+                        .create()
+                        .show()
 
-                                it.topics.remove(topic)
-                                topicAdapter.notifyItemRemoved(position)
-
-                                projectViewModel.deleteProject(it)
-                                project = null
-                                showAddBtnAndHideRV()
-                                dialog.dismiss()
-                            }
-                            .setNegativeButton("Cancel") { dialog, _ ->
-
-                                dialog.dismiss()
-                            }
-                            .create()
-                            .show()
-                }
             } else {
 
                 it.topics.remove(topic)
@@ -247,6 +239,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
         }
     }
 
+    //when add subtopic of the TopicAdapter is clicked we add the empty subTopic
     override fun onAddSubTopicClicked(topic: Topic, position: Int) {
 
         project?.let {
@@ -273,15 +266,63 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
         }
     }
 
+
+    //[Start of subtopic functions]
     override fun onSubTopicClick(subTopic: SubTopic) {
 
         //handle click on subtopic
     }
 
-    override fun onAddSubTopicBtnClickedBySubTopicAdapter() {
+    override fun onAddSubTopicBtnClickedBySubTopicAdapter(topic: Topic, position: Int) {
 
-        showToast(requireContext(), "Clicked")
+        //showToast(requireContext(), "add subtopic clicked")
+
+        project?.let {
+
+            val subTopic = SubTopic(
+                    topic.topicKey,
+                    "",
+                    FALSE,
+                    ArrayList(),
+                    generateKey()
+            )
+
+            it.topics[position].subTopics?.add(subTopic)
+
+            projectViewModel.updateProject(it)
+
+            if (position == 0 && topicAdapter.itemCount <= 1) {
+
+                observeChanges()
+            } else {
+
+                topicAdapter.notifyItemChanged(position)
+            }
+        }
     }
+
+    override fun onSubTopicCheckChanged(isChecked: Boolean, topicPosition: Int, subTopicPosition: Int) {
+
+        project?.let {
+
+            it.topics[topicPosition].subTopics?.get(subTopicPosition)?.isCompleted =
+                    if (isChecked) TRUE else FALSE
+
+            projectViewModel.updateProject(it)
+
+            if (topicPosition == 0 && topicAdapter.itemCount <= 1) {
+
+                observeChanges()
+            } else {
+
+                topicAdapter.notifyItemChanged(topicPosition)
+            }
+
+        }
+    }
+
+
+    //[End og subtopic functions]
 
     private fun initListeners() {
 

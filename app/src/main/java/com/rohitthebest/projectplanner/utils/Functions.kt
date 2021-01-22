@@ -7,9 +7,13 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.StrikethroughSpan
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -312,6 +316,21 @@ class Functions {
         fun generateKey(): String {
 
             return "${System.currentTimeMillis().toStringM(69)}_${Random.nextLong(1000, 99999999).toStringM(69)}"
+        }
+
+        fun EditText.strikeThrough(textToBeStriked: String) {
+
+            val spannableStringBuilder = SpannableStringBuilder(textToBeStriked)
+            val strikeThroughSpan = StrikethroughSpan()
+
+            spannableStringBuilder.setSpan(
+                    strikeThroughSpan,
+                    0,
+                    textToBeStriked.length,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+
+            this.text = spannableStringBuilder
         }
 
     }
