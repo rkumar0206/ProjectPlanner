@@ -53,7 +53,7 @@ class SubTopicAdapter : ListAdapter<SubTopic, SubTopicAdapter.SubTopicViewHolder
 
                 if (checkForNullability(absoluteAdapterPosition)) {
 
-                    mListener!!.onAddAnotherSubTopicClicked()
+                    mListener!!.onAddAnotherSubTopicClicked(absoluteAdapterPosition)
                 }
             }
 
@@ -128,6 +128,17 @@ class SubTopicAdapter : ListAdapter<SubTopic, SubTopicAdapter.SubTopicViewHolder
                     e.printStackTrace()
                 }
             }
+
+            binding.deleteSubTopicBtn.setOnClickListener {
+
+                if (checkForNullability(absoluteAdapterPosition)) {
+
+                    mListener!!.onDeleteSubTopicClicked(
+                            getItem(absoluteAdapterPosition),
+                            absoluteAdapterPosition
+                    )
+                }
+            }
         }
 
         private fun checkForNullability(position: Int): Boolean {
@@ -161,9 +172,10 @@ class SubTopicAdapter : ListAdapter<SubTopic, SubTopicAdapter.SubTopicViewHolder
 
         fun onItemClick(subTopic: SubTopic)
 
-        fun onAddAnotherSubTopicClicked()
+        fun onAddAnotherSubTopicClicked(subTopicPosition: Int)
         fun onSubTopicCheckChanged(subTopic: SubTopic?, position: Int, isChecked: Boolean)
         fun onSubTopicNameChanged(subTopicName: String, subTopicPosition: Int)
+        fun onDeleteSubTopicClicked(subTopic: SubTopic, subTopicPosition: Int)
     }
 
     fun setOnClickListener(listener: OnClickListener) {

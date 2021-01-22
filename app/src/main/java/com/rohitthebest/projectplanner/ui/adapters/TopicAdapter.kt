@@ -3,6 +3,7 @@ package com.rohitthebest.projectplanner.ui.adapters
 import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -18,6 +19,8 @@ import com.rohitthebest.projectplanner.utils.Functions.Companion.show
 import com.rohitthebest.projectplanner.utils.Functions.Companion.strikeThrough
 import kotlinx.coroutines.*
 
+private const val TAG = "TopicAdapter"
+
 class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCallback()) {
 
     private var mListener: OnClickListener? = null
@@ -26,7 +29,7 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
 
     private lateinit var context: Context
 
-    private lateinit var subTopicAdapter: SubTopicAdapter
+    lateinit var subTopicAdapter: SubTopicAdapter
 
     inner class TopicViewHolder(val binding: AdapterTopicLayoutBinding) : RecyclerView.ViewHolder(binding.root), SubTopicAdapter.OnClickListener {
 
@@ -48,35 +51,49 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
                 //if subtopic list is not empty initializing the subTopic Adapter and recyclerView
                 try {
 
-                    it.subTopics?.let { subTopicList ->
+                    if (it.subTopics == null) {
 
-                        if (subTopicList.size <= 0) {
+                        binding.subTopicRV.hide()
+                        binding.addSubTopicBtn.show()
+                    } else {
 
-                            binding.subTopicRV.hide()
-                            binding.addSubTopicBtn.show()
-                        } else {
+                        Log.i(TAG, "setData: sub topic is not null")
 
-                            binding.subTopicRV.show()
-                            binding.addSubTopicBtn.hide()
+                        it.subTopics?.let { subTopicList ->
 
-                            val subTopicRecyclerViewLayoutManager = LinearLayoutManager(binding.subTopicRV.context)
-                            subTopicRecyclerViewLayoutManager.initialPrefetchItemCount = subTopicList.size
+                            if (subTopicList.size <= 0) {
 
-                            subTopicAdapter.submitList(subTopicList)
+                                Log.i(TAG, "setData: subtopic list is empty")
 
-                            binding.subTopicRV.apply {
+                                binding.subTopicRV.hide()
+                                binding.addSubTopicBtn.show()
+                            } else {
 
-                                setHasFixedSize(true)
-                                adapter = subTopicAdapter
-                                layoutManager = subTopicRecyclerViewLayoutManager
+                                Log.i(TAG, "setData: subtopic list is not empty")
+
+                                binding.subTopicRV.show()
+                                binding.addSubTopicBtn.hide()
+
+                                subTopicAdapter = SubTopicAdapter()
+
+                                val subTopicRecyclerViewLayoutManager = LinearLayoutManager(binding.subTopicRV.context)
+                                subTopicRecyclerViewLayoutManager.initialPrefetchItemCount = subTopicList.size
+
+                                subTopicAdapter.submitList(subTopicList)
+
+                                binding.subTopicRV.apply {
+
+                                    setHasFixedSize(true)
+                                    adapter = subTopicAdapter
+                                    layoutManager = subTopicRecyclerViewLayoutManager
+                                }
+
+                                binding.subTopicRV.setRecycledViewPool(viewPool)
+
+                                subTopicAdapter.setOnClickListener(this)
                             }
-
-                            binding.subTopicRV.setRecycledViewPool(viewPool)
-
-                            subTopicAdapter.setOnClickListener(this)
                         }
                     }
-
                 } catch (e: Exception) {
 
                     e.printStackTrace()
@@ -97,8 +114,6 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
 
         init {
 
-            subTopicAdapter = SubTopicAdapter()
-
             binding.addSubTopicBtn.setOnClickListener {
 
                 if (checkForNullability(absoluteAdapterPosition)) {
@@ -111,14 +126,8 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
 
                 if (checkForNullability(absoluteAdapterPosition)) {
 
-                    if (binding.etTopicName.text.toString().trim().isNotEmpty()) {
+                    mListener!!.addOnTopicButtonClicked()
 
-                        mListener!!.addOnTopicButtonClicked()
-                    } else {
-
-                        binding.etTopicName.requestFocus()
-                        binding.etTopicName.error = "Specify this topic before adding another topic!!!"
-                    }
                 }
             }
 
@@ -218,11 +227,15 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
             }
         }
 
-        override fun onAddAnotherSubTopicClicked() {
+        override fun onAddAnotherSubTopicClicked(subTopicPosition: Int) {
 
             if (checkForNullability(absoluteAdapterPosition)) {
 
-                mListener!!.onAddSubTopicBtnClickedBySubTopicAdapter(getItem(absoluteAdapterPosition), absoluteAdapterPosition)
+                mListener!!.onAddSubTopicBtnClickedBySubTopicAdapter(
+                        getItem(absoluteAdapterPosition),
+                        absoluteAdapterPosition,
+                        subTopicPosition
+                )
             }
         }
 
@@ -244,6 +257,18 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
 
                 mListener!!.onSubTopicNameChanged(
                         subTopicName,
+                        absoluteAdapterPosition,
+                        subTopicPosition
+                )
+            }
+        }
+
+        override fun onDeleteSubTopicClicked(subTopic: SubTopic, subTopicPosition: Int) {
+
+            if (checkForNullability(absoluteAdapterPosition)) {
+
+                mListener!!.onDeleteSubTopicClicked(
+                        subTopic,
                         absoluteAdapterPosition,
                         subTopicPosition
                 )
@@ -284,9 +309,10 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
 
         //subtopic functions
         fun onSubTopicClick(subTopic: SubTopic)
-        fun onAddSubTopicBtnClickedBySubTopicAdapter(topic: Topic, position: Int)
+        fun onAddSubTopicBtnClickedBySubTopicAdapter(topic: Topic, position: Int, subTopicPosition: Int)
         fun onSubTopicCheckChanged(isChecked: Boolean, topicPosition: Int, subTopicPosition: Int)
         fun onSubTopicNameChanged(subTopicName: String, topicPosition: Int, subTopicPosition: Int)
+        fun onDeleteSubTopicClicked(subTopic: SubTopic, topicPosition: Int, subTopicPosition: Int)
     }
 
     fun setOnClickListener(listener: OnClickListener) {
