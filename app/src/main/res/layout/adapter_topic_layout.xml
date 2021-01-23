@@ -10,32 +10,16 @@
 
     <EditText
         android:id="@+id/etTopicName"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:ems="10"
+
+        android:layout_marginEnd="8dp"
         android:hint="topic name"
         android:inputType="textMultiLine|textCapSentences|textAutoCorrect"
+        app:layout_constraintEnd_toStartOf="@+id/imageView"
         app:layout_constraintStart_toEndOf="@+id/checkBoxTopicName"
         app:layout_constraintTop_toTopOf="parent" />
-
-
-    <TextView
-        android:id="@+id/addSubTopicBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="5dp"
-        android:drawablePadding="10dp"
-        android:fontFamily="serif"
-        android:gravity="center"
-        android:padding="5dp"
-        android:text="Add sub topic  "
-        android:textSize="14sp"
-        android:textStyle="bold"
-        app:drawableStartCompat="@drawable/ic_baseline_add_circle_outline_24"
-        app:layout_constraintStart_toStartOf="@+id/etTopicName"
-        app:layout_constraintTop_toBottomOf="@+id/etTopicName" />
 
 
     <CheckBox
@@ -47,25 +31,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/etTopicName" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/subTopicRV"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/etTopicName"
-        app:layout_constraintTop_toBottomOf="@+id/etTopicName"
-        tools:visibility="gone" />
-
 
     <TextView
         android:id="@+id/addAnotherTopicBtn"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginTop="55dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="3dp"
         android:drawablePadding="10dp"
         android:fontFamily="serif"
         android:gravity="center"
@@ -76,7 +48,7 @@
         app:drawableStartCompat="@drawable/ic_baseline_add_circle_outline_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/etTopicName"
-        app:layout_constraintTop_toBottomOf="@+id/subTopicRV" />
+        app:layout_constraintTop_toBottomOf="@+id/etTopicName" />
 
 
     <ImageButton
@@ -88,5 +60,26 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/etTopicName"
         app:srcCompat="@drawable/ic_baseline_close_24" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        app:layout_constraintBottom_toBottomOf="@+id/clearTopicButton"
+        app:layout_constraintEnd_toStartOf="@+id/imageView2"
+        app:layout_constraintTop_toTopOf="@+id/clearTopicButton"
+        app:srcCompat="@drawable/ic_baseline_insert_link_24" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView"
+        app:layout_constraintEnd_toStartOf="@+id/clearTopicButton"
+        app:layout_constraintTop_toTopOf="@+id/imageView"
+        app:srcCompat="@drawable/ic_baseline_note_add_24" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -296,81 +296,6 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
 
     /** [END OF TOPIC LISTENERS]**/
 
-
-    /** [START OF SUB TOPIC LISTENERS]**/
-
-    override fun onSubTopicClick(subTopic: SubTopic) {
-        //TODO("Not yet implemented")
-    }
-
-    override fun onAddSubTopicBtnClickedBySubTopicAdapter(topic: Topic, position: Int, subTopicPosition: Int) {
-
-        project?.let {
-
-            val subTopic = SubTopic(
-                    topic.topicKey,
-                    "",
-                    FALSE,
-                    ArrayList(),
-                    generateKey()
-            )
-
-            //Log.i(TAG, "onAddSubTopicBtnClickedBySubTopicAdapter: ")
-
-            Log.d(TAG, "onAddSubTopicBtnClickedBySubTopicAdapter: topicPosition : $position")
-            Log.d(TAG, "onAddSubTopicBtnClickedBySubTopicAdapter: sub topicPosition : $subTopicPosition")
-
-            it.topics[position].subTopics?.add(subTopicPosition + 1, subTopic)
-
-            try {
-
-                topicAdapter.notifyItemChanged(position)
-                //topicAdapter.subTopicAdapter.notifyItemInserted(subTopicPosition + 1)
-                Log.d(TAG, "\nonAddSubTopicBtnClickedBySubTopicAdapter: SubTopic added at position :" +
-                        " ${subTopicPosition + 1}")
-
-            } catch (e: Exception) {
-
-                e.printStackTrace()
-            }
-
-            //projectViewModel.updateProject(it)
-        }
-
-    }
-
-    override fun onSubTopicCheckChanged(isChecked: Boolean, topicPosition: Int, subTopicPosition: Int) {
-
-        Log.i(TAG, "onSubTopicCheckChanged: $subTopicPosition")
-
-        project?.let {
-
-            it.topics[topicPosition].subTopics?.get(subTopicPosition)?.isCompleted = if (isChecked) TRUE else FALSE
-
-            topicAdapter.notifyItemChanged(topicPosition)
-        }
-    }
-
-    override fun onSubTopicNameChanged(subTopicName: String, topicPosition: Int, subTopicPosition: Int) {
-
-        project?.let {
-
-            try {
-                it.topics[topicPosition].subTopics?.get(subTopicPosition)?.subTopicName = subTopicName
-            } catch (e: java.lang.IndexOutOfBoundsException) {
-
-                e.printStackTrace()
-            }
-        }
-    }
-
-    override fun onDeleteSubTopicClicked(subTopic: SubTopic, topicPosition: Int, subTopicPosition: Int) {
-
-        //todo : delete the sub topic
-    }
-
-    /** [END OF SUB TOPIC LISTENERS]**/
-
     private fun showAddBtnAndHideRV() {
 
         try {
@@ -395,20 +320,32 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    private fun insertProjectToDatabase() {
 
         try {
 
             if (project != null) {
 
+                Log.d(TAG, "insertProjectToDatabase: Project inserted")
                 project?.let { projectViewModel.insertProject(it) }
             }
-            hideKeyBoard(requireActivity())
         } catch (e: Exception) {
             e.printStackTrace()
         }
 
-        _binding = null
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        Log.d(TAG, "onPause: ")
+
+        try {
+
+            insertProjectToDatabase()
+            hideKeyBoard(requireActivity())
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }
     }
 }
