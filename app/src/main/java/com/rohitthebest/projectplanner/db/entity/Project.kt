@@ -7,19 +7,17 @@ import com.rohitthebest.projectplanner.Constants.FALSE
 @Entity(tableName = "project_table")
 data class Project(
         val timeStamp: Long = System.currentTimeMillis(),
-        @PrimaryKey(autoGenerate = true) var id: Int? = null,
         var modifiedOn: Long = timeStamp,
         var projectName: String,
         var projectProgress: Int = 0,
         var topics: ArrayList<Topic>,
         var urls: ArrayList<Url>? = null,
-        var projectKey: String,
+        @PrimaryKey var projectKey: String,
         var markDown: String? = null
 ) {
 
     constructor() : this(
             System.currentTimeMillis(),
-            null,
             0L,
             "",
             0,

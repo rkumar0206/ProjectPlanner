@@ -10,8 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.rohitthebest.projectplanner.Constants
 import com.rohitthebest.projectplanner.databinding.AdapterSubTopicLayoutBinding
 import com.rohitthebest.projectplanner.db.entity.SubTopic
-import com.rohitthebest.projectplanner.utils.Functions.Companion.hide
-import com.rohitthebest.projectplanner.utils.Functions.Companion.show
 import com.rohitthebest.projectplanner.utils.Functions.Companion.strikeThrough
 import kotlinx.coroutines.*
 
@@ -38,13 +36,13 @@ class SubTopicAdapter : ListAdapter<SubTopic, SubTopicAdapter.SubTopicViewHolder
 
             }
 
-            if (absoluteAdapterPosition == itemCount - 1) {
+           /* if (absoluteAdapterPosition == itemCount - 1) {
 
                 binding.addAnotherSubTopicBtn.show()
             } else {
 
                 binding.addAnotherSubTopicBtn.hide()
-            }
+            }*/
         }
 
         init {
@@ -55,6 +53,8 @@ class SubTopicAdapter : ListAdapter<SubTopic, SubTopicAdapter.SubTopicViewHolder
 
                     mListener!!.onAddAnotherSubTopicClicked(absoluteAdapterPosition)
                 }
+
+                removeTheFocus()
             }
 
             var job: Job? = null
@@ -114,19 +114,7 @@ class SubTopicAdapter : ListAdapter<SubTopic, SubTopicAdapter.SubTopicViewHolder
                     e.printStackTrace()
                 }
 
-            }
-
-            binding.etSubTopicName.setOnFocusChangeListener { v, hasFocus ->
-
-                try {
-                    if (!hasFocus) {
-
-                        notifyItemChanged(absoluteAdapterPosition)
-                    }
-                } catch (e: IllegalStateException) {
-
-                    e.printStackTrace()
-                }
+                removeTheFocus()
             }
 
             binding.deleteSubTopicBtn.setOnClickListener {
@@ -138,8 +126,22 @@ class SubTopicAdapter : ListAdapter<SubTopic, SubTopicAdapter.SubTopicViewHolder
                             absoluteAdapterPosition
                     )
                 }
+
+                removeTheFocus()
             }
         }
+
+        private fun removeTheFocus() {
+
+            try {
+
+                binding.etSubTopicName.clearFocus()
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
 
         private fun checkForNullability(position: Int): Boolean {
 

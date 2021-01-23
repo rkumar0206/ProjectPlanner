@@ -100,15 +100,6 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
                 }
 
             }
-
-            if (absoluteAdapterPosition == itemCount - 1) {
-
-                binding.addAnotherTopicBtn.show()
-            } else {
-
-                binding.addAnotherTopicBtn.hide()
-            }
-
         }
 
 
@@ -120,15 +111,19 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
 
                     mListener!!.onAddSubTopicClicked(getItem(absoluteAdapterPosition), absoluteAdapterPosition)
                 }
+
+                removeTheFocus()
             }
 
             binding.addAnotherTopicBtn.setOnClickListener {
 
                 if (checkForNullability(absoluteAdapterPosition)) {
 
-                    mListener!!.addOnTopicButtonClicked()
+                    mListener!!.addOnTopicButtonClicked(absoluteAdapterPosition)
 
                 }
+
+                removeTheFocus()
             }
 
             binding.clearTopicButton.setOnClickListener {
@@ -137,6 +132,8 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
 
                     mListener!!.onClearTopicButtonClicked(getItem(absoluteAdapterPosition), absoluteAdapterPosition)
                 }
+
+                removeTheFocus()
             }
 
             binding.checkBoxTopicName.setOnCheckedChangeListener { _, isChecked ->
@@ -157,6 +154,8 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
 
                     e.printStackTrace()
                 }
+
+                removeTheFocus()
             }
 
             var job: Job? = null
@@ -169,6 +168,7 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
 
                         if (job != null && job?.isActive == true) {
 
+                            Log.d(TAG, "onTextChanged: Cancelling job")
                             job!!.cancel()
                         }
 
@@ -198,17 +198,16 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
                 override fun afterTextChanged(s: Editable?) {}
             })
 
-            binding.etTopicName.setOnFocusChangeListener { v, hasFocus ->
+        }
 
-                try {
-                    if (!hasFocus) {
+        private fun removeTheFocus() {
 
-                        notifyItemChanged(absoluteAdapterPosition)
-                    }
-                } catch (e: IllegalStateException) {
+            try {
 
-                    e.printStackTrace()
-                }
+                binding.etTopicName.clearFocus()
+
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
 
@@ -295,13 +294,24 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
     override fun onBindViewHolder(holder: TopicViewHolder, position: Int) {
 
         holder.setData(getItem(position))
+
+/*
+        if (position >= itemCount - 1) {
+
+            holder.binding.addAnotherTopicBtn.show()
+        } else {
+
+            holder.binding.addAnotherTopicBtn.hide()
+        }
+*/
+
     }
 
     interface OnClickListener {
 
         //topic functions
         fun onItemClick(topic: Topic)
-        fun addOnTopicButtonClicked()
+        fun addOnTopicButtonClicked(position: Int)
         fun onClearTopicButtonClicked(topic: Topic, position: Int)
         fun onTopicCheckChanged(topic: Topic, position: Int, isChecked: Boolean)
         fun onTopicNameChanged(topicName: String, position: Int, topic: Topic)

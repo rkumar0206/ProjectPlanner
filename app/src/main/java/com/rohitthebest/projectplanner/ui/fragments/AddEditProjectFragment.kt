@@ -6,7 +6,6 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.rohitthebest.projectplanner.Constants.FALSE
@@ -24,7 +23,6 @@ import com.rohitthebest.projectplanner.utils.Functions.Companion.hide
 import com.rohitthebest.projectplanner.utils.Functions.Companion.hideKeyBoard
 import com.rohitthebest.projectplanner.utils.Functions.Companion.setDateInTextView
 import com.rohitthebest.projectplanner.utils.Functions.Companion.show
-import com.rohitthebest.projectplanner.utils.Functions.Companion.showToast
 import dagger.hilt.android.AndroidEntryPoint
 
 private const val TAG = "AddEditProjectFragment"
@@ -60,150 +58,141 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
 
         initListeners()
 
-        observeChanges()
+        //observeChanges()
     }
 
-    private fun observeChanges() {
+    /*private fun observeChanges() {
 
         try {
+
             project?.let {
 
-                projectViewModel.getProjectByProjectKey(project!!.projectKey).observe(viewLifecycleOwner) { project ->
+                projectViewModel.getProjectByProjectKey(it.projectKey).observe(viewLifecycleOwner) { p ->
 
-                    if (project != null) {
+                    if (project != null && p != null) {
 
-                        Log.i(TAG, "observeChanges: ${it.topics}")
-                        setUpTopicRecyclerView(it.topics)
+                        Log.d(TAG, "observeChanges: Project found and calling setUpRecyclerView()")
+                        Log.d(TAG, "\nobserveChanges: $p")
+
+                        setUpRecyclerView(p.topics)
                     }
                 }
             }
-        } catch (e: Exception) {
+
+        } catch (e: java.lang.Exception) {
             e.printStackTrace()
         }
+    }*/
+
+
+    private fun initListeners() {
+
+        includeBinding.addTopicBtn.setOnClickListener(this)
     }
 
-    private fun setUpTopicRecyclerView(topics: List<Topic>) {
+    override fun onClick(v: View?) {
+
+        when (v?.id) {
+
+            includeBinding.addTopicBtn.id -> {
+
+                if (includeBinding.etProjectName.text.toString().trim().isNotEmpty()) {
+
+                    addEmptyProjectToDatabase()
+                    hideAddBtnAndShowRV()
+                } else {
+
+                    includeBinding.etProjectName.requestFocus()
+                    includeBinding.etProjectName.error = "You must give a name to your project."
+                }
+            }
+        }
+
+        hideKeyBoard(requireActivity())
+    }
+
+    private fun addEmptyProjectToDatabase() {
+
+        val projectKey = generateKey()
+
+        val topic = Topic(
+                projectKey,
+                "",
+                FALSE,
+                ArrayList(),
+                ArrayList(),
+                "",
+                generateKey()
+        )
+
+        project = Project(
+                currentTimeStamp,
+                System.currentTimeMillis(),
+                includeBinding.etProjectName.text.toString().trim(),
+                0,
+                arrayListOf(topic),
+                ArrayList(),
+                projectKey,
+                ""
+        )
+
+        project?.let {
+
+            //projectViewModel.insertProject(it)
+            //observeChanges()
+
+            setUpRecyclerView(it.topics)
+        }
+
+        Log.d(TAG, "addEmptyProjectToDatabase: Empty Project Added")
+    }
+
+    private fun setUpRecyclerView(topics: java.util.ArrayList<Topic>) {
 
         try {
 
-            if (topics.isNotEmpty()) {
+            topicAdapter.submitList(topics)
 
-                topicAdapter.submitList(topics)
+            includeBinding.rvProjectTopic.apply {
 
-                includeBinding.rvProjectTopic.apply {
-
-                    adapter = topicAdapter
-                    setHasFixedSize(true)
-                    layoutManager = LinearLayoutManager(requireContext())
-                }
-
-                topicAdapter.setOnClickListener(this)
+                setHasFixedSize(true)
+                adapter = topicAdapter
+                layoutManager = LinearLayoutManager(requireContext())
             }
+
+            topicAdapter.setOnClickListener(this)
 
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
         }
     }
 
+    /** [START OF TOPIC LISTENERS]**/
+
     override fun onItemClick(topic: Topic) {
 
-        //todo : handle topic click
+        //todo : do on topic click
     }
 
-    //adding new topic
-    override fun addOnTopicButtonClicked() {
+    override fun addOnTopicButtonClicked(position: Int) {
 
         project?.let {
 
-            val topic = Topic(
-                    it.projectKey,
-                    "",
-                    FALSE,
-                    ArrayList(),
-                    ArrayList(),
-                    "",
-                    generateKey()
-            )
+            it.topics.add(position + 1, Topic(it.projectKey, "", FALSE, ArrayList(), ArrayList(), "", generateKey()))
 
-            it.topics.add(topic)
+            //projectViewModel.updateProject(it)
 
-            projectViewModel.updateProject(it)
+            topicAdapter.notifyItemInserted(position + 1)
 
-            //topicAdapter.notifyItemInserted(topicAdapter.itemCount)
-
-            observeChanges()
-
-            showToast(requireContext(), "added")
+            Log.d(TAG, "addOnTopicButtonClicked: new empty topic is inserted in project ${it.projectKey}")
         }
     }
 
-    //updating if the topic is completed or in completed
-    override fun onTopicCheckChanged(topic: Topic, position: Int, isChecked: Boolean) {
-
-        project?.let {
-
-            it.topics[position].isCompleted = if (isChecked) TRUE else FALSE
-
-            projectViewModel.updateProject(it)
-
-            //todo : calculate the progress here
-
-            try {
-
-                topicAdapter.notifyItemChanged(position)
-            } catch (e: Exception) {
-
-                e.printStackTrace()
-            }
-        }
-    }
-
-    //updating the topic name as soon as it is changed
-    override fun onTopicNameChanged(topicName: String, position: Int, topic: Topic) {
-
-        project?.let {
-
-            it.topics[position].topicName = topicName
-
-            projectViewModel.updateProject(it)
-
-            Log.i(TAG, "onTopicNameChanged: project updating...")
-        }
-    }
-
-    //when add subtopic of the TopicAdapter is clicked we add the empty subTopic
-    override fun onAddSubTopicClicked(topic: Topic, position: Int) {
-
-        project?.let {
-
-            val subTopic = SubTopic(
-                    topic.topicKey,
-                    "",
-                    FALSE,
-                    ArrayList(),
-                    generateKey()
-            )
-
-            it.topics[position].subTopics = arrayListOf(subTopic)
-
-            projectViewModel.updateProject(it)
-
-            if (position == 0 && topicAdapter.itemCount <= 1) {
-
-                observeChanges()
-            } else {
-
-                topicAdapter.notifyItemChanged(position)
-            }
-        }
-    }
-
-    //deleting the topic
     override fun onClearTopicButtonClicked(topic: Topic, position: Int) {
 
         project?.let {
 
-            Log.i(TAG, "position =$position, itemCount =  ${topicAdapter.itemCount}")
+            Log.d(TAG, "onClearTopicButtonClicked: $position")
 
             //if the item is the first item and also it is the only item then deleting the whole project
             if (position == 0 && topicAdapter.itemCount <= 1) {
@@ -214,9 +203,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
                         .setPositiveButton("Delete") { dialog, _ ->
 
                             it.topics.remove(topic)
-                            topicAdapter.notifyItemRemoved(position)
-
-                            projectViewModel.deleteProject(it)
+                            //projectViewModel.deleteProject(it)
                             project = null
                             showAddBtnAndHideRV()
                             dialog.dismiss()
@@ -232,51 +219,63 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
 
                 it.topics.remove(topic)
 
-                projectViewModel.updateProject(it)
+                topicAdapter.notifyItemRemoved(position)
 
-                Log.i(TAG, "onClearTopicButtonClicked: ${topicAdapter.itemCount}")
+                //projectViewModel.updateProject(it)
 
-                // updating the second last position of the item so that it can have the button for adding topic
-                if (position - 1 != RecyclerView.NO_POSITION) {
-
-                    topicAdapter.notifyItemChanged(position - 1)
-                    topicAdapter.notifyItemRemoved(position)
-                } else {
-
-                    topicAdapter.notifyItemRemoved(position)
-                }
+                Log.d(TAG, "onClearTopicButtonClicked: ${topicAdapter.itemCount}")
 
                 Snackbar.make(binding.root, "Topic Deleted", Snackbar.LENGTH_LONG)
                         .setAction("Undo") { _ ->
 
                             it.topics.add(position, topic)
 
-                            projectViewModel.updateProject(it)
-
                             topicAdapter.notifyItemInserted(position)
 
-                            if (position - 1 != RecyclerView.NO_POSITION) {
+                            //projectViewModel.updateProject(it)
 
-                                topicAdapter.notifyItemChanged(position - 1)
-                            }
                         }
                         .show()
-
             }
         }
     }
 
+    override fun onTopicCheckChanged(topic: Topic, position: Int, isChecked: Boolean) {
 
-    /** [Start of subtopic functions] **/
+        project?.let {
 
-    override fun onSubTopicClick(subTopic: SubTopic) {
+            it.topics[position].isCompleted = if (isChecked) TRUE else FALSE
 
-        //handle click on subtopic
+            topicAdapter.notifyItemChanged(position)
+
+            //projectViewModel.updateProject(it)
+
+            Log.d(TAG, "onTopicCheckChanged: topic check changed to $isChecked")
+
+            //todo : calculate the progress here
+        }
     }
 
-    override fun onAddSubTopicBtnClickedBySubTopicAdapter(topic: Topic, position: Int, subTopicPosition: Int) {
+    override fun onTopicNameChanged(topicName: String, position: Int, topic: Topic) {
 
-        showToast(requireContext(), "add subtopic clicked")
+        Log.d(TAG, "onTopicNameChanged: $topicName")
+        project?.let {
+
+            try {
+
+                it.topics[position].topicName = topicName
+            } catch (e: IndexOutOfBoundsException) {
+
+                e.printStackTrace()
+            }
+
+            //projectViewModel.updateProject(it)
+
+            Log.d(TAG, "onTopicNameChanged: topic name changed to $topicName")
+        }
+    }
+
+    override fun onAddSubTopicClicked(topic: Topic, position: Int) {
 
         project?.let {
 
@@ -288,39 +287,67 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
                     generateKey()
             )
 
-            it.topics[position].subTopics?.add(subTopic)
+            it.topics[position].subTopics = arrayListOf(subTopic)
 
-            projectViewModel.updateProject(it)
+            topicAdapter.notifyItemChanged(position)
 
-            if (position == 0 && topicAdapter.itemCount <= 1) {
-
-                observeChanges()
-            } else {
-
-                topicAdapter.subTopicAdapter.notifyItemChanged(subTopicPosition)
-                topicAdapter.subTopicAdapter.notifyItemInserted(subTopicPosition + 1)
-                //topicAdapter.notifyItemChanged(position)
-            }
         }
+    }
+
+    /** [END OF TOPIC LISTENERS]**/
+
+
+    /** [START OF SUB TOPIC LISTENERS]**/
+
+    override fun onSubTopicClick(subTopic: SubTopic) {
+        //TODO("Not yet implemented")
+    }
+
+    override fun onAddSubTopicBtnClickedBySubTopicAdapter(topic: Topic, position: Int, subTopicPosition: Int) {
+
+        project?.let {
+
+            val subTopic = SubTopic(
+                    topic.topicKey,
+                    "",
+                    FALSE,
+                    ArrayList(),
+                    generateKey()
+            )
+
+            //Log.i(TAG, "onAddSubTopicBtnClickedBySubTopicAdapter: ")
+
+            Log.d(TAG, "onAddSubTopicBtnClickedBySubTopicAdapter: topicPosition : $position")
+            Log.d(TAG, "onAddSubTopicBtnClickedBySubTopicAdapter: sub topicPosition : $subTopicPosition")
+
+            it.topics[position].subTopics?.add(subTopicPosition + 1, subTopic)
+
+            try {
+
+                topicAdapter.notifyItemChanged(position)
+                //topicAdapter.subTopicAdapter.notifyItemInserted(subTopicPosition + 1)
+                Log.d(TAG, "\nonAddSubTopicBtnClickedBySubTopicAdapter: SubTopic added at position :" +
+                        " ${subTopicPosition + 1}")
+
+            } catch (e: Exception) {
+
+                e.printStackTrace()
+            }
+
+            //projectViewModel.updateProject(it)
+        }
+
     }
 
     override fun onSubTopicCheckChanged(isChecked: Boolean, topicPosition: Int, subTopicPosition: Int) {
 
+        Log.i(TAG, "onSubTopicCheckChanged: $subTopicPosition")
+
         project?.let {
 
-            it.topics[topicPosition].subTopics?.get(subTopicPosition)?.isCompleted =
-                    if (isChecked) TRUE else FALSE
+            it.topics[topicPosition].subTopics?.get(subTopicPosition)?.isCompleted = if (isChecked) TRUE else FALSE
 
-            projectViewModel.updateProject(it)
-
-            if (topicPosition == 0 && topicAdapter.itemCount <= 1) {
-
-                observeChanges()
-            } else {
-
-                topicAdapter.subTopicAdapter.notifyItemChanged(subTopicPosition)
-            }
-
+            topicAdapter.notifyItemChanged(topicPosition)
         }
     }
 
@@ -328,113 +355,21 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
 
         project?.let {
 
-            it.topics[topicPosition].subTopics?.get(subTopicPosition)?.subTopicName = subTopicName
+            try {
+                it.topics[topicPosition].subTopics?.get(subTopicPosition)?.subTopicName = subTopicName
+            } catch (e: java.lang.IndexOutOfBoundsException) {
 
-            projectViewModel.updateProject(it)
-
-            Log.i(TAG, "onSubTopicNameChanged: project (subTopic Name) Updating...")
+                e.printStackTrace()
+            }
         }
     }
 
     override fun onDeleteSubTopicClicked(subTopic: SubTopic, topicPosition: Int, subTopicPosition: Int) {
 
-        /*  project?.let {
-
-              it.topics[topicPosition].subTopics?.remove(subTopic)
-
-              projectViewModel.updateProject(it)
-
-              Log.i(TAG, "onDeleteSubTopicClicked: SubTopicPosition : $subTopicPosition")
-
-              if (subTopicPosition == 0 && topicAdapter.subTopicAdapter.itemCount < 1) {
-
-                  Log.i(TAG, "onDeleteSubTopicClicked: subTopic position is 0")
-
-                  it.topics[topicPosition].subTopics?.clear()
-                  it.topics[topicPosition].subTopics = null
-
-                  projectViewModel.updateProject(it)
-
-                  observeChanges()
-              } else {
-
-                  if (subTopicPosition - 1 != RecyclerView.NO_POSITION) {
-
-                      Log.i(TAG, "onDeleteSubTopicClicked: subTopic position is 0")
-
-                      topicAdapter.subTopicAdapter.notifyItemChanged(subTopicPosition - 1)
-                      topicAdapter.subTopicAdapter.notifyItemRemoved(subTopicPosition)
-                  } else {
-
-                      topicAdapter.subTopicAdapter.notifyItemRemoved(subTopicPosition)
-                  }
-              }
-          }*/
+        //todo : delete the sub topic
     }
 
-    /** [End og subtopic functions] **/
-
-    private fun initListeners() {
-
-        includeBinding.addTopicBtn.setOnClickListener(this)
-    }
-
-    override fun onClick(v: View?) {
-
-        when (v?.id) {
-
-            includeBinding.addTopicBtn.id -> {
-
-                if (includeBinding.etProjectName.text.toString().trim().isNotEmpty()) {
-
-                    project = null
-                    addProjectToDatabase()
-                    hideAddBtnAndShowRV()
-                } else {
-
-                    includeBinding.etProjectName.requestFocus()
-                    includeBinding.etProjectName.error = "You must give a name to your project."
-                }
-            }
-        }
-
-        hideKeyBoard(requireActivity())
-    }
-
-    //adding empty project to the database
-    private fun addProjectToDatabase() {
-
-        Log.i(TAG, "addProjectToDatabase: ")
-
-        val projectKey = generateKey()
-
-        val topic = Topic(
-                projectKey,
-                "",
-                FALSE,
-                ArrayList(),
-                ArrayList(),
-                "",
-                generateKey()
-        )
-
-        project = Project(
-
-                modifiedOn = System.currentTimeMillis(),
-                projectName = includeBinding.etProjectName.text.toString().trim(),
-                projectProgress = 0,
-                topics = arrayListOf(topic),
-                urls = ArrayList(),
-                projectKey = projectKey,
-                markDown = ""
-        )
-
-        projectViewModel.insertProject(project!!)
-
-        observeChanges()
-
-        showToast(requireContext(), "Project Added")
-    }
+    /** [END OF SUB TOPIC LISTENERS]**/
 
     private fun showAddBtnAndHideRV() {
 
@@ -463,14 +398,17 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
     override fun onDestroyView() {
         super.onDestroyView()
 
-        try{
+        try {
 
+            if (project != null) {
+
+                project?.let { projectViewModel.insertProject(it) }
+            }
             hideKeyBoard(requireActivity())
-        }catch (e : Exception) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
 
         _binding = null
     }
-
 }

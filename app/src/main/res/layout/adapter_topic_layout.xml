@@ -19,50 +19,24 @@
         app:layout_constraintStart_toEndOf="@+id/checkBoxTopicName"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView"
+
+    <TextView
+        android:id="@+id/addSubTopicBtn"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
-        app:cardCornerRadius="100dp"
-        app:cardElevation="10dp"
+        android:layout_marginTop="5dp"
+        android:drawablePadding="10dp"
+        android:fontFamily="serif"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="Add sub topic  "
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:drawableStartCompat="@drawable/ic_baseline_add_circle_outline_24"
         app:layout_constraintStart_toStartOf="@+id/etTopicName"
-        app:layout_constraintTop_toBottomOf="@+id/etTopicName"
-        tools:visibility="visible">
+        app:layout_constraintTop_toBottomOf="@+id/etTopicName" />
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/addSubTopicBtn"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:cardCornerRadius="100dp"
-            app:strokeColor="@color/color_primary"
-            app:strokeWidth="0.8dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:drawablePadding="10dp"
-                    android:fontFamily="serif"
-                    android:gravity="center"
-                    android:padding="5dp"
-                    android:text="Add sub topic  "
-                    android:textColor="@color/primary_text_color"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    app:drawableStartCompat="@drawable/ic_baseline_add_circle_outline_24" />
-
-
-            </LinearLayout>
-
-        </com.google.android.material.card.MaterialCardView>
-
-    </androidx.cardview.widget.CardView>
 
     <CheckBox
         android:id="@+id/checkBoxTopicName"
@@ -85,50 +59,25 @@
         app:layout_constraintTop_toBottomOf="@+id/etTopicName"
         tools:visibility="gone" />
 
-    <androidx.cardview.widget.CardView
+
+    <TextView
+        android:id="@+id/addAnotherTopicBtn"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginTop="55dp"
         android:layout_marginBottom="8dp"
-        app:cardCornerRadius="100dp"
-        app:cardElevation="10dp"
+        android:drawablePadding="10dp"
+        android:fontFamily="serif"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="Add topic  "
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:drawableStartCompat="@drawable/ic_baseline_add_circle_outline_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/etTopicName"
-        app:layout_constraintTop_toBottomOf="@+id/subTopicRV"
-        tools:visibility="visible">
+        app:layout_constraintTop_toBottomOf="@+id/subTopicRV" />
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/addAnotherTopicBtn"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:cardCornerRadius="100dp"
-            app:strokeColor="@color/color_primary"
-            app:strokeWidth="0.8dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:drawablePadding="10dp"
-                    android:fontFamily="serif"
-                    android:gravity="center"
-                    android:padding="5dp"
-                    android:text="Add topic  "
-                    android:textColor="@color/primary_text_color"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    app:drawableStartCompat="@drawable/ic_baseline_add_circle_outline_24" />
-
-
-            </LinearLayout>
-
-        </com.google.android.material.card.MaterialCardView>
-
-    </androidx.cardview.widget.CardView>
 
     <ImageButton
         android:id="@+id/clearTopicButton"
