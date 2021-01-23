@@ -71,6 +71,11 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
 
                         if (checkForNullability(absoluteAdapterPosition)) {
 
+                            mListener!!.onTopicNameChanged(
+                                    binding.etTopicName.text.toString().trim(),
+                                    absoluteAdapterPosition,
+                                    getItem(absoluteAdapterPosition)
+                            )
                             mListener!!.onTopicCheckChanged(getItem(absoluteAdapterPosition), absoluteAdapterPosition, isChecked)
                         }
                     } else {
@@ -89,41 +94,73 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
             binding.etTopicName.addTextChangedListener(object : TextWatcher {
 
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                override fun afterTextChanged(s: Editable?) {
 
-                    try {
+                }
+            })
 
-                        if (job != null && job?.isActive == true) {
+            binding.addLinkBtn.setOnClickListener {
 
-                            Log.d(TAG, "onTextChanged: Cancelling job")
-                            job!!.cancel()
-                        }
+                if (checkForNullability(absoluteAdapterPosition)) {
 
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    } finally {
+                    mListener!!.onAddLinkBtnClicked(absoluteAdapterPosition)
+                }
+            }
+            binding.addMarkdownBtn.setOnClickListener {
 
-                        job = GlobalScope.launch {
+                if (checkForNullability(absoluteAdapterPosition)) {
 
-                            delay(300)
+                    mListener!!.onAddMarkDownBtnClicked(absoluteAdapterPosition)
+                }
+            }
 
-                            withContext(Dispatchers.Main) {
+            binding.etTopicName.setOnFocusChangeListener { _, hasFocus ->
 
-                                if (checkForNullability(absoluteAdapterPosition)) {
+                try {
 
-                                    mListener!!.onTopicNameChanged(
-                                            s.toString().trim(),
-                                            absoluteAdapterPosition,
-                                            getItem(absoluteAdapterPosition)
-                                    )
+                    if (!hasFocus) {
+
+                        try {
+
+                            if (job != null && job?.isActive == true) {
+
+                                Log.d(TAG, "onTextChanged: Cancelling job")
+                                job!!.cancel()
+                            }
+
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        } finally {
+
+                            job = GlobalScope.launch {
+
+                                delay(300)
+
+                                withContext(Dispatchers.Main) {
+
+                                    if(binding.checkBoxTopicName.isChecked) {
+
+                                        binding.etTopicName.strikeThrough(binding.etTopicName.text.toString().trim())
+                                    }
+
+                                    if (checkForNullability(absoluteAdapterPosition)) {
+
+                                        mListener!!.onTopicNameChanged(
+                                                binding.etTopicName.text.toString().trim(),
+                                                absoluteAdapterPosition,
+                                                getItem(absoluteAdapterPosition)
+                                        )
+                                    }
                                 }
                             }
                         }
-                    }
-                }
 
-                override fun afterTextChanged(s: Editable?) {}
-            })
+                    }
+                } catch (e: java.lang.Exception) {
+                    e.printStackTrace()
+                }
+            }
 
         }
 
@@ -161,8 +198,6 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
     override fun onBindViewHolder(holder: TopicViewHolder, position: Int) {
 
         holder.setData(getItem(position))
-
-
     }
 
     interface OnClickListener {
@@ -174,7 +209,8 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
         fun onTopicCheckChanged(topic: Topic, position: Int, isChecked: Boolean)
         fun onTopicNameChanged(topicName: String, position: Int, topic: Topic)
         fun onAddSubTopicClicked(topic: Topic, position: Int)
-
+        fun onAddLinkBtnClicked(position: Int)
+        fun onAddMarkDownBtnClicked(position: Int)
     }
 
     fun setOnClickListener(listener: OnClickListener) {

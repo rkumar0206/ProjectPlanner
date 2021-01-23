@@ -23,6 +23,7 @@ import com.rohitthebest.projectplanner.utils.Functions.Companion.hide
 import com.rohitthebest.projectplanner.utils.Functions.Companion.hideKeyBoard
 import com.rohitthebest.projectplanner.utils.Functions.Companion.setDateInTextView
 import com.rohitthebest.projectplanner.utils.Functions.Companion.show
+import com.rohitthebest.projectplanner.utils.Functions.Companion.showToast
 import dagger.hilt.android.AndroidEntryPoint
 
 private const val TAG = "AddEditProjectFragment"
@@ -264,6 +265,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
             try {
 
                 it.topics[position].topicName = topicName
+                topicAdapter.notifyItemChanged(position)
             } catch (e: IndexOutOfBoundsException) {
 
                 e.printStackTrace()
@@ -292,6 +294,20 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
             topicAdapter.notifyItemChanged(position)
 
         }
+    }
+
+    override fun onAddLinkBtnClicked(position: Int) {
+
+        showToast(requireContext(), "onAddLinkBtnClicked $position")
+
+        //todo : Add the link to the topic
+    }
+
+    override fun onAddMarkDownBtnClicked(position: Int) {
+
+        showToast(requireContext(), "onAddMarkDownBtnClicked $position")
+
+        //todo : Add the markdown to the topic
     }
 
     /** [END OF TOPIC LISTENERS]**/
