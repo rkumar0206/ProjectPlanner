@@ -1,5 +1,6 @@
 package com.rohitthebest.projectplanner.ui.fragments
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -24,6 +25,7 @@ import com.rohitthebest.projectplanner.utils.Functions.Companion.hideKeyBoard
 import com.rohitthebest.projectplanner.utils.Functions.Companion.setDateInTextView
 import com.rohitthebest.projectplanner.utils.Functions.Companion.show
 import com.rohitthebest.projectplanner.utils.Functions.Companion.showToast
+import com.rohitthebest.projectplanner.utils.converters.GsonConverter
 import dagger.hilt.android.AndroidEntryPoint
 
 private const val TAG = "AddEditProjectFragment"
@@ -44,6 +46,8 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
 
     private lateinit var topicAdapter: TopicAdapter
 
+    private var progress: Int = 0
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -55,11 +59,61 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
 
         currentTimeStamp = System.currentTimeMillis()
 
-        includeBinding.tvProjectDate.setDateInTextView(timeStamp = currentTimeStamp, startingText = "Date : ")
+        includeBinding.tvProjectDate.setDateInTextView(timeStamp = currentTimeStamp, startingText = "Start date : ")
 
         initListeners()
 
+        getMessage()
+
         //observeChanges()
+    }
+
+    private fun getMessage() {
+
+        try {
+
+            if (!arguments?.isEmpty!!) {
+
+                val args = arguments?.let {
+
+                    AddEditProjectFragmentArgs.fromBundle(it)
+                }
+
+                project = args?.projectMessage?.let { GsonConverter().convertJsonStringToProject(it) }
+
+                hideAddBtnAndShowRV()
+
+                project?.let {
+
+                    includeBinding.etProjectName.setText(it.projectName)
+                    includeBinding.tvProjectDate.setDateInTextView(timeStamp = it.timeStamp, startingText = "Start date : ")
+
+                    setUpRecyclerView(it.topics)
+
+                    calculateProgress(it)
+                }
+            }
+
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun calculateProgress(project: Project) {
+
+        if (project.topics.size != 0) {
+
+            val completedTopics = project.topics.filter {
+
+                it.isCompleted == TRUE
+            }
+
+            progress = (completedTopics.size * 100) / project.topics.size
+
+            includeBinding.pbProject.progress = progress
+            includeBinding.tvProgressProject.text = "$progress%"
+        }
     }
 
     /*private fun observeChanges() {
@@ -185,6 +239,8 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
 
             topicAdapter.notifyItemInserted(position + 1)
 
+            calculateProgress(it)
+
             Log.d(TAG, "addOnTopicButtonClicked: new empty topic is inserted in project ${it.projectKey}")
         }
     }
@@ -204,7 +260,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
                         .setPositiveButton("Delete") { dialog, _ ->
 
                             it.topics.remove(topic)
-                            //projectViewModel.deleteProject(it)
+                            projectViewModel.deleteProject(it)
                             project = null
                             showAddBtnAndHideRV()
                             dialog.dismiss()
@@ -233,10 +289,13 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
 
                             topicAdapter.notifyItemInserted(position)
 
+                            calculateProgress(it)
                             //projectViewModel.updateProject(it)
 
                         }
                         .show()
+
+                calculateProgress(it)
             }
         }
     }
@@ -253,7 +312,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
 
             Log.d(TAG, "onTopicCheckChanged: topic check changed to $isChecked")
 
-            //todo : calculate the progress here
+            calculateProgress(it)
         }
     }
 
@@ -277,24 +336,6 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
         }
     }
 
-    override fun onAddSubTopicClicked(topic: Topic, position: Int) {
-
-        project?.let {
-
-            val subTopic = SubTopic(
-                    topic.topicKey,
-                    "",
-                    FALSE,
-                    ArrayList(),
-                    generateKey()
-            )
-
-            it.topics[position].subTopics = arrayListOf(subTopic)
-
-            topicAdapter.notifyItemChanged(position)
-
-        }
-    }
 
     override fun onAddLinkBtnClicked(position: Int) {
 
@@ -342,8 +383,14 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
 
             if (project != null) {
 
+
                 Log.d(TAG, "insertProjectToDatabase: Project inserted")
-                project?.let { projectViewModel.insertProject(it) }
+                project?.let {
+
+                    it.projectName = includeBinding.etProjectName.text.toString().trim()
+                    it.projectProgress = progress
+                    projectViewModel.insertProject(it)
+                }
             }
         } catch (e: Exception) {
             e.printStackTrace()

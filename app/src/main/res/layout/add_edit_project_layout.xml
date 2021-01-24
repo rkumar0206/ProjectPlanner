@@ -43,12 +43,12 @@
             app:layout_constraintTop_toBottomOf="@+id/etProjectName" />
 
         <ProgressBar
+            android:max="100"
             android:id="@+id/pbProject"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_marginEnd="8dp"
             android:indeterminateOnly="false"
-            android:progress="20"
             android:progressDrawable="@drawable/custom_progressbar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tvProjectDate" />

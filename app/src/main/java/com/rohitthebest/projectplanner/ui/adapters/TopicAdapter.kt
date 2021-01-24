@@ -2,7 +2,6 @@ package com.rohitthebest.projectplanner.ui.adapters
 
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -12,7 +11,7 @@ import com.rohitthebest.projectplanner.Constants
 import com.rohitthebest.projectplanner.databinding.AdapterTopicLayoutBinding
 import com.rohitthebest.projectplanner.db.entity.Topic
 import com.rohitthebest.projectplanner.utils.Functions.Companion.strikeThrough
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Job
 
 private const val TAG = "TopicAdapter"
 
@@ -121,41 +120,19 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
 
                     if (!hasFocus) {
 
-                        try {
+                        if (binding.checkBoxTopicName.isChecked) {
 
-                            if (job != null && job?.isActive == true) {
-
-                                Log.d(TAG, "onTextChanged: Cancelling job")
-                                job!!.cancel()
-                            }
-
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        } finally {
-
-                            job = GlobalScope.launch {
-
-                                delay(300)
-
-                                withContext(Dispatchers.Main) {
-
-                                    if(binding.checkBoxTopicName.isChecked) {
-
-                                        binding.etTopicName.strikeThrough(binding.etTopicName.text.toString().trim())
-                                    }
-
-                                    if (checkForNullability(absoluteAdapterPosition)) {
-
-                                        mListener!!.onTopicNameChanged(
-                                                binding.etTopicName.text.toString().trim(),
-                                                absoluteAdapterPosition,
-                                                getItem(absoluteAdapterPosition)
-                                        )
-                                    }
-                                }
-                            }
+                            binding.etTopicName.strikeThrough(binding.etTopicName.text.toString().trim())
                         }
 
+                        if (checkForNullability(absoluteAdapterPosition)) {
+
+                            mListener!!.onTopicNameChanged(
+                                    binding.etTopicName.text.toString().trim(),
+                                    absoluteAdapterPosition,
+                                    getItem(absoluteAdapterPosition)
+                            )
+                        }
                     }
                 } catch (e: java.lang.Exception) {
                     e.printStackTrace()
@@ -208,7 +185,6 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
         fun onClearTopicButtonClicked(topic: Topic, position: Int)
         fun onTopicCheckChanged(topic: Topic, position: Int, isChecked: Boolean)
         fun onTopicNameChanged(topicName: String, position: Int, topic: Topic)
-        fun onAddSubTopicClicked(topic: Topic, position: Int)
         fun onAddLinkBtnClicked(position: Int)
         fun onAddMarkDownBtnClicked(position: Int)
     }
