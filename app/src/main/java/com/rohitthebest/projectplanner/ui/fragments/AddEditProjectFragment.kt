@@ -15,7 +15,6 @@ import com.rohitthebest.projectplanner.R
 import com.rohitthebest.projectplanner.databinding.AddEditProjectLayoutBinding
 import com.rohitthebest.projectplanner.databinding.FragmentAddEditProjectBinding
 import com.rohitthebest.projectplanner.db.entity.Project
-import com.rohitthebest.projectplanner.db.entity.SubTopic
 import com.rohitthebest.projectplanner.db.entity.Topic
 import com.rohitthebest.projectplanner.ui.adapters.TopicAdapter
 import com.rohitthebest.projectplanner.ui.viewModels.ProjectViewModel
@@ -229,7 +228,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
         //todo : do on topic click
     }
 
-    override fun addOnTopicButtonClicked(position: Int) {
+    override fun onAddTopicButtonClicked(position: Int) {
 
         project?.let {
 
@@ -316,7 +315,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
         }
     }
 
-    override fun onTopicNameChanged(topicName: String, position: Int, topic: Topic) {
+    override fun onTopicNameChanged(topicName: String, position: Int) {
 
         Log.d(TAG, "onTopicNameChanged: $topicName")
         project?.let {
@@ -383,13 +382,14 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
 
             if (project != null) {
 
-
-                Log.d(TAG, "insertProjectToDatabase: Project inserted")
                 project?.let {
+
 
                     it.projectName = includeBinding.etProjectName.text.toString().trim()
                     it.projectProgress = progress
+
                     projectViewModel.insertProject(it)
+                    Log.d(TAG, "insertProjectToDatabase: Project inserted")
                 }
             }
         } catch (e: Exception) {
@@ -410,5 +410,11 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        _binding = null
     }
 }

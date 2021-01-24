@@ -1,7 +1,5 @@
 package com.rohitthebest.projectplanner.ui.adapters
 
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -11,7 +9,6 @@ import com.rohitthebest.projectplanner.Constants
 import com.rohitthebest.projectplanner.databinding.AdapterTopicLayoutBinding
 import com.rohitthebest.projectplanner.db.entity.Topic
 import com.rohitthebest.projectplanner.utils.Functions.Companion.strikeThrough
-import kotlinx.coroutines.Job
 
 private const val TAG = "TopicAdapter"
 
@@ -45,7 +42,7 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
 
                 if (checkForNullability(absoluteAdapterPosition)) {
 
-                    mListener!!.addOnTopicButtonClicked(absoluteAdapterPosition)
+                    mListener!!.onAddTopicButtonClicked(absoluteAdapterPosition)
 
                 }
 
@@ -72,11 +69,12 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
 
                             mListener!!.onTopicNameChanged(
                                     binding.etTopicName.text.toString().trim(),
-                                    absoluteAdapterPosition,
-                                    getItem(absoluteAdapterPosition)
+                                    absoluteAdapterPosition
                             )
                             mListener!!.onTopicCheckChanged(getItem(absoluteAdapterPosition), absoluteAdapterPosition, isChecked)
                         }
+
+                        removeTheFocus()
                     } else {
 
                         binding.checkBoxTopicName.isChecked = false
@@ -89,22 +87,14 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
                 removeTheFocus()
             }
 
-            var job: Job? = null
-            binding.etTopicName.addTextChangedListener(object : TextWatcher {
-
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-                override fun afterTextChanged(s: Editable?) {
-
-                }
-            })
-
             binding.addLinkBtn.setOnClickListener {
 
                 if (checkForNullability(absoluteAdapterPosition)) {
 
                     mListener!!.onAddLinkBtnClicked(absoluteAdapterPosition)
                 }
+
+                removeTheFocus()
             }
             binding.addMarkdownBtn.setOnClickListener {
 
@@ -112,6 +102,8 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
 
                     mListener!!.onAddMarkDownBtnClicked(absoluteAdapterPosition)
                 }
+
+                removeTheFocus()
             }
 
             binding.etTopicName.setOnFocusChangeListener { _, hasFocus ->
@@ -129,8 +121,7 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
 
                             mListener!!.onTopicNameChanged(
                                     binding.etTopicName.text.toString().trim(),
-                                    absoluteAdapterPosition,
-                                    getItem(absoluteAdapterPosition)
+                                    absoluteAdapterPosition
                             )
                         }
                     }
@@ -152,7 +143,7 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
             }
         }
 
-        fun checkForNullability(position: Int): Boolean {
+        private fun checkForNullability(position: Int): Boolean {
 
             return position != RecyclerView.NO_POSITION && mListener != null
         }
@@ -181,10 +172,10 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
 
         //topic functions
         fun onItemClick(topic: Topic)
-        fun addOnTopicButtonClicked(position: Int)
+        fun onAddTopicButtonClicked(position: Int)
         fun onClearTopicButtonClicked(topic: Topic, position: Int)
         fun onTopicCheckChanged(topic: Topic, position: Int, isChecked: Boolean)
-        fun onTopicNameChanged(topicName: String, position: Int, topic: Topic)
+        fun onTopicNameChanged(topicName: String, position: Int)
         fun onAddLinkBtnClicked(position: Int)
         fun onAddMarkDownBtnClicked(position: Int)
     }
