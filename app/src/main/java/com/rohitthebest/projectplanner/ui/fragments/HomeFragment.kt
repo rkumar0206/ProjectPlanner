@@ -15,14 +15,15 @@ import com.rohitthebest.projectplanner.ui.adapters.ProjectAdapter
 import com.rohitthebest.projectplanner.ui.viewModels.ProjectViewModel
 import com.rohitthebest.projectplanner.utils.Functions.Companion.hide
 import com.rohitthebest.projectplanner.utils.Functions.Companion.show
-import com.rohitthebest.projectplanner.utils.Functions.Companion.showToast
+import com.rohitthebest.projectplanner.utils.converters.GsonConverter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 
 private const val TAG = "HomeFragment"
 
 @AndroidEntryPoint
-class HomeFragment : Fragment(R.layout.fragment_home), ProjectAdapter.OnClickListener, View.OnClickListener {
+class HomeFragment : Fragment(R.layout.fragment_home), ProjectAdapter.OnClickListener,
+        View.OnClickListener {
 
     private val projectViewModel by viewModels<ProjectViewModel>()
 
@@ -154,7 +155,11 @@ class HomeFragment : Fragment(R.layout.fragment_home), ProjectAdapter.OnClickLis
 
         Log.i(TAG, "onItemClick: $project")
 
-        showToast(requireContext(), "$project")
+        val action = HomeFragmentDirections.actionHomeFragmentToAddEditProjectFragment(
+                GsonConverter().convertProjectToString(project)
+        )
+
+        findNavController().navigate(action)
     }
 
     override fun onDestroyView() {

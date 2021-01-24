@@ -7,11 +7,11 @@
     android:layout_margin="4dp">
 
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/projectAdapterRoot"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:strokeWidth="0.5dp"
         app:strokeColor="@android:color/darker_gray"
-        >
+        app:strokeWidth="0.5dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

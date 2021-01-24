@@ -29,12 +29,13 @@ class ProjectAdapter : ListAdapter<Project, ProjectAdapter.ProjectViewHolder>(Di
                 binding.projectProgressPB.progress = it.projectProgress
                 binding.projectProgressTV.text = "${it.projectProgress}%"
 
+
             }
         }
 
         init {
 
-            binding.root.setOnClickListener {
+            binding.projectAdapterRoot.setOnClickListener {
 
                 mListener!!.onItemClick(getItem(absoluteAdapterPosition))
             }

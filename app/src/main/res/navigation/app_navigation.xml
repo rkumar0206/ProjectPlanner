@@ -18,5 +18,10 @@
         android:id="@+id/addEditProjectFragment"
         android:name="com.rohitthebest.projectplanner.ui.fragments.AddEditProjectFragment"
         android:label="fragment_add_edit_project"
-        tools:layout="@layout/fragment_add_edit_project" />
+        tools:layout="@layout/fragment_add_edit_project" >
+        <argument
+            android:name="projectMessage"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
 </navigation>
