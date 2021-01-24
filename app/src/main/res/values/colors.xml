@@ -13,4 +13,6 @@
     <color name="color_secondary">#FF00D91C</color>
     <color name="color_secondary_variant">#FF00A716</color>
     <color name="primary_text_color">#212121</color>
+    <color name="fab_image_color">#FFFFFF</color>
+    <color name="fab_color">#304FFE</color>
 </resources>

@@ -13,45 +13,18 @@
         android:scrollbarSize="4dp"
         android:scrollbars="vertical" />
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="200dp"
-        android:layout_height="50dp"
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/addProjectButton"
+        android:layout_width="wrap_content"
         android:layout_gravity="bottom|center"
         android:layout_marginBottom="16dp"
-        app:cardCornerRadius="100dp"
-        app:cardElevation="10dp">
+        android:layout_height="wrap_content"
+        android:text="Add Project"
+        app:backgroundTint="@color/white"
+        app:icon="@drawable/ic_baseline_add_circle_outline_24"
+        app:iconTint="@color/color_primary"
+        app:strokeColor="@color/color_primary"
+        app:strokeWidth="0.5dp" />
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/addProjectButton"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:cardCornerRadius="100dp"
-            app:strokeColor="@color/color_primary"
-            app:strokeWidth="0.8dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:drawablePadding="10dp"
-                    android:fontFamily="serif"
-                    android:gravity="center"
-                    android:padding="5dp"
-                    android:text="Add Project"
-                    android:textColor="@color/primary_text_color"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    app:drawableStartCompat="@drawable/ic_baseline_add_circle_outline_24" />
-
-            </LinearLayout>
-
-        </com.google.android.material.card.MaterialCardView>
-
-    </androidx.cardview.widget.CardView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
