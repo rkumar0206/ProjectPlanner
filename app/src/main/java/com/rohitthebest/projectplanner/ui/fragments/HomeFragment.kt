@@ -13,8 +13,11 @@ import com.rohitthebest.projectplanner.databinding.FragmentHomeBinding
 import com.rohitthebest.projectplanner.db.entity.Project
 import com.rohitthebest.projectplanner.ui.adapters.ProjectAdapter
 import com.rohitthebest.projectplanner.ui.viewModels.ProjectViewModel
+import com.rohitthebest.projectplanner.utils.Functions.Companion.hide
+import com.rohitthebest.projectplanner.utils.Functions.Companion.show
 import com.rohitthebest.projectplanner.utils.Functions.Companion.showToast
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.*
 
 private const val TAG = "HomeFragment"
 
@@ -35,8 +38,17 @@ class HomeFragment : Fragment(R.layout.fragment_home), ProjectAdapter.OnClickLis
 
         mAdapter = ProjectAdapter()
 
-        getProjectList()
+        showProgressBar()
 
+        GlobalScope.launch {
+
+            delay(250)
+
+            withContext(Dispatchers.Main) {
+
+                getProjectList()
+            }
+        }
         initListeners()
     }
 
@@ -82,9 +94,14 @@ class HomeFragment : Fragment(R.layout.fragment_home), ProjectAdapter.OnClickLis
 
     private fun getProjectList() {
 
-        projectViewModel.projects.observe(viewLifecycleOwner) {
+        try {
+            projectViewModel.projects.observe(viewLifecycleOwner) {
 
-            setUpRecyclerView(it)
+                setUpRecyclerView(it)
+            }
+        } catch (e: java.lang.IllegalStateException) {
+
+            e.printStackTrace()
         }
     }
 
@@ -103,9 +120,34 @@ class HomeFragment : Fragment(R.layout.fragment_home), ProjectAdapter.OnClickLis
 
             mAdapter.setOnClickListener(this)
 
+            hideProgressBar()
+
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    private fun showProgressBar() {
+
+        try {
+
+            binding.progressBar.show()
+        } catch (e: IllegalStateException) {
+
+            e.printStackTrace()
+        }
+    }
+
+    private fun hideProgressBar() {
+
+        try {
+
+            binding.progressBar.hide()
+        } catch (e: IllegalStateException) {
+
+            e.printStackTrace()
+        }
+
     }
 
     override fun onItemClick(project: Project) {

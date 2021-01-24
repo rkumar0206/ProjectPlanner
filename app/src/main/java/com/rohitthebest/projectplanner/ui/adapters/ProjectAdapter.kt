@@ -1,12 +1,15 @@
 package com.rohitthebest.projectplanner.ui.adapters
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.rohitthebest.projectplanner.Constants.FALSE
 import com.rohitthebest.projectplanner.databinding.AdapterProjectsLayoutBinding
 import com.rohitthebest.projectplanner.db.entity.Project
+import com.rohitthebest.projectplanner.utils.Functions.Companion.setDateInTextView
 
 class ProjectAdapter : ListAdapter<Project, ProjectAdapter.ProjectViewHolder>(DiffUtilCallback()) {
 
@@ -14,9 +17,19 @@ class ProjectAdapter : ListAdapter<Project, ProjectAdapter.ProjectViewHolder>(Di
 
     inner class ProjectViewHolder(val binding: AdapterProjectsLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
 
+        @SuppressLint("SetTextI18n")
         fun setData(project: Project?) {
 
-            binding.projectNameTV.text = project?.projectName
+            project?.let {
+
+                binding.projectNameTV.text = it.projectName
+                binding.projectStartedOnTV.setDateInTextView(it.timeStamp, "dd-MM-yyyy", "Started On  :  ")
+                binding.projectModifiedOnTV.setDateInTextView(it.modifiedOn, "dd-MM-yyyy", "Modified On:  ")
+                binding.projectProgressPB.max = 100
+                binding.projectProgressPB.progress = it.projectProgress
+                binding.projectProgressTV.text = "${it.projectProgress}%"
+
+            }
         }
 
         init {
