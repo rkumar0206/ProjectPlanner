@@ -263,6 +263,10 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
                             project = null
                             showAddBtnAndHideRV()
                             dialog.dismiss()
+
+                            progress = 0
+                            includeBinding.pbProject.progress = progress
+                            includeBinding.tvProgressProject.text = "0%"
                         }
                         .setNegativeButton("Cancel") { dialog, _ ->
 
