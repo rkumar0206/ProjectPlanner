@@ -22,7 +22,7 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
 
             topic?.let {
 
-                binding.etTopicName.setText(it.topicName)
+                binding.tvTopicName.text = it.topicName
                 binding.checkBoxTopicName.isChecked = it.isCompleted == Constants.TRUE
 
                 //checking if the topic is completed
@@ -30,7 +30,7 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
 
                     binding.checkBoxTopicName.isChecked = true
 
-                    binding.etTopicName.strikeThrough(it.topicName)
+                    binding.tvTopicName.strikeThrough(it.topicName)
                 }
             }
         }
@@ -38,16 +38,6 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
 
         init {
 
-            binding.addAnotherTopicBtn.setOnClickListener {
-
-                if (checkForNullability(absoluteAdapterPosition)) {
-
-                    mListener!!.onAddTopicButtonClicked(absoluteAdapterPosition)
-
-                }
-
-                removeTheFocus()
-            }
 
             binding.clearTopicButton.setOnClickListener {
 
@@ -55,91 +45,22 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
 
                     mListener!!.onClearTopicButtonClicked(getItem(absoluteAdapterPosition), absoluteAdapterPosition)
                 }
-
-                removeTheFocus()
             }
 
             binding.checkBoxTopicName.setOnCheckedChangeListener { _, isChecked ->
 
                 try {
 
-                    if (binding.etTopicName.text.toString().trim().isNotEmpty()) {
+                    if (checkForNullability(absoluteAdapterPosition)) {
 
-                        if (checkForNullability(absoluteAdapterPosition)) {
-
-                            mListener!!.onTopicNameChanged(
-                                    binding.etTopicName.text.toString().trim(),
-                                    absoluteAdapterPosition
-                            )
-                            mListener!!.onTopicCheckChanged(getItem(absoluteAdapterPosition), absoluteAdapterPosition, isChecked)
-                        }
-
-                        removeTheFocus()
-                    } else {
-
-                        binding.checkBoxTopicName.isChecked = false
+                        mListener!!.onTopicCheckChanged(getItem(absoluteAdapterPosition), absoluteAdapterPosition, isChecked)
                     }
+
                 } catch (e: Exception) {
 
                     e.printStackTrace()
                 }
 
-                removeTheFocus()
-            }
-
-            binding.addLinkBtn.setOnClickListener {
-
-                if (checkForNullability(absoluteAdapterPosition)) {
-
-                    mListener!!.onAddLinkBtnClicked(absoluteAdapterPosition)
-                }
-
-                removeTheFocus()
-            }
-            binding.addMarkdownBtn.setOnClickListener {
-
-                if (checkForNullability(absoluteAdapterPosition)) {
-
-                    mListener!!.onAddMarkDownBtnClicked(absoluteAdapterPosition)
-                }
-
-                removeTheFocus()
-            }
-
-            binding.etTopicName.setOnFocusChangeListener { _, hasFocus ->
-
-                try {
-
-                    if (!hasFocus) {
-
-                        if (binding.checkBoxTopicName.isChecked) {
-
-                            binding.etTopicName.strikeThrough(binding.etTopicName.text.toString().trim())
-                        }
-
-                        if (checkForNullability(absoluteAdapterPosition)) {
-
-                            mListener!!.onTopicNameChanged(
-                                    binding.etTopicName.text.toString().trim(),
-                                    absoluteAdapterPosition
-                            )
-                        }
-                    }
-                } catch (e: java.lang.Exception) {
-                    e.printStackTrace()
-                }
-            }
-
-        }
-
-        private fun removeTheFocus() {
-
-            try {
-
-                binding.etTopicName.clearFocus()
-
-            } catch (e: Exception) {
-                e.printStackTrace()
             }
         }
 
@@ -172,12 +93,8 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
 
         //topic functions
         fun onItemClick(topic: Topic)
-        fun onAddTopicButtonClicked(position: Int)
         fun onClearTopicButtonClicked(topic: Topic, position: Int)
         fun onTopicCheckChanged(topic: Topic, position: Int, isChecked: Boolean)
-        fun onTopicNameChanged(topicName: String, position: Int)
-        fun onAddLinkBtnClicked(position: Int)
-        fun onAddMarkDownBtnClicked(position: Int)
     }
 
     fun setOnClickListener(listener: OnClickListener) {

@@ -2,17 +2,20 @@ package com.rohitthebest.projectplanner.ui.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.rohitthebest.projectplanner.Constants.FALSE
 import com.rohitthebest.projectplanner.Constants.TRUE
 import com.rohitthebest.projectplanner.R
-import com.rohitthebest.projectplanner.databinding.AddEditProjectLayoutBinding
 import com.rohitthebest.projectplanner.databinding.FragmentAddEditProjectBinding
 import com.rohitthebest.projectplanner.db.entity.Project
 import com.rohitthebest.projectplanner.db.entity.Topic
@@ -21,9 +24,9 @@ import com.rohitthebest.projectplanner.ui.viewModels.ProjectViewModel
 import com.rohitthebest.projectplanner.utils.Functions.Companion.generateKey
 import com.rohitthebest.projectplanner.utils.Functions.Companion.hide
 import com.rohitthebest.projectplanner.utils.Functions.Companion.hideKeyBoard
-import com.rohitthebest.projectplanner.utils.Functions.Companion.setDateInTextView
+import com.rohitthebest.projectplanner.utils.Functions.Companion.invisible
 import com.rohitthebest.projectplanner.utils.Functions.Companion.show
-import com.rohitthebest.projectplanner.utils.Functions.Companion.showToast
+import com.rohitthebest.projectplanner.utils.Functions.Companion.showKeyboard
 import com.rohitthebest.projectplanner.utils.converters.GsonConverter
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -37,7 +40,6 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
 
     private var _binding: FragmentAddEditProjectBinding? = null
     private val binding get() = _binding!!
-    private lateinit var includeBinding: AddEditProjectLayoutBinding
 
     private var currentTimeStamp = 0L
 
@@ -52,19 +54,47 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
 
         _binding = FragmentAddEditProjectBinding.bind(view)
 
-        includeBinding = binding.include
-
         topicAdapter = TopicAdapter()
 
         currentTimeStamp = System.currentTimeMillis()
 
-        includeBinding.tvProjectDate.setDateInTextView(timeStamp = currentTimeStamp, startingText = "Start date : ")
-
         initListeners()
+
+        binding.pbProject.progress = 0
 
         getMessage()
 
-        //observeChanges()
+        textWatcher()
+
+    }
+
+    private fun textWatcher() {
+
+        binding.etAddNewTopic.editText?.addTextChangedListener(object : TextWatcher {
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+                if (s?.isEmpty()!!) {
+
+                    if (binding.addTopicIB.visibility == View.VISIBLE) {
+
+                        binding.addTopicIB.hideButton()
+                        binding.addTopicTV.hideButton()
+                    }
+                } else {
+
+                    if (binding.addTopicIB.visibility != View.VISIBLE) {
+
+                        binding.addTopicIB.showButton()
+                        binding.addTopicTV.showButton()
+                    }
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
     }
 
     private fun getMessage() {
@@ -80,12 +110,9 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
 
                 project = args?.projectMessage?.let { GsonConverter().convertJsonStringToProject(it) }
 
-                hideAddBtnAndShowRV()
-
                 project?.let {
 
-                    includeBinding.etProjectName.setText(it.projectName)
-                    includeBinding.tvProjectDate.setDateInTextView(timeStamp = it.timeStamp, startingText = "Start date : ")
+                    binding.etProjectName.setText(it.projectName)
 
                     setUpRecyclerView(it.topics)
 
@@ -110,68 +137,24 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
 
             progress = (completedTopics.size * 100) / project.topics.size
 
-            includeBinding.pbProject.progress = progress
-            includeBinding.tvProgressProject.text = "$progress%"
+            binding.pbProject.progress = progress
+            binding.tvProgressProject.text = "$progress%"
         }
     }
-
-    /*private fun observeChanges() {
-
-        try {
-
-            project?.let {
-
-                projectViewModel.getProjectByProjectKey(it.projectKey).observe(viewLifecycleOwner) { p ->
-
-                    if (project != null && p != null) {
-
-                        Log.d(TAG, "observeChanges: Project found and calling setUpRecyclerView()")
-                        Log.d(TAG, "\nobserveChanges: $p")
-
-                        setUpRecyclerView(p.topics)
-                    }
-                }
-            }
-
-        } catch (e: java.lang.Exception) {
-            e.printStackTrace()
-        }
-    }*/
-
 
     private fun initListeners() {
 
-        includeBinding.addTopicBtn.setOnClickListener(this)
+        binding.addTopicIB.setOnClickListener(this)
+        binding.addFirstTopicBtn.setOnClickListener(this)
     }
 
-    override fun onClick(v: View?) {
-
-        when (v?.id) {
-
-            includeBinding.addTopicBtn.id -> {
-
-                if (includeBinding.etProjectName.text.toString().trim().isNotEmpty()) {
-
-                    addEmptyProjectToDatabase()
-                    hideAddBtnAndShowRV()
-                } else {
-
-                    includeBinding.etProjectName.requestFocus()
-                    includeBinding.etProjectName.error = "You must give a name to your project."
-                }
-            }
-        }
-
-        hideKeyBoard(requireActivity())
-    }
-
-    private fun addEmptyProjectToDatabase() {
+    private fun addEmptyProject(topicName: String) {
 
         val projectKey = generateKey()
 
         val topic = Topic(
                 projectKey,
-                "",
+                topicName,
                 FALSE,
                 ArrayList(),
                 ArrayList(),
@@ -182,7 +165,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
         project = Project(
                 currentTimeStamp,
                 System.currentTimeMillis(),
-                includeBinding.etProjectName.text.toString().trim(),
+                binding.etProjectName.text.toString().trim(),
                 0,
                 arrayListOf(topic),
                 ArrayList(),
@@ -196,6 +179,8 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
             //observeChanges()
 
             setUpRecyclerView(it.topics)
+
+            binding.addFirstTopicBtn.hideButton()
         }
 
         Log.d(TAG, "addEmptyProjectToDatabase: Empty Project Added")
@@ -207,7 +192,9 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
 
             topicAdapter.submitList(topics)
 
-            includeBinding.rvProjectTopic.apply {
+            binding.addFirstTopicBtn.hideButton()
+
+            binding.rvProjectTopic.apply {
 
                 setHasFixedSize(true)
                 adapter = topicAdapter
@@ -221,18 +208,11 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
         }
     }
 
-    /** [START OF TOPIC LISTENERS]**/
-
-    override fun onItemClick(topic: Topic) {
-
-        //todo : do on topic click
-    }
-
-    override fun onAddTopicButtonClicked(position: Int) {
+    private fun addTopic(position: Int, topicName: String) {
 
         project?.let {
 
-            it.topics.add(position + 1, Topic(it.projectKey, "", FALSE, ArrayList(), ArrayList(), "", generateKey()))
+            it.topics.add(position + 1, Topic(it.projectKey, topicName, FALSE, ArrayList(), ArrayList(), "", generateKey()))
 
             //projectViewModel.updateProject(it)
 
@@ -240,8 +220,46 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
 
             calculateProgress(it)
 
+            updateModifiedOnValue()
+
             Log.d(TAG, "addOnTopicButtonClicked: new empty topic is inserted in project ${it.projectKey}")
         }
+    }
+
+    override fun onClick(v: View?) {
+
+        when (v?.id) {
+
+            binding.addTopicIB.id -> {
+
+                if (project == null) {
+
+                    addEmptyProject(binding.etAddNewTopic.editText?.text.toString().trim())
+
+                    binding.etAddNewTopic.editText?.setText("")
+                } else {
+
+                    project?.let {
+
+                        addTopic(it.topics.lastIndex, binding.etAddNewTopic.editText?.text.toString().trim())
+                        binding.etAddNewTopic.editText?.setText("")
+                    }
+                }
+            }
+
+            binding.addFirstTopicBtn.id -> {
+
+                binding.etAddNewTopic.requestFocus()
+                binding.etAddNewTopic.editText?.let { showKeyboard(requireActivity(), it) }
+            }
+        }
+    }
+
+    /** [START OF TOPIC LISTENERS]**/
+
+    override fun onItemClick(topic: Topic) {
+
+        //todo : do on topic click
     }
 
     override fun onClearTopicButtonClicked(topic: Topic, position: Int) {
@@ -259,14 +277,15 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
                         .setPositiveButton("Delete") { dialog, _ ->
 
                             it.topics.remove(topic)
+                            topicAdapter.notifyItemRemoved(position)
                             projectViewModel.deleteProject(it)
                             project = null
-                            showAddBtnAndHideRV()
                             dialog.dismiss()
 
+                            binding.addFirstTopicBtn.showButton()
                             progress = 0
-                            includeBinding.pbProject.progress = progress
-                            includeBinding.tvProgressProject.text = "0%"
+                            binding.pbProject.progress = progress
+                            binding.tvProgressProject.text = "0%"
                         }
                         .setNegativeButton("Cancel") { dialog, _ ->
 
@@ -300,6 +319,8 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
 
                 calculateProgress(it)
             }
+
+            updateModifiedOnValue()
         }
     }
 
@@ -307,7 +328,11 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
 
         project?.let {
 
+            Log.d(TAG, "onTopicCheckChanged: ")
+
             it.topics[position].isCompleted = if (isChecked) TRUE else FALSE
+
+            updateModifiedOnValue()
 
             topicAdapter.notifyItemChanged(position)
 
@@ -319,64 +344,16 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
         }
     }
 
-    override fun onTopicNameChanged(topicName: String, position: Int) {
-
-        Log.d(TAG, "onTopicNameChanged: $topicName")
-        project?.let {
-
-            try {
-
-                it.topics[position].topicName = topicName
-                topicAdapter.notifyItemChanged(position)
-            } catch (e: IndexOutOfBoundsException) {
-
-                e.printStackTrace()
-            }
-
-            //projectViewModel.updateProject(it)
-
-            Log.d(TAG, "onTopicNameChanged: topic name changed to $topicName")
-        }
-    }
-
-
-    override fun onAddLinkBtnClicked(position: Int) {
-
-        showToast(requireContext(), "onAddLinkBtnClicked $position")
-
-        //todo : Add the link to the topic
-    }
-
-    override fun onAddMarkDownBtnClicked(position: Int) {
-
-        showToast(requireContext(), "onAddMarkDownBtnClicked $position")
-
-        //todo : Add the markdown to the topic
-    }
-
     /** [END OF TOPIC LISTENERS]**/
 
-    private fun showAddBtnAndHideRV() {
+    private fun updateModifiedOnValue() {
 
-        try {
+        project?.let {
 
-            includeBinding.addTopicBtn.show()
-            includeBinding.rvProjectTopic.hide()
-        } catch (e: Exception) {
+            it.modifiedOn = System.currentTimeMillis()
 
-            e.printStackTrace()
-        }
-    }
+            Log.d(TAG, "updateModifiedOnValue: ${it.modifiedOn}")
 
-    private fun hideAddBtnAndShowRV() {
-
-        try {
-
-            includeBinding.addTopicBtn.hide()
-            includeBinding.rvProjectTopic.show()
-        } catch (e: Exception) {
-
-            e.printStackTrace()
         }
     }
 
@@ -388,8 +365,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
 
                 project?.let {
 
-
-                    it.projectName = includeBinding.etProjectName.text.toString().trim()
+                    it.projectName = binding.etProjectName.text.toString().trim()
                     it.projectProgress = progress
 
                     projectViewModel.insertProject(it)
@@ -400,6 +376,38 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
             e.printStackTrace()
         }
 
+    }
+
+    private fun View.showButton() {
+
+        this.show()
+
+        val animation = AnimationUtils.loadAnimation(requireContext(), R.anim.add_topic_button_visible_anim).apply {
+
+            duration = 600L
+            interpolator = FastOutSlowInInterpolator()
+            this.startOffset = 0
+        }
+        startAnimation(animation)
+    }
+
+    private fun View.hideButton() {
+
+        val animation = AnimationUtils.loadAnimation(requireContext(), R.anim.add_topic_button_invisible_anim).apply {
+
+            duration = 600L
+            interpolator = FastOutSlowInInterpolator()
+            this.startOffset = 0
+        }
+
+        startAnimation(animation)
+
+        this.invisible()
+
+        if (this.id == binding.addFirstTopicBtn.id) {
+
+            binding.addFirstTopicBtn.hide()
+        }
     }
 
     override fun onPause() {

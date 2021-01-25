@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="2dp"
-    >
+    android:layout_marginBottom="1dp">
 
-    <EditText
-        android:id="@+id/etTopicName"
+    <TextView
+        android:id="@+id/tvTopicName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
         android:layout_marginTop="8dp"
-
         android:layout_marginEnd="8dp"
-        android:hint="topic name"
-        android:inputType="textMultiLine|textCapSentences|textAutoCorrect"
-        app:layout_constraintEnd_toStartOf="@+id/addLinkBtn"
+        android:gravity="clip_vertical"
+        android:padding="3dp"
+        android:text="Topic name"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/clearTopicButton"
         app:layout_constraintStart_toEndOf="@+id/checkBoxTopicName"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -26,29 +26,9 @@
         android:id="@+id/checkBoxTopicName"
         android:layout_width="35dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        app:layout_constraintBottom_toBottomOf="@+id/etTopicName"
+        app:layout_constraintBottom_toBottomOf="@+id/tvTopicName"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/etTopicName" />
-
-
-    <TextView
-        android:id="@+id/addAnotherTopicBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="3dp"
-        android:drawablePadding="10dp"
-        android:fontFamily="serif"
-        android:gravity="center"
-        android:padding="5dp"
-        android:text="Add topic  "
-        android:textSize="15sp"
-        android:textStyle="bold"
-        app:drawableStartCompat="@drawable/ic_baseline_add_circle_outline_24"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/etTopicName"
-        app:layout_constraintTop_toBottomOf="@+id/etTopicName" />
+        app:layout_constraintTop_toTopOf="@+id/tvTopicName" />
 
 
     <ImageButton
@@ -57,29 +37,10 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="3dp"
         android:backgroundTint="@android:color/transparent"
+        app:layout_constraintBottom_toBottomOf="@+id/tvTopicName"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/etTopicName"
+        app:layout_constraintTop_toTopOf="@+id/tvTopicName"
         app:srcCompat="@drawable/ic_baseline_close_24" />
-
-    <ImageView
-        android:id="@+id/addLinkBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="5dp"
-        app:layout_constraintBottom_toBottomOf="@+id/clearTopicButton"
-        app:layout_constraintEnd_toStartOf="@+id/addMarkdownBtn"
-        app:layout_constraintTop_toTopOf="@+id/clearTopicButton"
-        app:srcCompat="@drawable/ic_baseline_insert_link_24" />
-
-    <ImageView
-        android:id="@+id/addMarkdownBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="5dp"
-        app:layout_constraintBottom_toBottomOf="@+id/addLinkBtn"
-        app:layout_constraintEnd_toStartOf="@+id/clearTopicButton"
-        app:layout_constraintTop_toTopOf="@+id/addLinkBtn"
-        app:srcCompat="@drawable/ic_baseline_note_add_24" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
