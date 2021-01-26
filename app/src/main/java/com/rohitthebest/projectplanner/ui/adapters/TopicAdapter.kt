@@ -49,8 +49,7 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
                     binding.clearTopicButton.showViewBySlidingAnimation()
                 } else {
 
-                    binding.chooseOptionLL.hideViewBySlidingAnimation(View.GONE)
-                    binding.clearTopicButton.hideViewBySlidingAnimation(View.VISIBLE)
+                    hideOptionsLL()
                 }
             }
 
@@ -77,6 +76,39 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
                 }
 
             }
+
+            binding.editTopicBtn.setOnClickListener {
+
+                if (checkForNullability(absoluteAdapterPosition)) {
+
+                    mListener!!.onEditTopicBtnClicked(absoluteAdapterPosition)
+                    hideOptionsLL()
+                }
+            }
+
+            binding.addLinkToTopicBtn.setOnClickListener {
+
+                if (checkForNullability(absoluteAdapterPosition)) {
+
+                    mListener!!.onAddLinkToTopicBtnClicked(absoluteAdapterPosition)
+                    hideOptionsLL()
+                }
+            }
+
+            binding.addMarkdownToTopicBtn.setOnClickListener {
+
+                if (checkForNullability(absoluteAdapterPosition)) {
+
+                    mListener!!.onAddMarkDownToTopicBtnClicked(absoluteAdapterPosition)
+                    hideOptionsLL()
+                }
+            }
+        }
+
+        private fun hideOptionsLL() {
+
+            binding.chooseOptionLL.hideViewBySlidingAnimation(View.GONE)
+            binding.clearTopicButton.hideViewBySlidingAnimation(View.VISIBLE)
         }
 
         private fun checkForNullability(position: Int): Boolean {
@@ -110,6 +142,9 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
         fun onItemClick(topic: Topic)
         fun onClearTopicButtonClicked(topic: Topic, position: Int)
         fun onTopicCheckChanged(topic: Topic, position: Int, isChecked: Boolean)
+        fun onEditTopicBtnClicked(position: Int)
+        fun onAddLinkToTopicBtnClicked(position: Int)
+        fun onAddMarkDownToTopicBtnClicked(position: Int)
     }
 
     fun setOnClickListener(listener: OnClickListener) {

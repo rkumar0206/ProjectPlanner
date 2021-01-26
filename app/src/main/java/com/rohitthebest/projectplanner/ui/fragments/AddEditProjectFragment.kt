@@ -9,6 +9,8 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.input.input
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.rohitthebest.projectplanner.Constants.FALSE
@@ -357,6 +359,37 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
 
             calculateProgress(it)
         }
+    }
+
+    override fun onEditTopicBtnClicked(position: Int) {
+
+        project?.let {
+
+            val topic = it.topics[position]
+
+            MaterialDialog(requireContext()).show {
+
+                input(
+                        hint = "Edit your topic",
+                        prefill = topic.topicName
+                ) { _, charSequence ->
+
+                    Log.d(TAG, "onEditTopicBtnClicked: topic name changed")
+
+                    it.topics[position].topicName = charSequence.toString().trim()
+                    topicAdapter.notifyItemChanged(position)
+                }
+            }.negativeButton(text = "Cancel")
+                    .positiveButton(text = "Save")
+        }
+    }
+
+    override fun onAddLinkToTopicBtnClicked(position: Int) {
+        //TODO("Not yet implemented")
+    }
+
+    override fun onAddMarkDownToTopicBtnClicked(position: Int) {
+        //TODO("Not yet implemented")
     }
 
     /** [END OF TOPIC LISTENERS]**/
