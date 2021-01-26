@@ -19,6 +19,7 @@ import com.rohitthebest.projectplanner.R
 import com.rohitthebest.projectplanner.databinding.FragmentAddEditProjectBinding
 import com.rohitthebest.projectplanner.db.entity.Project
 import com.rohitthebest.projectplanner.db.entity.Topic
+import com.rohitthebest.projectplanner.ui.adapters.LinkAdapter
 import com.rohitthebest.projectplanner.ui.adapters.TopicAdapter
 import com.rohitthebest.projectplanner.ui.viewModels.ProjectViewModel
 import com.rohitthebest.projectplanner.utils.Functions.Companion.generateKey
@@ -385,7 +386,24 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
     }
 
     override fun onAddLinkToTopicBtnClicked(position: Int) {
-        //TODO("Not yet implemented")
+
+        val linkAdapter = LinkAdapter()
+
+        project?.let {
+
+            val urlList = it.topics[position].topicUrls
+
+            urlList?.let { urls ->
+
+                if (urls.isEmpty()) {
+
+                        //todo : Add the first link
+                } else {
+
+                    linkAdapter.submitList(urls)
+                }
+            }
+        }
     }
 
     override fun onAddMarkDownToTopicBtnClicked(position: Int) {
