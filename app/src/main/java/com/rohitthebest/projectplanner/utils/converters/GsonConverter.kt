@@ -3,10 +3,7 @@ package com.rohitthebest.projectplanner.utils.converters
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.rohitthebest.projectplanner.db.entity.Project
-import com.rohitthebest.projectplanner.db.entity.SubTopic
-import com.rohitthebest.projectplanner.db.entity.Topic
-import com.rohitthebest.projectplanner.db.entity.Url
+import com.rohitthebest.projectplanner.db.entity.*
 
 class GsonConverter {
 
@@ -22,26 +19,60 @@ class GsonConverter {
     }
 
     @TypeConverter
-    fun convertListOfTopicToString(topics: ArrayList<Topic>): String = gson.toJson(topics)
+    fun convertDescriptionToString(description: Description): String = gson.toJson(description)
 
     @TypeConverter
-    fun convertJsonStringToTopicList(jsonString: String): ArrayList<Topic> {
+    fun convertJsonStringToDescription(jsonString: String): Description {
 
-        val type = object : TypeToken<ArrayList<Topic>>() {}.type
+        val type = object : TypeToken<Description>() {}.type
 
         return gson.fromJson(jsonString, type)
     }
 
     @TypeConverter
-    fun convertListOfSubTopicToString(subTopics: ArrayList<SubTopic>): String = gson.toJson(subTopics)
+    fun convertListOfStringToString(list: ArrayList<String>): String = gson.toJson(list)
 
     @TypeConverter
-    fun convertJsonStringToSubTopicList(jsonString: String): ArrayList<SubTopic> {
+    fun convertJsonStringToArrayListOfString(jsonString: String): ArrayList<String> {
 
-        val type = object : TypeToken<ArrayList<SubTopic>>() {}.type
+        val type = object : TypeToken<ArrayList<String>>() {}.type
 
         return gson.fromJson(jsonString, type)
     }
+
+    @TypeConverter
+    fun convertResourceToString(resource: Resource?): String? = resource?.let { gson.toJson(it) }
+
+    @TypeConverter
+    fun convertJsonStringToResource(jsonString: String): Resource {
+
+        val type = object : TypeToken<Resource>() {}.type
+
+        return gson.fromJson(jsonString, type)
+    }
+
+    @TypeConverter
+    fun convertThemeToString(theme: Theme?): String? = theme?.let { gson.toJson(it) }
+
+    @TypeConverter
+    fun convertJsonStringToTheme(jsonString: String): Theme {
+
+        val type = object : TypeToken<Theme>() {}.type
+
+        return gson.fromJson(jsonString, type)
+    }
+
+    @TypeConverter
+    fun convertArrayListOfFeaturesToString(features: ArrayList<Feature>): String = gson.toJson(features)
+
+    @TypeConverter
+    fun convertJsonStringToArrayListOfFeatures(jsonString: String): ArrayList<Feature> {
+
+        val type = object : TypeToken<ArrayList<Feature>>() {}.type
+
+        return gson.fromJson(jsonString, type)
+    }
+
 
     @TypeConverter
     fun convertListOfUrlToString(urls: ArrayList<Url>): String = gson.toJson(urls)

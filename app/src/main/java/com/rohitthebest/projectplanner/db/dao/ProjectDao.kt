@@ -28,7 +28,4 @@ interface ProjectDao {
 
     @Query("SELECT * FROM project_table WHERE projectKey= :projectKey")
     fun getProjectByProjectKey(projectKey: String): LiveData<Project>
-
-    /* @Query("SELECT topics FROM project_table WHERE projectKey = :projectKey")
-     fun getAllTopicsOfTheProject(projectKey: String): Flow<List<Topic>>*/
 }

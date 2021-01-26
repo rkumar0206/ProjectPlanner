@@ -7,7 +7,7 @@ import com.rohitthebest.projectplanner.db.dao.ProjectDao
 import com.rohitthebest.projectplanner.db.entity.Project
 import com.rohitthebest.projectplanner.utils.converters.GsonConverter
 
-@Database(entities = [Project::class], version = 1)
+@Database(entities = [Project::class], version = 2)
 @TypeConverters(GsonConverter::class)
 abstract class ProjectDatabase : RoomDatabase() {
 
