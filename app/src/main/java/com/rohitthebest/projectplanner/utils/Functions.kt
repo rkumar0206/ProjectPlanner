@@ -141,13 +141,15 @@ class Functions {
             }
         }
 
-        fun showKeyboard(activity: Activity, view: View) {
+        fun EditText.showKeyboard(activity: Activity) {
             try {
+
+                this.requestFocus()
 
                 val inputMethodManager =
                     activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
-                inputMethodManager.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+                inputMethodManager.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
             } catch (e: java.lang.Exception) {
                 e.printStackTrace()
             }

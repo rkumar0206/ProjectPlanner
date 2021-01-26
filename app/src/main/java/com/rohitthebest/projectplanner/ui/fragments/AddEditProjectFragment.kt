@@ -60,12 +60,14 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
 
         initListeners()
 
-        binding.pbProject.progress = 0
-
         getMessage()
 
         textWatcher()
 
+        if (binding.etProjectName.text.toString().trim().isEmpty()) {
+
+            binding.etProjectName.showKeyboard(requireActivity())
+        }
     }
 
     private fun textWatcher() {
@@ -130,19 +132,35 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
 
         if (project.topics.size != 0) {
 
+            Log.d(TAG, "calculateProgress: ")
+
             val completedTopics = project.topics.filter {
 
                 it.isCompleted == TRUE
             }
 
+            Log.d(TAG, "calculateProgress: Size of completed topics : ${completedTopics.size}")
+
             progress = (completedTopics.size * 100) / project.topics.size
 
-            binding.pbProject.progress = progress
+            Log.d(TAG, "calculateProgress: $progress")
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+
+                binding.pbProject.setProgress(progress, true)
+            } else {
+
+                binding.pbProject.progress = progress
+            }
             binding.tvProgressProject.text = "$progress%"
         }
     }
 
     private fun initListeners() {
+
+        //initialising progress
+        binding.pbProject.progress = 100
+        binding.pbProject.progress = 0
 
         binding.addTopicIB.setOnClickListener(this)
         binding.addFirstTopicBtn.setOnClickListener(this)
@@ -179,6 +197,8 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
             //observeChanges()
 
             setUpRecyclerView(it.topics)
+
+            calculateProgress(it)
 
             binding.addFirstTopicBtn.hideButton()
         }
@@ -250,7 +270,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
             binding.addFirstTopicBtn.id -> {
 
                 binding.etAddNewTopic.requestFocus()
-                binding.etAddNewTopic.editText?.let { showKeyboard(requireActivity(), it) }
+                binding.etAddNewTopic.editText?.showKeyboard(requireActivity())
             }
         }
     }
