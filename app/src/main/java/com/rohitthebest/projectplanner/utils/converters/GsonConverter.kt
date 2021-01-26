@@ -73,6 +73,17 @@ class GsonConverter {
         return gson.fromJson(jsonString, type)
     }
 
+    @TypeConverter
+    fun convertArrayListOfColorsToString(colors: ArrayList<Colors>): String = gson.toJson(colors)
+
+    @TypeConverter
+    fun convertJsonStringToArrayListOfColors(jsonString: String): ArrayList<Colors> {
+
+        val type = object : TypeToken<ArrayList<Colors>>() {}.type
+
+        return gson.fromJson(jsonString, type)
+    }
+
 
     @TypeConverter
     fun convertListOfUrlToString(urls: ArrayList<Url>): String = gson.toJson(urls)

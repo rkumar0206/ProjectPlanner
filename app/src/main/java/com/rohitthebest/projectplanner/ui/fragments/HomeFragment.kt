@@ -26,8 +26,13 @@ class HomeFragment : Fragment(R.layout.fragment_home),
 
         _binding = FragmentHomeBinding.bind(view)
 
+        initListeners()
     }
 
+    private fun initListeners() {
+
+        binding.addProjectButton.setOnClickListener(this)
+    }
 
 
     override fun onClick(v: View?) {

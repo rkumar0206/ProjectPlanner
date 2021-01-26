@@ -2,6 +2,7 @@ package com.rohitthebest.projectplanner.db.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.rohitthebest.projectplanner.Constants.URL
 
 @Entity(tableName = "project_table")
 data class Project(
@@ -16,6 +17,7 @@ data class Project(
         var estimatedTimeForCompleting: Long? = null,
         var resources: Resource? = null,
         var theme: Theme? = null,
+        var colors : ArrayList<Colors>,
         var iconLink: String? = null
 ) {
 
@@ -31,6 +33,7 @@ data class Project(
             0L,
             Resource(),
             Theme(),
+            ArrayList(),
             ""
     )
 }
@@ -59,11 +62,13 @@ data class Feature(
 }
 
 data class Resource(
+        var isPhotoOrUrl : String = URL,
         var urls: ArrayList<Url>,
         var photos: ArrayList<String>
 ) {
 
     constructor() : this(
+            URL,
             ArrayList(),
             ArrayList()
     )
@@ -94,6 +99,17 @@ data class Theme(
             "",
             "",
             "",
+            "",
+            ""
+    )
+}
+
+data class Colors(
+        var colorName : String,
+        var colorHashCode : String
+){
+
+    constructor() : this(
             "",
             ""
     )
