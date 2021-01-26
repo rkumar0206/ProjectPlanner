@@ -1,6 +1,7 @@
 package com.rohitthebest.projectplanner.ui.adapters
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -8,7 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.rohitthebest.projectplanner.Constants
 import com.rohitthebest.projectplanner.databinding.AdapterTopicLayoutBinding
 import com.rohitthebest.projectplanner.db.entity.Topic
-import com.rohitthebest.projectplanner.utils.Functions.Companion.strikeThrough
+import com.rohitthebest.projectplanner.utils.hideViewBySlidingAnimation
+import com.rohitthebest.projectplanner.utils.showViewBySlidingAnimation
+import com.rohitthebest.projectplanner.utils.strikeThrough
 
 private const val TAG = "TopicAdapter"
 
@@ -38,6 +41,18 @@ class TopicAdapter : ListAdapter<Topic, TopicAdapter.TopicViewHolder>(DiffUtilCa
 
         init {
 
+            binding.tvTopicName.setOnClickListener {
+
+                if (binding.chooseOptionLL.visibility != View.VISIBLE) {
+
+                    binding.chooseOptionLL.showViewBySlidingAnimation()
+                    binding.clearTopicButton.showViewBySlidingAnimation()
+                } else {
+
+                    binding.chooseOptionLL.hideViewBySlidingAnimation(View.GONE)
+                    binding.clearTopicButton.hideViewBySlidingAnimation(View.VISIBLE)
+                }
+            }
 
             binding.clearTopicButton.setOnClickListener {
 

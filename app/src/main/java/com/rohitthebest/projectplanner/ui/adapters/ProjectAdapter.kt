@@ -6,10 +6,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.rohitthebest.projectplanner.Constants.FALSE
 import com.rohitthebest.projectplanner.databinding.AdapterProjectsLayoutBinding
 import com.rohitthebest.projectplanner.db.entity.Project
-import com.rohitthebest.projectplanner.utils.Functions.Companion.setDateInTextView
+import com.rohitthebest.projectplanner.utils.setDateInTextView
 
 class ProjectAdapter : ListAdapter<Project, ProjectAdapter.ProjectViewHolder>(DiffUtilCallback()) {
 

@@ -1,22 +1,15 @@
 package com.rohitthebest.projectplanner.utils
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.text.SpannableStringBuilder
-import android.text.Spanned
-import android.text.style.StrikethroughSpan
 import android.util.Log
-import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import com.rohitthebest.projectplanner.Constants.NO_INTERNET_MESSAGE
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -120,7 +113,6 @@ class Functions {
             }
         }
 
-
         private suspend fun closeKeyboard(activity: Activity) {
             try {
                 withContext(Dispatchers.IO) {
@@ -155,186 +147,10 @@ class Functions {
             }
         }
 
-
-        fun View.show() {
-
-            try {
-                this.visibility = View.VISIBLE
-
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-
-
-        fun View.hide() {
-
-            try {
-                this.visibility = View.GONE
-
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-
-        fun View.invisible() {
-
-            try {
-                this.visibility = View.INVISIBLE
-
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-
-        fun generateRenterPassword(renterID: String?, mobileNum: String): String {
-
-            val firstFour = renterID?.subSequence(
-                (renterID.length / 2),
-                renterID.length
-            ).toString()
-
-            val lastFour = mobileNum.subSequence(
-                (mobileNum.length / 2) + 1,
-                mobileNum.length
-            ).toString()
-            Log.i(TAG, "Generating password -> SUCCESS...")
-            return "$firstFour$lastFour#"
-
-        }
-
-        fun Long.toStringM(radix: Int = 0): String {
-
-            val values = arrayOf(
-                "0",
-                "1",
-                "2",
-                "3",
-                "4",
-                "5",
-                "6",
-                "7",
-                "8",
-                "9",
-                "a",
-                "b",
-                "c",
-                "d",
-                "e",
-                "f",
-                "g",
-                "h",
-                "i",
-                "j",
-                "k",
-                "l",
-                "m",
-                "n",
-                "o",
-                "p",
-                "q",
-                "r",
-                "s",
-                "t",
-                "u",
-                "v",
-                "w",
-                "x",
-                "y",
-                "z",
-                "A",
-                "B",
-                "C",
-                "D",
-                "E",
-                "F",
-                "G",
-                "H",
-                "I",
-                "J",
-                "K",
-                "L",
-                "M",
-                "N",
-                "O",
-                "P",
-                "Q",
-                "R",
-                "S",
-                "T",
-                "U",
-                "V",
-                "W",
-                "X",
-                "Y",
-                "Z",
-                "!",
-                "@",
-                "#",
-                "$",
-                "%",
-                "^",
-                "&"
-            )
-            var str = ""
-            var d = this
-            var r: Int
-
-            if (radix in 1..69) {
-
-                if (d <= 0) {
-                    return d.toString()
-                }
-
-                while (d != 0L) {
-
-                    r = (d % radix).toInt()
-                    d /= radix
-                    str = values[r] + str
-                }
-
-                return str
-            }
-
-            return d.toString()
-        }
-
-        fun TextView.changeTextColor(context: Context, color: Int) {
-
-            this.setTextColor(ContextCompat.getColor(context, color))
-        }
-
-        @SuppressLint("SetTextI18n")
-        fun TextView.setDateInTextView(timeStamp: Long?, pattern: String = "dd-MM-yyyy", startingText: String = "") {
-
-            this.text = "$startingText${
-                WorkingWithDateAndTime().convertMillisecondsToDateAndTimePattern(
-                        timeStamp, pattern
-                )
-            }"
-
-        }
-
         fun generateKey(): String {
 
             return "${System.currentTimeMillis().toStringM(69)}_${Random.nextLong(1000, 99999999).toStringM(69)}"
         }
-
-        fun TextView.strikeThrough(textToBeStriked: String) {
-
-            val spannableStringBuilder = SpannableStringBuilder(textToBeStriked)
-            val strikeThroughSpan = StrikethroughSpan()
-
-            spannableStringBuilder.setSpan(
-                    strikeThroughSpan,
-                    0,
-                    textToBeStriked.length,
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-
-            this.text = spannableStringBuilder
-        }
-
     }
 
 }

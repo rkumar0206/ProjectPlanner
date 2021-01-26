@@ -16,6 +16,7 @@
         android:gravity="clip_vertical"
         android:padding="3dp"
         android:text="Topic name"
+        android:textColor="@color/primary_text_color"
         android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@+id/clearTopicButton"
         app:layout_constraintStart_toEndOf="@+id/checkBoxTopicName"
@@ -38,9 +39,48 @@
         android:layout_marginEnd="3dp"
         android:backgroundTint="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="@+id/tvTopicName"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/chooseOptionLL"
         app:layout_constraintTop_toTopOf="@+id/tvTopicName"
         app:srcCompat="@drawable/ic_baseline_close_24" />
+
+    <LinearLayout
+        android:id="@+id/chooseOptionLL"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@color/green_light"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/imageButton3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="@android:color/transparent"
+            app:srcCompat="@drawable/ic_baseline_edit_24"
+            app:tint="@color/fab_image_color" />
+
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="@android:color/transparent"
+            app:srcCompat="@drawable/ic_baseline_insert_link_24"
+            app:tint="@color/fab_image_color" />
+
+        <ImageButton
+            android:id="@+id/imageButton2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="@android:color/transparent"
+            app:srcCompat="@drawable/ic_markdown"
+            app:tint="@color/fab_image_color" />
+
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

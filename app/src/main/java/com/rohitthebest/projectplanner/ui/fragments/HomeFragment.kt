@@ -13,9 +13,9 @@ import com.rohitthebest.projectplanner.databinding.FragmentHomeBinding
 import com.rohitthebest.projectplanner.db.entity.Project
 import com.rohitthebest.projectplanner.ui.adapters.ProjectAdapter
 import com.rohitthebest.projectplanner.ui.viewModels.ProjectViewModel
-import com.rohitthebest.projectplanner.utils.Functions.Companion.hide
-import com.rohitthebest.projectplanner.utils.Functions.Companion.show
 import com.rohitthebest.projectplanner.utils.converters.GsonConverter
+import com.rohitthebest.projectplanner.utils.hide
+import com.rohitthebest.projectplanner.utils.show
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 

@@ -6,10 +6,8 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
-import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -22,12 +20,11 @@ import com.rohitthebest.projectplanner.db.entity.Topic
 import com.rohitthebest.projectplanner.ui.adapters.TopicAdapter
 import com.rohitthebest.projectplanner.ui.viewModels.ProjectViewModel
 import com.rohitthebest.projectplanner.utils.Functions.Companion.generateKey
-import com.rohitthebest.projectplanner.utils.Functions.Companion.hide
 import com.rohitthebest.projectplanner.utils.Functions.Companion.hideKeyBoard
-import com.rohitthebest.projectplanner.utils.Functions.Companion.invisible
-import com.rohitthebest.projectplanner.utils.Functions.Companion.show
 import com.rohitthebest.projectplanner.utils.Functions.Companion.showKeyboard
 import com.rohitthebest.projectplanner.utils.converters.GsonConverter
+import com.rohitthebest.projectplanner.utils.hideViewBySlidingAnimation
+import com.rohitthebest.projectplanner.utils.showViewBySlidingAnimation
 import dagger.hilt.android.AndroidEntryPoint
 
 private const val TAG = "AddEditProjectFragment"
@@ -82,15 +79,15 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
 
                     if (binding.addTopicIB.visibility == View.VISIBLE) {
 
-                        binding.addTopicIB.hideButton()
-                        binding.addTopicTV.hideButton()
+                        binding.addTopicIB.hideViewBySlidingAnimation()
+                        binding.addTopicTV.hideViewBySlidingAnimation()
                     }
                 } else {
 
                     if (binding.addTopicIB.visibility != View.VISIBLE) {
 
-                        binding.addTopicIB.showButton()
-                        binding.addTopicTV.showButton()
+                        binding.addTopicIB.showViewBySlidingAnimation()
+                        binding.addTopicTV.showViewBySlidingAnimation()
                     }
                 }
             }
@@ -200,7 +197,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
 
             calculateProgress(it)
 
-            binding.addFirstTopicBtn.hideButton()
+            binding.addFirstTopicBtn.hideViewBySlidingAnimation(visibilityMode = View.GONE)
         }
 
         Log.d(TAG, "addEmptyProjectToDatabase: Empty Project Added")
@@ -212,7 +209,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
 
             topicAdapter.submitList(topics)
 
-            binding.addFirstTopicBtn.hideButton()
+            binding.addFirstTopicBtn.hideViewBySlidingAnimation()
 
             binding.rvProjectTopic.apply {
 
@@ -302,7 +299,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
                             project = null
                             dialog.dismiss()
 
-                            binding.addFirstTopicBtn.showButton()
+                            binding.addFirstTopicBtn.showViewBySlidingAnimation()
                             progress = 0
                             binding.pbProject.progress = progress
                             binding.tvProgressProject.text = "0%"
@@ -352,11 +349,9 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
 
             it.topics[position].isCompleted = if (isChecked) TRUE else FALSE
 
-            updateModifiedOnValue()
-
             topicAdapter.notifyItemChanged(position)
 
-            //projectViewModel.updateProject(it)
+            updateModifiedOnValue()
 
             Log.d(TAG, "onTopicCheckChanged: topic check changed to $isChecked")
 
@@ -396,38 +391,6 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
             e.printStackTrace()
         }
 
-    }
-
-    private fun View.showButton() {
-
-        this.show()
-
-        val animation = AnimationUtils.loadAnimation(requireContext(), R.anim.add_topic_button_visible_anim).apply {
-
-            duration = 600L
-            interpolator = FastOutSlowInInterpolator()
-            this.startOffset = 0
-        }
-        startAnimation(animation)
-    }
-
-    private fun View.hideButton() {
-
-        val animation = AnimationUtils.loadAnimation(requireContext(), R.anim.add_topic_button_invisible_anim).apply {
-
-            duration = 600L
-            interpolator = FastOutSlowInInterpolator()
-            this.startOffset = 0
-        }
-
-        startAnimation(animation)
-
-        this.invisible()
-
-        if (this.id == binding.addFirstTopicBtn.id) {
-
-            binding.addFirstTopicBtn.hide()
-        }
     }
 
     override fun onPause() {
