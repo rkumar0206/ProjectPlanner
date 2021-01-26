@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/linkAdapterRootLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:strokeColor="@color/green_light"
+        app:strokeWidth="0.8dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <TextView
+                android:id="@+id/textViewLinkName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="8dp"
+                android:gravity="center_vertical"
+                android:padding="3dp"
+                android:text="Google"
+                android:textColor="@color/primary_text_color"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toStartOf="@+id/ibShareLinkBtn"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/ibShareLinkBtn" />
+
+            <View
+                android:id="@+id/divider18"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintEnd_toEndOf="@+id/textViewLinkName"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ibShareLinkBtn" />
+
+            <TextView
+                android:id="@+id/textViewUrl"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="8dp"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:padding="2dp"
+                android:text="TextView"
+                android:textColor="@color/url_text_color"
+                android:textSize="10sp"
+                app:layout_constraintEnd_toStartOf="@+id/ibShareLinkBtn"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider18" />
+
+            <View
+                android:id="@+id/divider20"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ibCopyLinkBtn" />
+
+            <ImageButton
+                android:id="@+id/ibShareLinkBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginEnd="5dp"
+                android:backgroundTint="@android:color/transparent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_baseline_share_24" />
+
+            <ImageButton
+                android:id="@+id/ibCopyLinkBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@android:color/transparent"
+                app:layout_constraintEnd_toEndOf="@+id/ibShareLinkBtn"
+                app:layout_constraintTop_toBottomOf="@+id/ibShareLinkBtn"
+                app:srcCompat="@drawable/ic_baseline_content_copy_24" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</androidx.cardview.widget.CardView>
