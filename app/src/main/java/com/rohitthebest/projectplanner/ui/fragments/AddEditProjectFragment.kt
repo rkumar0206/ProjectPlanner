@@ -117,6 +117,26 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
         }
     }
 
+   /* //Technology recycler view
+    private fun setUpTechnologyRecyclerView() {
+
+        try {
+
+            skillAdapter.submitList(project.skillsRequired)
+
+            includeBinding.technologyRV.apply {
+
+                setHasFixedSize(true)
+                adapter = skillAdapter
+                layoutManager = LinearLayoutManager(requireContext())
+            }
+
+            skillAdapter.setOnClickListener(this)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }*/
+
     //handling the clicks on feature
     override fun onFeatureClicked(feature: Feature, position: Int) {
 
@@ -209,7 +229,13 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
             }
             includeBinding.addTechnologyBtn.id -> {
 
-                showBottomSheetDialogForAddingTechnology()
+                showBottomSheetDialogForAddingTechnology(
+                    position = if (project.technologyUsed.size == 0) {
+                        0
+                    } else {
+                        project.technologyUsed.lastIndex
+                    }
+                )
             }
             includeBinding.themeSeeInLayoutBtn.id -> {
 
@@ -340,7 +366,6 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
                 ).show()
 
             }
-
             techBackgroundColorBtn.setOnClickListener {
 
                 AmbilWarnaDialog(requireContext(),
@@ -359,6 +384,48 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
                     }
                 ).show()
             }
+
+            positiveButton(text = "Save") {
+
+                if (techName?.text.toString().trim().isEmpty()) {
+
+                    showToast(requireContext(), "Cannot add empty technology...")
+                } else {
+
+                    val technologyForAdding = Technology(
+                        techName?.text.toString().trim(),
+                        mDefaultBackgroundColor,
+                        mDefaultTextColor
+                    )
+
+                    if (technology == null) {
+
+                        //add
+                        project.technologyUsed.add(position, technologyForAdding)
+
+                        Log.d(
+                            TAG,
+                            "showBottomSheetDialogForAddingTechnology: technology Added at position $position : $technologyForAdding"
+                        )
+
+                    } else {
+
+                        //edit
+                        project.technologyUsed[position] = technologyForAdding
+
+                        Log.d(
+                            TAG,
+                            "showBottomSheetDialogForAddingTechnology: technology edited at position $position"
+                        )
+                    }
+                }
+            }
+
+        }.negativeButton(text = "Cancel") {
+
+            it.dismiss()
+        }.setOnDismissListener {
+
         }
     }
 
@@ -501,7 +568,6 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
                 override fun afterTextChanged(s: Editable?) {}
             })
 
-
             positiveButton(text = "Save") {
 
                 if (featureName?.text.toString().trim().isEmpty()) {
@@ -517,9 +583,9 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
 
                     if (feature == null) {
 
-                        project.features.add(position, featureToBeAdded)
+                        //add
 
-                        showToast(requireContext(), "feature added")
+                        project.features.add(position, featureToBeAdded)
 
                         Log.d(
                             TAG,
@@ -527,6 +593,8 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
                                     ": $featureToBeAdded"
                         )
                     } else {
+
+                        //edit
 
                         project.features[position] = featureToBeAdded
 
