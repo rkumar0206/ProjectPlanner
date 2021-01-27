@@ -14,7 +14,10 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.afollestad.materialdialogs.customview.customView
@@ -31,6 +34,7 @@ import com.rohitthebest.projectplanner.db.entity.Project
 import com.rohitthebest.projectplanner.db.entity.Technology
 import com.rohitthebest.projectplanner.ui.adapters.FeatureAdapter
 import com.rohitthebest.projectplanner.ui.adapters.StringAdapter
+import com.rohitthebest.projectplanner.ui.adapters.TechnologyAdapter
 import com.rohitthebest.projectplanner.ui.viewModels.ProjectViewModel
 import com.rohitthebest.projectplanner.utils.Functions.Companion.showToast
 import com.rohitthebest.projectplanner.utils.convertToHexString
@@ -56,6 +60,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
     //adapters
     private lateinit var featureAdapter: FeatureAdapter
     private lateinit var skillAdapter: StringAdapter
+    private lateinit var technologyAdapter: TechnologyAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -69,6 +74,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
         //init adapters
         featureAdapter = FeatureAdapter()
         skillAdapter = StringAdapter()
+        technologyAdapter = TechnologyAdapter()
 
         setUpFeaturesRecyclerView()
         setUpSkillsRecyclerView()
@@ -120,23 +126,21 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
     //Technology recycler view
     private fun setUpTechnologyRecyclerView() {
 
-/*
         try {
 
-            skillAdapter.submitList(project.skillsRequired)
+            technologyAdapter.submitList(project.technologyUsed)
 
             includeBinding.technologyRV.apply {
 
                 setHasFixedSize(true)
-                adapter = skillAdapter
+                adapter = technologyAdapter
                 layoutManager = LinearLayoutManager(requireContext())
             }
 
-            skillAdapter.setOnClickListener(this)
+            //skillAdapter.setOnClickListener(this)
         } catch (e: Exception) {
             e.printStackTrace()
         }
-*/
     }
 
     //handling the clicks on feature
@@ -235,7 +239,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
                     position = if (project.technologyUsed.size == 0) {
                         0
                     } else {
-                        project.technologyUsed.lastIndex
+                        project.technologyUsed.lastIndex + 1
                     }
                 )
             }
@@ -340,7 +344,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
 
                 if (technology.textColor == null) {
 
-                    Color.BLACK
+                    Color.WHITE
                 } else {
 
                     technology.textColor!!
@@ -348,10 +352,10 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
 
             } else {
 
-                Color.BLACK
+                Color.WHITE
             }
             var mDefaultBackgroundColor = if (technology != null) {
-                technology.backgroundColor ?: Color.WHITE
+                technology.backgroundColor ?: Color.parseColor("#FF6E40")
 
             } else {
 

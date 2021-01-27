@@ -1,43 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
     app:cardCornerRadius="5dp"
     app:cardElevation="5dp"
-    android:layout_margin="5dp"
-    >
+    android:layout_margin="5dp">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/techAdapterLL"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:gravity="center">
+        android:layout_gravity="center">
 
         <TextView
             android:id="@+id/adapterTechNameTV"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
             android:paddingStart="15dp"
             android:paddingTop="6dp"
-            android:paddingEnd="15dp"
+            android:paddingEnd="8dp"
             android:paddingBottom="6dp"
-            android:text="Java"
             android:textColor="@color/primary_text_color"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/techAdapterDeleteBtn"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tool:text="Java" />
 
         <ImageButton
             android:id="@+id/techAdapterDeleteBtn"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="end"
             android:layout_weight="1"
             android:backgroundTint="@android:color/transparent"
+            android:paddingStart="2dp"
+            android:paddingEnd="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_baseline_cancel_24"
             app:tint="@color/primary_text_color" />
 
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 
