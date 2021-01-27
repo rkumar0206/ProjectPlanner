@@ -117,9 +117,10 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
         }
     }
 
-   /* //Technology recycler view
+    //Technology recycler view
     private fun setUpTechnologyRecyclerView() {
 
+/*
         try {
 
             skillAdapter.submitList(project.skillsRequired)
@@ -135,7 +136,8 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
         } catch (e: Exception) {
             e.printStackTrace()
         }
-    }*/
+*/
+    }
 
     //handling the clicks on feature
     override fun onFeatureClicked(feature: Feature, position: Int) {
@@ -292,7 +294,16 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
                 getCustomView().findViewById<MaterialCardView>(R.id.deleteTechnologyBtn)
                     .setOnClickListener {
 
-                        //todo : delete the technology
+                        project.technologyUsed.remove(technology)
+                        this.dismiss()
+
+                        Snackbar.make(binding.root, "Technology deleted", Snackbar.LENGTH_LONG)
+                            .setAction("Undo") {
+
+                                project.technologyUsed.add(position, technology)
+                                setUpTechnologyRecyclerView()
+                            }
+                            .show()
                     }
 
                 initializeTechnologyField(getCustomView(), technology)
@@ -426,6 +437,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
             it.dismiss()
         }.setOnDismissListener {
 
+            setUpTechnologyRecyclerView()
         }
     }
 
