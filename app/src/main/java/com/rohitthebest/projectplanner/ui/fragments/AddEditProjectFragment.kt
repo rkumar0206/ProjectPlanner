@@ -15,6 +15,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
+import com.afollestad.materialdialogs.input.input
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
@@ -32,7 +33,8 @@ import dagger.hilt.android.AndroidEntryPoint
 private const val TAG = "AddEditProjectFragment"
 
 @AndroidEntryPoint
-class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), View.OnClickListener, FeatureAdapter.OnClickListener {
+class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
+        View.OnClickListener, FeatureAdapter.OnClickListener {
 
     private val projectViewModel by viewModels<ProjectViewModel>()
 
@@ -64,6 +66,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
         setHasOptionsMenu(true)
     }
 
+    //Feature recycler view
     private fun setUpFeaturesRecyclerView() {
 
         try {
@@ -83,11 +86,13 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
         }
     }
 
-    override fun onItemClick(feature: Feature, position: Int) {
+    //handling the clicks on feature
+    override fun onFeatureClicked(feature: Feature, position: Int) {
 
         openFeatureBottomSheetDialog(feature, position)
     }
 
+    //option menu for saving the project to database
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
 
@@ -101,6 +106,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
         }
     }
 
+    //initialising listeners
     private fun initListeners() {
 
         includeBinding.addColorBtn.setOnClickListener(this)
@@ -137,6 +143,11 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
             }
             includeBinding.addSkillBtn.id -> {
 
+                showDialogForAddingSkills(position = if (project.skillsRequired.size == 0) {
+                    0
+                } else {
+                    project.skillsRequired.lastIndex + 1
+                })
             }
             includeBinding.addTechnologyBtn.id -> {
 
@@ -166,6 +177,52 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
         }
     }
 
+    private fun showDialogForAddingSkills(skill: String? = null, position: Int = 0) {
+
+        MaterialDialog(requireContext()).show {
+
+            title(text = "Add Skill")
+
+            if (skill != null) {
+
+                title(text = "Edit Skill")
+
+                input(hint = "Edit Skill", prefill = skill) { _, charSequence ->
+
+                    if (charSequence.toString().trim().isEmpty()) {
+
+                        showToast(requireContext(), "Cannot edit empty skill!!!")
+                    }else {
+
+                        project.skillsRequired[position] = charSequence.toString().trim()
+                        Log.d(TAG, "showDialogForAddingSkills: Skill edited at position $position Skill = ${charSequence.toString().trim()}")
+                    }
+                }
+            } else {
+
+                input(hint = "Add skill") { _, charSequence ->
+
+                    if (charSequence.toString().trim().isEmpty()) {
+
+                        showToast(requireContext(), "Cannot add empty skill!!!")
+                    } else {
+
+                        project.skillsRequired.add(position, charSequence.toString().trim())
+
+                        Log.d(TAG, "showDialogForAddingSkills: Skill Added at position $position Skill = ${charSequence.toString().trim()}")
+                    }
+                }
+            }
+        }.negativeButton(text = "Cancel") {
+
+            it.dismiss()
+        }.setOnDismissListener {
+
+            //todo : call set up recycler view for skill recyclerView
+        }
+    }
+
+    //Showing bottom sheet dialog for adding/editing/deleting feature
     private fun openFeatureBottomSheetDialog(feature: Feature? = null, position: Int = 0) {
 
         MaterialDialog(requireContext(), BottomSheet()).show {

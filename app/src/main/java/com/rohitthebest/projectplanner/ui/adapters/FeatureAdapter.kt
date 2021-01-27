@@ -1,5 +1,6 @@
 package com.rohitthebest.projectplanner.ui.adapters
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -15,11 +16,12 @@ class FeatureAdapter : ListAdapter<Feature, FeatureAdapter.FeatureViewHolder>(Di
     inner class FeatureViewHolder(val binding: AdapterFeatureLayoutBinding) :
             RecyclerView.ViewHolder(binding.root) {
 
+        @SuppressLint("SetTextI18n")
         fun setData(feature: Feature?) {
 
             feature?.let {
 
-                binding.featureNameTV.text = it.name
+                binding.featureNameTV.text = "${absoluteAdapterPosition + 1}. ${it.name}"
                 binding.featureDescriptionTV.text = if (it.description == "") {
                     "no description added!!"
                 } else {
@@ -39,7 +41,7 @@ class FeatureAdapter : ListAdapter<Feature, FeatureAdapter.FeatureViewHolder>(Di
 
                 if (checkForNullability(absoluteAdapterPosition)) {
 
-                    mListener!!.onItemClick(getItem(absoluteAdapterPosition), absoluteAdapterPosition)
+                    mListener!!.onFeatureClicked(getItem(absoluteAdapterPosition), absoluteAdapterPosition)
                 }
             }
         }
@@ -72,7 +74,7 @@ class FeatureAdapter : ListAdapter<Feature, FeatureAdapter.FeatureViewHolder>(Di
 
     interface OnClickListener {
 
-        fun onItemClick(feature: Feature, position: Int)
+        fun onFeatureClicked(feature: Feature, position: Int)
     }
 
     fun setOnClickListener(listener: OnClickListener) {
