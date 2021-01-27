@@ -32,6 +32,23 @@ class FeatureAdapter : ListAdapter<Feature, FeatureAdapter.FeatureViewHolder>(Di
                 }
             }
         }
+
+        init {
+
+            binding.root.setOnClickListener {
+
+                if (checkForNullability(absoluteAdapterPosition)) {
+
+                    mListener!!.onItemClick(getItem(absoluteAdapterPosition), absoluteAdapterPosition)
+                }
+            }
+        }
+
+        private fun checkForNullability(position: Int): Boolean {
+
+            return position != RecyclerView.NO_POSITION && mListener != null
+        }
+
     }
 
     class DiffUtilCallback : DiffUtil.ItemCallback<Feature>() {
@@ -55,7 +72,7 @@ class FeatureAdapter : ListAdapter<Feature, FeatureAdapter.FeatureViewHolder>(Di
 
     interface OnClickListener {
 
-        fun onItemClick(feature: Feature)
+        fun onItemClick(feature: Feature, position: Int)
     }
 
     fun setOnClickListener(listener: OnClickListener) {

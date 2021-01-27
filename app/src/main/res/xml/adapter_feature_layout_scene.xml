@@ -26,7 +26,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:layout_marginEnd="8dp"
             android:backgroundTint="@android:color/transparent"
             motion:layout_constraintEnd_toEndOf="parent"
             motion:layout_constraintTop_toTopOf="parent"
@@ -46,6 +45,15 @@
             motion:layout_constraintEnd_toEndOf="@+id/expandFeatureBtn"
             motion:layout_constraintStart_toStartOf="@+id/featureNameTV"
             motion:layout_constraintTop_toBottomOf="@+id/expandFeatureBtn" />
+
+        <Constraint
+            android:layout_height="1dp"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="match_parent"
+            android:id="@+id/divider3"
+            motion:layout_constraintTop_toBottomOf="@id/expandedFeatureLL"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintEnd_toEndOf="parent" />
 
     </ConstraintSet>
 
@@ -72,7 +80,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:layout_marginEnd="8dp"
             android:backgroundTint="@android:color/transparent"
             motion:layout_constraintEnd_toEndOf="parent"
             motion:layout_constraintTop_toTopOf="parent"
@@ -92,6 +99,15 @@
             motion:layout_constraintEnd_toEndOf="@+id/expandFeatureBtn"
             motion:layout_constraintStart_toStartOf="@+id/featureNameTV"
             motion:layout_constraintTop_toBottomOf="@+id/expandFeatureBtn" />
+
+        <Constraint
+            android:layout_height="1dp"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="match_parent"
+            android:id="@+id/divider3"
+            motion:layout_constraintTop_toBottomOf="@id/expandedFeatureLL"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintEnd_toEndOf="parent" />
     </ConstraintSet>
 
     <Transition

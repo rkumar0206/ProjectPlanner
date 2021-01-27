@@ -7,26 +7,32 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
+import com.google.android.material.card.MaterialCardView
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import com.rohitthebest.projectplanner.R
 import com.rohitthebest.projectplanner.databinding.AddEditProjectLayoutBinding
 import com.rohitthebest.projectplanner.databinding.FragmentAddEditProjectBinding
 import com.rohitthebest.projectplanner.db.entity.Feature
 import com.rohitthebest.projectplanner.db.entity.Project
+import com.rohitthebest.projectplanner.ui.adapters.FeatureAdapter
 import com.rohitthebest.projectplanner.ui.viewModels.ProjectViewModel
 import com.rohitthebest.projectplanner.utils.Functions.Companion.showToast
+import com.rohitthebest.projectplanner.utils.show
 import dagger.hilt.android.AndroidEntryPoint
 
 private const val TAG = "AddEditProjectFragment"
 
 @AndroidEntryPoint
-class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), View.OnClickListener {
+class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), View.OnClickListener, FeatureAdapter.OnClickListener {
 
     private val projectViewModel by viewModels<ProjectViewModel>()
 
@@ -37,6 +43,9 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
 
     private lateinit var project: Project
 
+    //adapters
+    private lateinit var featureAdapter: FeatureAdapter
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -46,9 +55,37 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
 
         project = Project()
 
-        initListeners()
+        //init adapters
+        featureAdapter = FeatureAdapter()
 
+        setUpFeaturesRecyclerView()
+
+        initListeners()
         setHasOptionsMenu(true)
+    }
+
+    private fun setUpFeaturesRecyclerView() {
+
+        try {
+
+            featureAdapter.submitList(project.features)
+
+            includeBinding.featureRV.apply {
+
+                setHasFixedSize(true)
+                adapter = featureAdapter
+                layoutManager = LinearLayoutManager(requireContext())
+            }
+
+            featureAdapter.setOnClickListener(this)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    override fun onItemClick(feature: Feature, position: Int) {
+
+        openFeatureBottomSheetDialog(feature, position)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -142,8 +179,27 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
 
             if (feature != null) {
 
+                getCustomView().findViewById<CardView>(R.id.deleteBtnOuter).show()
+
+                title(text = "Edit Feature")
+
+                getCustomView().findViewById<MaterialCardView>(R.id.deleteBtn).setOnClickListener {
+
+                    project.features.remove(feature)
+                    this.dismiss()
+
+                    Snackbar.make(binding.root, "Feature deleted", Snackbar.LENGTH_LONG)
+                            .setAction("Undo") {
+
+                                project.features.add(position, feature)
+                                setUpFeaturesRecyclerView()
+                            }
+                            .show()
+                }
+
                 setInitialFeatureValues(getCustomView(), feature)
             }
+
             val featureName = getCustomView().findViewById<TextInputLayout>(R.id.featureNameET).editText
             val featureDescription = getCustomView().findViewById<TextInputLayout>(R.id.featureDescriptionET).editText
             val featureImplementation = getCustomView().findViewById<TextInputLayout>(R.id.featureInplementationET).editText
@@ -165,6 +221,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
                 override fun afterTextChanged(s: Editable?) {}
             })
 
+
             positiveButton(text = "Save") {
 
                 if (featureName?.text.toString().trim().isEmpty()) {
@@ -182,8 +239,6 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
 
                         project.features.add(position, featureToBeAdded)
 
-                        //todo : notify adapter at position
-
                         showToast(requireContext(), "feature added")
 
                         Log.d(TAG, "openFeatureBottomSheetDialog: feature added at position $position " +
@@ -194,8 +249,6 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
 
                         Log.d(TAG, "openFeatureBottomSheetDialog: feature edited at position $position " +
                                 ": $featureToBeAdded")
-
-                        //todo : notify adapter at position
                     }
                     it.dismiss()
                 }
@@ -204,6 +257,9 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
         }.negativeButton(text = "Cancel") {
 
             it.dismiss()
+        }.setOnDismissListener {
+
+            setUpFeaturesRecyclerView()
         }
     }
 
@@ -224,5 +280,4 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project), Vie
 
         _binding = null
     }
-
 }

@@ -66,4 +66,37 @@
             android:hint="Implementation (Optional)"
             android:inputType="textMultiLine|textAutoCorrect|textAutoComplete" />
     </com.google.android.material.textfield.TextInputLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/deleteBtnOuter"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="36dp"
+        android:visibility="gone"
+        app:cardBackgroundColor="@android:color/holo_red_light"
+        app:cardCornerRadius="1000dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/featureInplementationET">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/deleteBtn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:cardBackgroundColor="@android:color/holo_red_light"
+           >
+
+            <ImageView
+                android:id="@+id/imageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:backgroundTint="@android:color/transparent"
+                app:srcCompat="@drawable/ic_baseline_delete_24" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </androidx.cardview.widget.CardView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
