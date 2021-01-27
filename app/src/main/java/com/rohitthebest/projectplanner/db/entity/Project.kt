@@ -13,7 +13,7 @@ data class Project(
         var features: ArrayList<Feature>,
         var problemSolved: String,
         var skillsRequired: ArrayList<String>,
-        var technologyUsed: ArrayList<String>,
+        var technologyUsed: ArrayList<Technology>,
         var estimatedTimeForCompleting: Long? = null,
         var resources: Resource? = null,
         var theme: Theme? = null,
@@ -94,23 +94,36 @@ data class Theme(
         var textColorOnPrimaryColor: String
 ) {
 
-    constructor() : this(
-            "",
-            "",
-            "",
-            "",
-            "",
-            ""
-    )
+        constructor() : this(
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+        )
+}
+
+data class Technology(
+        val name: String,
+        val backgroundColor: String? = "#FFFFFF",
+        var textColor: String? = "#212121"
+) {
+
+        constructor() : this(
+                "",
+                "#FFFFFF",
+                "#212121"
+        )
 }
 
 data class Colors(
-        var colorName : String,
-        var colorHashCode : String
-){
+        var colorName: String,
+        var colorHashCode: String
+) {
 
-    constructor() : this(
-            "",
-            ""
-    )
+        constructor() : this(
+                "",
+                ""
+        )
 }
