@@ -14,10 +14,7 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.afollestad.materialdialogs.customview.customView
@@ -46,7 +43,8 @@ private const val TAG = "AddEditProjectFragment"
 
 @AndroidEntryPoint
 class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
-        View.OnClickListener, FeatureAdapter.OnClickListener, StringAdapter.OnClickListener {
+    View.OnClickListener, FeatureAdapter.OnClickListener, StringAdapter.OnClickListener,
+    TechnologyAdapter.OnClickListener {
 
     private val projectViewModel by viewModels<ProjectViewModel>()
 
@@ -137,10 +135,23 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
                 layoutManager = LinearLayoutManager(requireContext())
             }
 
-            //skillAdapter.setOnClickListener(this)
+            technologyAdapter.setOnClickListener(this)
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    override fun onTechnologyClicked(technology: Technology, position: Int) {
+
+        showBottomSheetDialogForAddingTechnology(technology, position)
+    }
+
+    override fun onTechnologyDeleteBtnClicked(technology: Technology, position: Int) {
+
+        deleteTechnology(technology, position)
+        technologyAdapter.notifyItemRemoved(position)
+
+        setUpTechnologyRecyclerView()
     }
 
     //handling the clicks on feature
@@ -299,16 +310,8 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
                 getCustomView().findViewById<MaterialCardView>(R.id.deleteTechnologyBtn)
                     .setOnClickListener {
 
-                        project.technologyUsed.remove(technology)
+                        deleteTechnology(technology, position)
                         this.dismiss()
-
-                        Snackbar.make(binding.root, "Technology deleted", Snackbar.LENGTH_LONG)
-                            .setAction("Undo") {
-
-                                project.technologyUsed.add(position, technology)
-                                setUpTechnologyRecyclerView()
-                            }
-                            .show()
                     }
 
                 initializeTechnologyField(getCustomView(), technology)
@@ -444,6 +447,19 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
 
             setUpTechnologyRecyclerView()
         }
+    }
+
+    private fun deleteTechnology(technology: Technology, position: Int) {
+
+        project.technologyUsed.remove(technology)
+
+        Snackbar.make(binding.root, "Technology deleted", Snackbar.LENGTH_LONG)
+            .setAction("Undo") {
+
+                project.technologyUsed.add(position, technology)
+                setUpTechnologyRecyclerView()
+            }
+            .show()
     }
 
     private fun initializeTechnologyField(customView: View, technology: Technology) {

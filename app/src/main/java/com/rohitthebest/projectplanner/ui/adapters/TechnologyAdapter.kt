@@ -25,6 +25,36 @@ class TechnologyAdapter :
                 it.textColor?.let { it1 -> binding.adapterTechNameTV.setTextColor(it1) }
             }
         }
+
+        init {
+
+            binding.root.setOnClickListener {
+
+                if (checkForNullability(absoluteAdapterPosition)) {
+
+                    mListener!!.onTechnologyClicked(
+                        getItem(absoluteAdapterPosition),
+                        absoluteAdapterPosition
+                    )
+                }
+            }
+
+            binding.techAdapterDeleteBtn.setOnClickListener {
+
+                if (checkForNullability(absoluteAdapterPosition)) {
+
+                    mListener!!.onTechnologyDeleteBtnClicked(
+                        getItem(absoluteAdapterPosition),
+                        absoluteAdapterPosition
+                    )
+                }
+            }
+        }
+
+        private fun checkForNullability(position: Int): Boolean {
+
+            return position != RecyclerView.NO_POSITION && mListener != null
+        }
     }
 
     class DiffUtilCallback : DiffUtil.ItemCallback<Technology>() {
@@ -55,7 +85,8 @@ class TechnologyAdapter :
 
     interface OnClickListener {
 
-        fun onItemClick(technology: Technology)
+        fun onTechnologyClicked(technology: Technology, position: Int)
+        fun onTechnologyDeleteBtnClicked(technology: Technology, position: Int)
     }
 
     fun setOnClickListener(listener: OnClickListener) {
