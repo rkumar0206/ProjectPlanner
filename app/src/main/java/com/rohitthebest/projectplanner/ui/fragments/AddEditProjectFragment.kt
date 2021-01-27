@@ -2,6 +2,7 @@ package com.rohitthebest.projectplanner.ui.fragments
 
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputType
 import android.text.TextWatcher
 import android.util.Log
 import android.view.Menu
@@ -25,6 +26,7 @@ import com.rohitthebest.projectplanner.databinding.FragmentAddEditProjectBinding
 import com.rohitthebest.projectplanner.db.entity.Feature
 import com.rohitthebest.projectplanner.db.entity.Project
 import com.rohitthebest.projectplanner.ui.adapters.FeatureAdapter
+import com.rohitthebest.projectplanner.ui.adapters.StringAdapter
 import com.rohitthebest.projectplanner.ui.viewModels.ProjectViewModel
 import com.rohitthebest.projectplanner.utils.Functions.Companion.showToast
 import com.rohitthebest.projectplanner.utils.show
@@ -34,7 +36,7 @@ private const val TAG = "AddEditProjectFragment"
 
 @AndroidEntryPoint
 class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
-        View.OnClickListener, FeatureAdapter.OnClickListener {
+        View.OnClickListener, FeatureAdapter.OnClickListener, StringAdapter.OnClickListener {
 
     private val projectViewModel by viewModels<ProjectViewModel>()
 
@@ -47,6 +49,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
 
     //adapters
     private lateinit var featureAdapter: FeatureAdapter
+    private lateinit var skillAdapter: StringAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -59,8 +62,10 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
 
         //init adapters
         featureAdapter = FeatureAdapter()
+        skillAdapter = StringAdapter()
 
         setUpFeaturesRecyclerView()
+        setUpSkillsRecyclerView()
 
         initListeners()
         setHasOptionsMenu(true)
@@ -86,10 +91,53 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
         }
     }
 
+    //Skill recycler view
+    private fun setUpSkillsRecyclerView() {
+
+        try {
+
+            skillAdapter.submitList(project.skillsRequired)
+
+            includeBinding.skillRV.apply {
+
+                setHasFixedSize(true)
+                adapter = skillAdapter
+                layoutManager = LinearLayoutManager(requireContext())
+            }
+
+            skillAdapter.setOnClickListener(this)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
     //handling the clicks on feature
     override fun onFeatureClicked(feature: Feature, position: Int) {
 
         openFeatureBottomSheetDialog(feature, position)
+    }
+
+    //handling on click on skill texts
+    override fun onStringClicked(text: String?, position: Int) {
+
+        showDialogForAddingSkills(text, position)
+    }
+
+    override fun onDeleteStringClicked(text: String, position: Int) {
+
+        project.skillsRequired.remove(text)
+
+        setUpSkillsRecyclerView()
+
+        Snackbar.make(binding.root, "Skill deleted", Snackbar.LENGTH_LONG)
+                .setAction("Undo") {
+
+                    project.skillsRequired.add(position, text)
+
+                    setUpSkillsRecyclerView()
+
+                }
+                .show()
     }
 
     //option menu for saving the project to database
@@ -187,12 +235,13 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
 
                 title(text = "Edit Skill")
 
-                input(hint = "Edit Skill", prefill = skill) { _, charSequence ->
+                input(hint = "Edit Skill", prefill = skill,
+                        inputType = InputType.TYPE_TEXT_FLAG_CAP_SENTENCES) { _, charSequence ->
 
                     if (charSequence.toString().trim().isEmpty()) {
 
                         showToast(requireContext(), "Cannot edit empty skill!!!")
-                    }else {
+                    } else {
 
                         project.skillsRequired[position] = charSequence.toString().trim()
                         Log.d(TAG, "showDialogForAddingSkills: Skill edited at position $position Skill = ${charSequence.toString().trim()}")
@@ -200,7 +249,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
                 }
             } else {
 
-                input(hint = "Add skill") { _, charSequence ->
+                input(hint = "Add skill", inputType = InputType.TYPE_TEXT_FLAG_CAP_SENTENCES) { _, charSequence ->
 
                     if (charSequence.toString().trim().isEmpty()) {
 
@@ -218,7 +267,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
             it.dismiss()
         }.setOnDismissListener {
 
-            //todo : call set up recycler view for skill recyclerView
+            setUpSkillsRecyclerView()
         }
     }
 
