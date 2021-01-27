@@ -197,6 +197,11 @@ fun Long.toStringM(radix: Int = 0): String {
     return d.toString()
 }
 
+fun Int.convertToHexString(): String {
+
+    return java.lang.String.format("#%06X", 0xFFFFFF and this)
+}
+
 
 
 

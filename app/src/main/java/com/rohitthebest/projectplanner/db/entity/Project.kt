@@ -1,5 +1,6 @@
 package com.rohitthebest.projectplanner.db.entity
 
+import android.graphics.Color
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.rohitthebest.projectplanner.Constants.URL
@@ -106,14 +107,14 @@ data class Theme(
 
 data class Technology(
         val name: String,
-        val backgroundColor: String? = "#FFFFFF",
-        var textColor: String? = "#212121"
+        val backgroundColor: Int? = Color.WHITE,
+        var textColor: Int? = Color.BLACK
 ) {
 
         constructor() : this(
                 "",
-                "#FFFFFF",
-                "#212121"
+                Color.WHITE,
+                Color.BLACK
         )
 }
 
