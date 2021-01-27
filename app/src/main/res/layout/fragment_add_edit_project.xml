@@ -11,7 +11,9 @@
         android:layout_height="match_parent"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-        <include layout="@layout/add_edit_project_layout" />
+        <include
+            android:id="@+id/include"
+            layout="@layout/add_edit_project_layout" />
     </androidx.core.widget.NestedScrollView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

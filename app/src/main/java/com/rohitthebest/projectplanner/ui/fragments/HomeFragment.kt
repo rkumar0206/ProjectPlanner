@@ -34,7 +34,6 @@ class HomeFragment : Fragment(R.layout.fragment_home),
         binding.addProjectButton.setOnClickListener(this)
     }
 
-
     override fun onClick(v: View?) {
 
         when (v?.id) {
