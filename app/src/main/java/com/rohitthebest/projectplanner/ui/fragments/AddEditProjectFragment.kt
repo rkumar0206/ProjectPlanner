@@ -264,6 +264,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
         }
     }
 
+    //showing bottomSheet for adding technology to the list
     private fun showBottomSheetDialogForAddingTechnology(
         technology: Technology? = null,
         position: Int = 0
