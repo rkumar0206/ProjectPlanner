@@ -18,7 +18,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible">
+        tools:visibility="gone">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -302,7 +302,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardView4"
-        tools:visibility="visible">
+        tools:visibility="gone">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -370,7 +370,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardView5"
-        tools:visibility="gone">
+        tools:visibility="visible">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -382,8 +382,8 @@
                 android:layout_height="wrap_content"
                 android:padding="3dp"
                 android:text="@string/primary_color_dark"
-                android:textSize="18sp"
-                app:layout_constraintBottom_toBottomOf="@+id/themePrimaryColorDarkBtn"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toTopOf="@+id/themePrimaryColorDarkTV"
                 app:layout_constraintStart_toStartOf="@+id/textView8"
                 app:layout_constraintTop_toTopOf="@+id/themePrimaryColorDarkBtn" />
 
@@ -393,7 +393,7 @@
                 android:layout_height="wrap_content"
                 android:padding="3dp"
                 android:text="@string/accent_color"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="@+id/themeAccentColor"
                 app:layout_constraintStart_toStartOf="@+id/textView8"
                 app:layout_constraintTop_toTopOf="@+id/themeAccentColor" />
@@ -404,8 +404,8 @@
                 android:layout_height="wrap_content"
                 android:padding="3dp"
                 android:text="@string/primary_text_color"
-                android:textSize="18sp"
-                app:layout_constraintBottom_toBottomOf="@+id/themePrimaryTextColor"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toTopOf="@+id/themePrimaryTextColorTV"
                 app:layout_constraintStart_toStartOf="@+id/textView8"
                 app:layout_constraintTop_toTopOf="@+id/themePrimaryTextColor" />
 
@@ -413,9 +413,10 @@
                 android:id="@+id/textView14"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="11dp"
                 android:padding="3dp"
                 android:text="@string/secondary_text_color"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="@+id/themeSecondaryTextColor"
                 app:layout_constraintStart_toStartOf="@+id/textView8"
                 app:layout_constraintTop_toTopOf="@+id/themeSecondaryTextColor" />
@@ -426,7 +427,7 @@
                 android:layout_height="wrap_content"
                 android:padding="3dp"
                 android:text="@string/text_on_primary_color"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="@+id/themeTextOnPrimaryColorBtn"
                 app:layout_constraintStart_toStartOf="@+id/textView8"
                 app:layout_constraintTop_toTopOf="@+id/themeTextOnPrimaryColorBtn" />
@@ -462,8 +463,8 @@
                 android:layout_marginStart="8dp"
                 android:padding="3dp"
                 android:text="@string/primary_color"
-                android:textSize="18sp"
-                app:layout_constraintBottom_toBottomOf="@+id/themePrimaryColorBtn"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toTopOf="@+id/themePrimaryColorTV"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/themePrimaryColorBtn" />
 
@@ -484,7 +485,7 @@
                 android:layout_marginTop="8dp"
                 android:backgroundTint="@color/color_primary"
                 app:layout_constraintEnd_toEndOf="@+id/themePrimaryColorBtn"
-                app:layout_constraintTop_toBottomOf="@+id/themePrimaryColorBtn" />
+                app:layout_constraintTop_toBottomOf="@+id/themePrimaryColorTV" />
 
             <Button
                 android:id="@+id/themeAccentColor"
@@ -493,7 +494,7 @@
                 android:layout_marginTop="8dp"
                 android:backgroundTint="@color/color_secondary"
                 app:layout_constraintEnd_toEndOf="@+id/themePrimaryColorBtn"
-                app:layout_constraintTop_toBottomOf="@+id/themePrimaryColorDarkBtn" />
+                app:layout_constraintTop_toBottomOf="@+id/themePrimaryColorDarkTV" />
 
             <Button
                 android:id="@+id/themePrimaryTextColor"
@@ -502,7 +503,7 @@
                 android:layout_marginTop="8dp"
                 android:backgroundTint="@color/primary_text_color"
                 app:layout_constraintEnd_toEndOf="@+id/themePrimaryColorBtn"
-                app:layout_constraintTop_toBottomOf="@+id/themeAccentColor" />
+                app:layout_constraintTop_toBottomOf="@+id/themeAccentColorTV" />
 
             <Button
                 android:id="@+id/themeSecondaryTextColor"
@@ -511,7 +512,7 @@
                 android:layout_marginTop="8dp"
                 android:backgroundTint="@color/secondary_text_color"
                 app:layout_constraintEnd_toEndOf="@+id/themePrimaryColorBtn"
-                app:layout_constraintTop_toBottomOf="@+id/themePrimaryTextColor" />
+                app:layout_constraintTop_toBottomOf="@+id/themePrimaryTextColorTV" />
 
             <Button
                 android:id="@+id/themeTextOnPrimaryColorBtn"
@@ -520,7 +521,7 @@
                 android:layout_marginTop="8dp"
                 android:backgroundTint="@color/white"
                 app:layout_constraintEnd_toEndOf="@+id/themePrimaryColorBtn"
-                app:layout_constraintTop_toBottomOf="@+id/themeSecondaryTextColor" />
+                app:layout_constraintTop_toBottomOf="@+id/themeSecondaryTextColorTV" />
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="wrap_content"
@@ -530,7 +531,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/themeTextOnPrimaryColorBtn"
+                app:layout_constraintTop_toBottomOf="@+id/themeTextOnPrimaryColorTV"
                 app:strokeColor="@color/green_light"
                 app:strokeWidth="0.5dp">
 
@@ -545,6 +546,66 @@
 
 
             </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:id="@+id/themePrimaryColorTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/_30d140"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="@+id/themePrimaryColorBtn"
+                app:layout_constraintStart_toStartOf="@+id/themePrimaryColorBtn"
+                app:layout_constraintTop_toBottomOf="@+id/themePrimaryColorBtn" />
+
+            <TextView
+                android:id="@+id/themePrimaryColorDarkTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/_119a17"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="@+id/themePrimaryColorDarkBtn"
+                app:layout_constraintStart_toStartOf="@+id/themePrimaryColorDarkBtn"
+                app:layout_constraintTop_toBottomOf="@+id/themePrimaryColorDarkBtn" />
+
+            <TextView
+                android:id="@+id/themeAccentColorTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ff00d91c"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="@+id/themeAccentColor"
+                app:layout_constraintStart_toStartOf="@+id/themeAccentColor"
+                app:layout_constraintTop_toBottomOf="@+id/themeAccentColor" />
+
+            <TextView
+                android:id="@+id/themePrimaryTextColorTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/_212121"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="@+id/themePrimaryTextColor"
+                app:layout_constraintStart_toStartOf="@+id/themePrimaryTextColor"
+                app:layout_constraintTop_toBottomOf="@+id/themePrimaryTextColor" />
+
+            <TextView
+                android:id="@+id/themeSecondaryTextColorTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/_757575"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="@+id/themeSecondaryTextColor"
+                app:layout_constraintStart_toStartOf="@+id/themeSecondaryTextColor"
+                app:layout_constraintTop_toBottomOf="@+id/themeSecondaryTextColor" />
+
+            <TextView
+                android:id="@+id/themeTextOnPrimaryColorTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ffffff"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="@+id/themeTextOnPrimaryColorBtn"
+                app:layout_constraintStart_toStartOf="@+id/themeTextOnPrimaryColorBtn"
+                app:layout_constraintTop_toBottomOf="@+id/themeTextOnPrimaryColorBtn" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

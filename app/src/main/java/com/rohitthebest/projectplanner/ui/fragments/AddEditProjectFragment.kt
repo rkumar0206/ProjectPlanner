@@ -332,13 +332,14 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
             includeBinding.addTechnologyBtn.id -> {
 
                 showBottomSheetDialogForAddingTechnology(
-                    position = if (project.technologyUsed.size == 0) {
-                        0
-                    } else {
-                        project.technologyUsed.lastIndex + 1
-                    }
+                        position = if (project.technologyUsed.size == 0) {
+                            0
+                        } else {
+                            project.technologyUsed.lastIndex + 1
+                        }
                 )
             }
+
             includeBinding.themeSeeInLayoutBtn.id -> {
 
             }
