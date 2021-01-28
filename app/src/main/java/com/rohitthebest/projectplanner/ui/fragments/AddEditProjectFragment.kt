@@ -233,6 +233,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
             }
             includeBinding.addResourceBtn.id -> {
 
+
             }
             includeBinding.addSkillBtn.id -> {
 
@@ -254,6 +255,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
                     }
                 )
             }
+
             includeBinding.themeSeeInLayoutBtn.id -> {
 
             }
