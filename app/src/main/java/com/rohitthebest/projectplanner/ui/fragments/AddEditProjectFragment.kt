@@ -37,6 +37,7 @@ import com.rohitthebest.projectplanner.ui.adapters.TechnologyAdapter
 import com.rohitthebest.projectplanner.ui.viewModels.ProjectViewModel
 import com.rohitthebest.projectplanner.utils.Functions.Companion.showToast
 import com.rohitthebest.projectplanner.utils.convertToHexString
+import com.rohitthebest.projectplanner.utils.removeFocus
 import com.rohitthebest.projectplanner.utils.show
 import dagger.hilt.android.AndroidEntryPoint
 import yuku.ambilwarna.AmbilWarnaDialog
@@ -321,10 +322,8 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
 
         }
 
-        if (includeBinding.projectNameET.hasFocus()) {
-
-            includeBinding.projectNameET.clearFocus()
-        }
+        includeBinding.projectNameET.removeFocus()
+        includeBinding.projectDescriptionET.editText?.removeFocus()
     }
 
     //showing bottomSheet for adding link resource to the list

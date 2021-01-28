@@ -7,6 +7,7 @@ import android.text.Spanned
 import android.text.style.StrikethroughSpan
 import android.view.View
 import android.view.animation.AnimationUtils
+import android.widget.EditText
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
@@ -91,88 +92,101 @@ fun TextView.changeTextColor(context: Context, color: Int) {
 }
 
 @SuppressLint("SetTextI18n")
-fun TextView.setDateInTextView(timeStamp: Long?, pattern: String = "dd-MM-yyyy", startingText: String = "") {
+fun TextView.setDateInTextView(
+    timeStamp: Long?,
+    pattern: String = "dd-MM-yyyy",
+    startingText: String = ""
+) {
 
     this.text = "$startingText${
         WorkingWithDateAndTime().convertMillisecondsToDateAndTimePattern(
-                timeStamp, pattern
+            timeStamp, pattern
         )
     }"
+
+}
+
+fun EditText.removeFocus() {
+
+    if (this.hasFocus()) {
+
+        this.clearFocus()
+    }
 
 }
 
 fun Long.toStringM(radix: Int = 0): String {
 
     val values = arrayOf(
-            "0",
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "a",
-            "b",
-            "c",
-            "d",
-            "e",
-            "f",
-            "g",
-            "h",
-            "i",
-            "j",
-            "k",
-            "l",
-            "m",
-            "n",
-            "o",
-            "p",
-            "q",
-            "r",
-            "s",
-            "t",
-            "u",
-            "v",
-            "w",
-            "x",
-            "y",
-            "z",
-            "A",
-            "B",
-            "C",
-            "D",
-            "E",
-            "F",
-            "G",
-            "H",
-            "I",
-            "J",
-            "K",
-            "L",
-            "M",
-            "N",
-            "O",
-            "P",
-            "Q",
-            "R",
-            "S",
-            "T",
-            "U",
-            "V",
-            "W",
-            "X",
-            "Y",
-            "Z",
-            "!",
-            "@",
-            "#",
-            "$",
-            "%",
-            "^",
-            "&"
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h",
+        "i",
+        "j",
+        "k",
+        "l",
+        "m",
+        "n",
+        "o",
+        "p",
+        "q",
+        "r",
+        "s",
+        "t",
+        "u",
+        "v",
+        "w",
+        "x",
+        "y",
+        "z",
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "I",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "O",
+        "P",
+        "Q",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X",
+        "Y",
+        "Z",
+        "!",
+        "@",
+        "#",
+        "$",
+        "%",
+        "^",
+        "&"
     )
     var str = ""
     var d = this
