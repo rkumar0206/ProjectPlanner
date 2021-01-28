@@ -12,6 +12,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.rohitthebest.projectplanner.R
+import yuku.ambilwarna.AmbilWarnaDialog
 
 
 fun View.showViewBySlidingAnimation(duration: Long = 600L) {
@@ -71,6 +72,25 @@ fun View.invisible() {
     }
 }
 
+fun View.openColorPicker(context: Context, defaultColor: Int, textView: TextView? = null) {
+
+    AmbilWarnaDialog(
+            context,
+            defaultColor,
+            object : AmbilWarnaDialog.OnAmbilWarnaListener {
+                override fun onCancel(dialog: AmbilWarnaDialog?) {
+                    //TODO("Not yet implemented")
+                }
+
+                override fun onOk(dialog: AmbilWarnaDialog?, color: Int) {
+
+                    this@openColorPicker.setBackgroundColor(color)
+                    textView?.let { it.text = color.convertToHexString() }
+                }
+            }
+    ).show()
+}
+
 fun TextView.strikeThrough(textToBeStriked: String) {
 
     val spannableStringBuilder = SpannableStringBuilder(textToBeStriked)
@@ -115,78 +135,83 @@ fun EditText.removeFocus() {
 
 }
 
+fun Int.convertToHexString(): String {
+
+    return java.lang.String.format("#%06X", 0xFFFFFF and this)
+}
+
 fun Long.toStringM(radix: Int = 0): String {
 
     val values = arrayOf(
-        "0",
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7",
-        "8",
-        "9",
-        "a",
-        "b",
-        "c",
-        "d",
-        "e",
-        "f",
-        "g",
-        "h",
-        "i",
-        "j",
-        "k",
-        "l",
-        "m",
-        "n",
-        "o",
-        "p",
-        "q",
-        "r",
-        "s",
-        "t",
-        "u",
-        "v",
-        "w",
-        "x",
-        "y",
-        "z",
-        "A",
-        "B",
-        "C",
-        "D",
-        "E",
-        "F",
-        "G",
-        "H",
-        "I",
-        "J",
-        "K",
-        "L",
-        "M",
-        "N",
-        "O",
-        "P",
-        "Q",
-        "R",
-        "S",
-        "T",
-        "U",
-        "V",
-        "W",
-        "X",
-        "Y",
-        "Z",
-        "!",
-        "@",
-        "#",
-        "$",
-        "%",
-        "^",
-        "&"
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "a",
+            "b",
+            "c",
+            "d",
+            "e",
+            "f",
+            "g",
+            "h",
+            "i",
+            "j",
+            "k",
+            "l",
+            "m",
+            "n",
+            "o",
+            "p",
+            "q",
+            "r",
+            "s",
+            "t",
+            "u",
+            "v",
+            "w",
+            "x",
+            "y",
+            "z",
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H",
+            "I",
+            "J",
+            "K",
+            "L",
+            "M",
+            "N",
+            "O",
+            "P",
+            "Q",
+            "R",
+            "S",
+            "T",
+            "U",
+            "V",
+            "W",
+            "X",
+            "Y",
+            "Z",
+            "!",
+            "@",
+            "#",
+            "$",
+            "%",
+            "^",
+            "&"
     )
     var str = ""
     var d = this
@@ -211,10 +236,6 @@ fun Long.toStringM(radix: Int = 0): String {
     return d.toString()
 }
 
-fun Int.convertToHexString(): String {
-
-    return java.lang.String.format("#%06X", 0xFFFFFF and this)
-}
 
 
 

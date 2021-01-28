@@ -41,6 +41,7 @@ import com.rohitthebest.projectplanner.utils.Functions.Companion.openLinkInBrows
 import com.rohitthebest.projectplanner.utils.Functions.Companion.showNoInternetMessage
 import com.rohitthebest.projectplanner.utils.Functions.Companion.showToast
 import com.rohitthebest.projectplanner.utils.convertToHexString
+import com.rohitthebest.projectplanner.utils.openColorPicker
 import com.rohitthebest.projectplanner.utils.removeFocus
 import com.rohitthebest.projectplanner.utils.show
 import dagger.hilt.android.AndroidEntryPoint
@@ -340,26 +341,62 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
                 )
             }
 
-            includeBinding.themeSeeInLayoutBtn.id -> {
-
-            }
-            includeBinding.themeAccentColor.id -> {
-
-            }
             includeBinding.themePrimaryColorBtn.id -> {
 
+                includeBinding.themePrimaryColorBtn
+                        .openColorPicker(
+                                requireContext(),
+                                Color.parseColor(includeBinding.themePrimaryColorTV.text.toString().trim()),
+                                includeBinding.themePrimaryColorTV
+                        )
             }
             includeBinding.themePrimaryColorDarkBtn.id -> {
 
+                includeBinding.themePrimaryColorDarkBtn
+                        .openColorPicker(
+                                requireContext(),
+                                Color.parseColor(includeBinding.themePrimaryColorTV.text.toString().trim()),
+                                includeBinding.themePrimaryColorDarkTV
+                        )
+            }
+            includeBinding.themeAccentColor.id -> {
+
+                includeBinding.themeAccentColor
+                        .openColorPicker(
+                                requireContext(),
+                                Color.parseColor(includeBinding.themeAccentColorTV.text.toString().trim()),
+                                includeBinding.themeAccentColorTV
+                        )
             }
             includeBinding.themePrimaryTextColor.id -> {
 
+                includeBinding.themePrimaryTextColor
+                        .openColorPicker(requireContext(),
+                                Color.parseColor(includeBinding.themePrimaryTextColorTV.text.toString().trim()),
+                                includeBinding.themePrimaryTextColorTV
+                        )
             }
             includeBinding.themeSecondaryTextColor.id -> {
 
+                includeBinding.themeSecondaryTextColor
+                        .openColorPicker(
+                                requireContext(),
+                                Color.parseColor(includeBinding.themeSecondaryTextColorTV.text.toString().trim()),
+                                includeBinding.themeSecondaryTextColorTV
+                        )
             }
             includeBinding.themeTextOnPrimaryColorBtn.id -> {
 
+                includeBinding.themeTextOnPrimaryColorBtn
+                        .openColorPicker(
+                                requireContext(),
+                                Color.parseColor(includeBinding.themeTextOnPrimaryColorTV.text.toString().trim()),
+                                includeBinding.themeTextOnPrimaryColorTV
+                        )
+            }
+            includeBinding.themeSeeInLayoutBtn.id -> {
+
+                //todo : Select layout and apply these colors
             }
 
         }
@@ -376,8 +413,8 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
             title(text = "Add Link/Url")
 
             customView(
-                R.layout.add_link_resource_dialog_layout,
-                scrollable = true
+                    R.layout.add_link_resource_dialog_layout,
+                    scrollable = true
             )
 
             val linkET = getCustomView().findViewById<TextInputLayout>(R.id.linkET).editText
