@@ -19,4 +19,10 @@
     <string name="colors">Colors</string>
     <string name="add_link_name_description">Add link name/description</string>
     <string name="add_link_url">Add link/URL</string>
+    <string name="_30d140">#30D140</string>
+    <string name="_119a17">#119A17</string>
+    <string name="ff00d91c">#FF00D91C</string>
+    <string name="_212121">#212121</string>
+    <string name="_757575">#757575</string>
+    <string name="ffffff">#FFFFFF</string>
 </resources>
