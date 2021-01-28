@@ -1,9 +1,10 @@
 package com.rohitthebest.projectplanner.utils
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
-import android.text.SpannableStringBuilder
-import android.text.Spanned
+import android.graphics.Color
+import android.text.*
 import android.text.style.StrikethroughSpan
 import android.view.View
 import android.view.animation.AnimationUtils
@@ -11,7 +12,13 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.customview.customView
+import com.afollestad.materialdialogs.customview.getCustomView
+import com.google.android.material.textfield.TextInputLayout
+import com.rohitthebest.projectplanner.Constants.EDIT_TEXT_EMPTY_MESSAGE
 import com.rohitthebest.projectplanner.R
+import com.rohitthebest.projectplanner.utils.Functions.Companion.showKeyboard
 import yuku.ambilwarna.AmbilWarnaDialog
 
 
@@ -74,22 +81,121 @@ fun View.invisible() {
 
 fun View.openColorPicker(context: Context, defaultColor: Int, textView: TextView? = null) {
 
-    AmbilWarnaDialog(
-            context,
-            defaultColor,
-            object : AmbilWarnaDialog.OnAmbilWarnaListener {
-                override fun onCancel(dialog: AmbilWarnaDialog?) {
-                    //TODO("Not yet implemented")
+    try {
+        AmbilWarnaDialog(
+                context,
+                defaultColor,
+                object : AmbilWarnaDialog.OnAmbilWarnaListener {
+                    override fun onCancel(dialog: AmbilWarnaDialog?) {
+                        //TODO("Not yet implemented")
+                    }
+
+                    override fun onOk(dialog: AmbilWarnaDialog?, color: Int) {
+
+                        this@openColorPicker.setBackgroundColor(color)
+                        textView?.let { it.text = color.convertToHexString() }
+                    }
                 }
+        ).show()
+    } catch (e: Exception) {
 
-                override fun onOk(dialog: AmbilWarnaDialog?, color: Int) {
+        e.printStackTrace()
+    }
+}
 
-                    this@openColorPicker.setBackgroundColor(color)
-                    textView?.let { it.text = color.convertToHexString() }
+private fun applyColor(context: Context, view: View, textView: TextView?, hexCode: String) {
+
+    try {
+
+        view.setBackgroundColor(Color.parseColor(hexCode))
+        textView?.let { it.text = hexCode }
+
+    } catch (e: java.lang.Exception) {
+        e.printStackTrace()
+
+        Functions.showToast(context, "Incorrect hex code")
+    }
+}
+
+@SuppressLint("SetTextI18n")
+fun View.openDialogForWritingHexColor(activity: Activity, textView: TextView? = null) {
+
+    MaterialDialog(activity).show {
+
+        title(text = "Write hex string")
+
+        customView(
+                R.layout.editext_input_layout
+        )
+
+        val input = getCustomView().findViewById<TextInputLayout>(R.id.inputEditText).editText
+
+        input?.showKeyboard(activity)
+
+        input?.apply {
+
+            hint = "write hex code e.g. #000000"
+            inputType = InputType.TYPE_TEXT_VARIATION_PERSON_NAME
+            setText(textView?.text?.toString())
+            setTextColor(Color.parseColor(textView?.text?.toString()))
+            textView?.text?.length?.let { setSelection(0, it) }
+        }
+
+        input?.addTextChangedListener(object : TextWatcher {
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+                if (s?.isEmpty()!!) {
+
+                    getCustomView().findViewById<TextInputLayout>(R.id.inputEditText).error = EDIT_TEXT_EMPTY_MESSAGE
+                } else {
+
+                    getCustomView().findViewById<TextInputLayout>(R.id.inputEditText).error = null
+
+                    try {
+                        if (s.length >= 6) {
+
+                            if (s.toString().trim().startsWith("#")) {
+
+                                input.setTextColor(Color.parseColor(s.toString().trim()))
+
+                            } else {
+
+                                input.setTextColor(Color.parseColor("#${s.toString().trim()}"))
+
+                            }
+                        } else if (s.length < 7) {
+
+                            input.setTextColor(Color.parseColor("#212121"))
+                        }
+                    } catch (e: Exception) {
+
+                        e.printStackTrace()
+                    }
                 }
             }
-    ).show()
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+        positiveButton(text = "Ok") {
+
+            val hexCode = input?.text.toString().trim()
+
+            if (hexCode.startsWith("#")) {
+
+                applyColor(activity, this@openDialogForWritingHexColor, textView, hexCode)
+            } else {
+
+                applyColor(activity, this@openDialogForWritingHexColor, textView, "#$hexCode")
+            }
+
+        }
+    }
 }
+
 
 fun TextView.strikeThrough(textToBeStriked: String) {
 

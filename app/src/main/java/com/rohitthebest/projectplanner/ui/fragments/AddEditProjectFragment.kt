@@ -36,14 +36,11 @@ import com.rohitthebest.projectplanner.ui.adapters.LinkResourceAdapter
 import com.rohitthebest.projectplanner.ui.adapters.StringAdapter
 import com.rohitthebest.projectplanner.ui.adapters.TechnologyAdapter
 import com.rohitthebest.projectplanner.ui.viewModels.ProjectViewModel
+import com.rohitthebest.projectplanner.utils.*
 import com.rohitthebest.projectplanner.utils.Functions.Companion.isInternetAvailable
 import com.rohitthebest.projectplanner.utils.Functions.Companion.openLinkInBrowser
 import com.rohitthebest.projectplanner.utils.Functions.Companion.showNoInternetMessage
 import com.rohitthebest.projectplanner.utils.Functions.Companion.showToast
-import com.rohitthebest.projectplanner.utils.convertToHexString
-import com.rohitthebest.projectplanner.utils.openColorPicker
-import com.rohitthebest.projectplanner.utils.removeFocus
-import com.rohitthebest.projectplanner.utils.show
 import dagger.hilt.android.AndroidEntryPoint
 import yuku.ambilwarna.AmbilWarnaDialog
 
@@ -289,6 +286,14 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
         includeBinding.themePrimaryTextColor.setOnClickListener(this)
         includeBinding.themeSecondaryTextColor.setOnClickListener(this)
         includeBinding.themeTextOnPrimaryColorBtn.setOnClickListener(this)
+
+        includeBinding.themePrimaryColorTV.setOnClickListener(this)
+        includeBinding.themePrimaryColorDarkTV.setOnClickListener(this)
+        includeBinding.themeAccentColorTV.setOnClickListener(this)
+        includeBinding.themePrimaryTextColorTV.setOnClickListener(this)
+        includeBinding.themeSecondaryTextColorTV.setOnClickListener(this)
+        includeBinding.themeTextOnPrimaryColorTV.setOnClickListener(this)
+
     }
 
     override fun onClick(v: View?) {
@@ -399,6 +404,59 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
                 //todo : Select layout and apply these colors
             }
 
+            includeBinding.themePrimaryColorTV.id -> {
+
+                includeBinding.themePrimaryColorBtn
+                        .openDialogForWritingHexColor(
+                                requireActivity(),
+                                includeBinding.themePrimaryColorTV
+                        )
+            }
+
+            includeBinding.themePrimaryColorDarkTV.id -> {
+
+                includeBinding.themePrimaryColorDarkBtn
+                        .openDialogForWritingHexColor(
+                                requireActivity(),
+                                includeBinding.themePrimaryColorDarkTV
+                        )
+            }
+
+            includeBinding.themeAccentColorTV.id -> {
+
+                includeBinding.themeAccentColor
+                        .openDialogForWritingHexColor(
+                                requireActivity(),
+                                includeBinding.themeAccentColorTV
+                        )
+            }
+
+            includeBinding.themePrimaryTextColorTV.id -> {
+
+                includeBinding.themePrimaryTextColor
+                        .openDialogForWritingHexColor(
+                                requireActivity(),
+                                includeBinding.themePrimaryTextColorTV
+                        )
+            }
+
+            includeBinding.themeSecondaryTextColorTV.id -> {
+
+                includeBinding.themeSecondaryTextColor
+                        .openDialogForWritingHexColor(
+                                requireActivity(),
+                                includeBinding.themeSecondaryTextColorTV
+                        )
+            }
+
+            includeBinding.themeTextOnPrimaryColorTV.id -> {
+
+                includeBinding.themeTextOnPrimaryColorBtn
+                        .openDialogForWritingHexColor(
+                                requireActivity(),
+                                includeBinding.themeTextOnPrimaryColorTV
+                        )
+            }
         }
 
         includeBinding.projectNameET.removeFocus()
