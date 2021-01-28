@@ -32,9 +32,25 @@ class LinkResourceAdapter :
 
             binding.root.setOnClickListener {
 
+                mListener!!.onLinkClick(getItem(absoluteAdapterPosition))
+            }
+
+            binding.adapterEditLink.setOnClickListener {
+
                 if (checkForNullability(absoluteAdapterPosition)) {
 
-                    mListener!!.onLinkClick(
+                    mListener!!.onEditLinkButtonClicked(
+                        getItem(absoluteAdapterPosition),
+                        absoluteAdapterPosition
+                    )
+                }
+            }
+
+            binding.adapterDeleteLinkBtn.setOnClickListener {
+
+                if (checkForNullability(absoluteAdapterPosition)) {
+
+                    mListener!!.onDeleteLinkClicked(
                         getItem(absoluteAdapterPosition),
                         absoluteAdapterPosition
                     )
@@ -74,7 +90,9 @@ class LinkResourceAdapter :
 
     interface OnClickListener {
 
-        fun onLinkClick(link: Url, position: Int)
+        fun onLinkClick(link: Url)
+        fun onEditLinkButtonClicked(link: Url, position: Int)
+        fun onDeleteLinkClicked(link: Url, position: Int)
     }
 
     fun setOnClickListener(listener: OnClickListener) {

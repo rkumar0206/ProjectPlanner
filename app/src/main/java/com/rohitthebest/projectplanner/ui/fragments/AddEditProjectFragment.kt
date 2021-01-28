@@ -32,9 +32,13 @@ import com.rohitthebest.projectplanner.db.entity.Project
 import com.rohitthebest.projectplanner.db.entity.Technology
 import com.rohitthebest.projectplanner.db.entity.Url
 import com.rohitthebest.projectplanner.ui.adapters.FeatureAdapter
+import com.rohitthebest.projectplanner.ui.adapters.LinkResourceAdapter
 import com.rohitthebest.projectplanner.ui.adapters.StringAdapter
 import com.rohitthebest.projectplanner.ui.adapters.TechnologyAdapter
 import com.rohitthebest.projectplanner.ui.viewModels.ProjectViewModel
+import com.rohitthebest.projectplanner.utils.Functions.Companion.isInternetAvailable
+import com.rohitthebest.projectplanner.utils.Functions.Companion.openLinkInBrowser
+import com.rohitthebest.projectplanner.utils.Functions.Companion.showNoInternetMessage
 import com.rohitthebest.projectplanner.utils.Functions.Companion.showToast
 import com.rohitthebest.projectplanner.utils.convertToHexString
 import com.rohitthebest.projectplanner.utils.removeFocus
@@ -47,7 +51,7 @@ private const val TAG = "AddEditProjectFragment"
 @AndroidEntryPoint
 class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
     View.OnClickListener, FeatureAdapter.OnClickListener, StringAdapter.OnClickListener,
-    TechnologyAdapter.OnClickListener {
+    TechnologyAdapter.OnClickListener, LinkResourceAdapter.OnClickListener {
 
     private val projectViewModel by viewModels<ProjectViewModel>()
 
@@ -62,6 +66,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
     private lateinit var featureAdapter: FeatureAdapter
     private lateinit var skillAdapter: StringAdapter
     private lateinit var technologyAdapter: TechnologyAdapter
+    private lateinit var linkResourceAdapter: LinkResourceAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -76,6 +81,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
         featureAdapter = FeatureAdapter()
         skillAdapter = StringAdapter()
         technologyAdapter = TechnologyAdapter()
+        linkResourceAdapter = LinkResourceAdapter()
 
         setUpRecyclerViews()
 
@@ -156,23 +162,58 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
     //Link resource recycler view
     private fun setUpLinkResourceRecyclerView() {
 
-/*
         try {
 
-            technologyAdapter.submitList(project.technologyUsed)
+            project.resources.let {
 
-            includeBinding.technologyRV.apply {
+                linkResourceAdapter.submitList(it?.urls)
 
-                setHasFixedSize(true)
-                adapter = technologyAdapter
-                layoutManager = LinearLayoutManager(requireContext())
+                includeBinding.resourceLinkRV.apply {
+
+                    setHasFixedSize(true)
+                    adapter = linkResourceAdapter
+                    layoutManager = LinearLayoutManager(requireContext())
+                }
+
+                linkResourceAdapter.setOnClickListener(this)
             }
-
-            technologyAdapter.setOnClickListener(this)
         } catch (e: Exception) {
             e.printStackTrace()
         }
-*/
+    }
+
+    override fun onLinkClick(link: Url) {
+
+        if (isInternetAvailable(requireContext())) {
+
+            openLinkInBrowser(link.url, requireContext())
+        } else {
+
+            showNoInternetMessage(requireContext())
+        }
+    }
+
+    override fun onEditLinkButtonClicked(link: Url, position: Int) {
+
+        showBottomSheetDialogForAddingLinkResource(
+            link,
+            position
+        )
+    }
+
+    override fun onDeleteLinkClicked(link: Url, position: Int) {
+
+        project.resources?.urls?.remove(link)
+        setUpLinkResourceRecyclerView()
+
+        Snackbar.make(binding.root, "Link deleted", Snackbar.LENGTH_LONG)
+            .setAction("Undo") {
+
+                project.resources?.urls?.add(position, link)
+                setUpLinkResourceRecyclerView()
+            }
+            .show()
+
     }
 
 

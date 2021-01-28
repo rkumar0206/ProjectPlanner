@@ -3,7 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_margin="2dp"
+    app:strokeColor="@android:color/darker_gray"
+    app:strokeWidth="0.8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -14,28 +17,26 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="5dp"
             android:layout_marginEnd="8dp"
             android:gravity="center_vertical"
             android:lineSpacingExtra="8sp"
-            android:minLines="2"
+            android:minLines="1"
             android:padding="5dp"
             android:textColor="@color/primary_text_color"
             android:textSize="18sp"
-            app:layout_constraintEnd_toStartOf="@+id/adapterDeleteLinkBtn"
+            app:layout_constraintEnd_toStartOf="@+id/adapterEditLink"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Link name" />
 
         <ImageButton
             android:id="@+id/adapterDeleteLinkBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:backgroundTint="@android:color/transparent"
-            app:layout_constraintBottom_toBottomOf="@+id/adapterLinkNameTV"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/adapterLinkNameTV"
             app:srcCompat="@drawable/ic_baseline_close_24" />
 
         <View
@@ -59,6 +60,7 @@
             android:maxLines="2"
             android:padding="3dp"
             android:textColor="@color/url_text_color"
+            android:textSize="10sp"
             android:textStyle="italic"
             app:layout_constraintEnd_toEndOf="@+id/adapterDeleteLinkBtn"
             app:layout_constraintHorizontal_bias="0.5"
@@ -66,16 +68,16 @@
             app:layout_constraintTop_toBottomOf="@+id/divider12"
             tools:text="https://www.google.com" />
 
-        <View
-            android:id="@+id/divider13"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="2dp"
-            android:background="?android:attr/listDivider"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/adapetrlinkTV" />
+        <ImageButton
+            android:id="@+id/adapterEditLink"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="3dp"
+            android:backgroundTint="@android:color/transparent"
+            app:layout_constraintBottom_toBottomOf="@+id/adapterDeleteLinkBtn"
+            app:layout_constraintEnd_toStartOf="@+id/adapterDeleteLinkBtn"
+            app:layout_constraintTop_toTopOf="@+id/adapterDeleteLinkBtn"
+            app:srcCompat="@drawable/ic_baseline_edit_24" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>
