@@ -10,6 +10,8 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
 import android.widget.Button
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
@@ -233,7 +235,32 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
             }
             includeBinding.addResourceBtn.id -> {
 
+                MaterialDialog(requireContext()).show {
 
+                    customView(
+                        R.layout.resource_type_choosing_layout_for_dialog
+                    )
+
+                    title(text = "Choose resource type")
+
+                    val resourceRG = getCustomView().findViewById<RadioGroup>(R.id.resourceTypeRG)
+                    val linkRB = getCustomView().findViewById<RadioButton>(R.id.linkRB)
+
+                    positiveButton(text = "Select") {
+
+                        if (resourceRG.checkedRadioButtonId == linkRB.id) {
+
+                            //todo : open dialog for adding link
+                            showToast(requireContext(), "Link Button clicked")
+                        } else {
+
+                            //todo : open to add image
+                            showToast(requireContext(), "image button clicked")
+                        }
+                    }
+
+                    negativeButton(text = "Cancel") { it.dismiss() }
+                }
             }
             includeBinding.addSkillBtn.id -> {
 
@@ -472,6 +499,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
         val previewTextColor = customView.findViewById<TextView>(R.id.previewTechTV)
         val previewBackgroundColor = customView.findViewById<CardView>(R.id.previewTechCV)
 
+        previewTextColor.text = technology.name
         previewTextColor.setTextColor(technology.textColor!!)
         previewBackgroundColor.setCardBackgroundColor(technology.backgroundColor!!)
 
