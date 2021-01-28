@@ -3,7 +3,6 @@ package com.rohitthebest.projectplanner.db.entity
 import android.graphics.Color
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.rohitthebest.projectplanner.Constants.URL
 
 @Entity(tableName = "project_table")
 data class Project(
@@ -63,14 +62,10 @@ data class Feature(
 }
 
 data class Resource(
-        var isPhotoOrUrl : String = URL,
-        var urls: ArrayList<Url>,
-        var photos: ArrayList<String>
+        var urls: ArrayList<Url>
 ) {
 
     constructor() : this(
-            URL,
-            ArrayList(),
             ArrayList()
     )
 }

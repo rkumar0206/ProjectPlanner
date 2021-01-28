@@ -10,8 +10,6 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
 import android.widget.Button
-import android.widget.RadioButton
-import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
@@ -25,12 +23,14 @@ import com.afollestad.materialdialogs.input.input
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
+import com.rohitthebest.projectplanner.Constants.EDIT_TEXT_EMPTY_MESSAGE
 import com.rohitthebest.projectplanner.R
 import com.rohitthebest.projectplanner.databinding.AddEditProjectLayoutBinding
 import com.rohitthebest.projectplanner.databinding.FragmentAddEditProjectBinding
 import com.rohitthebest.projectplanner.db.entity.Feature
 import com.rohitthebest.projectplanner.db.entity.Project
 import com.rohitthebest.projectplanner.db.entity.Technology
+import com.rohitthebest.projectplanner.db.entity.Url
 import com.rohitthebest.projectplanner.ui.adapters.FeatureAdapter
 import com.rohitthebest.projectplanner.ui.adapters.StringAdapter
 import com.rohitthebest.projectplanner.ui.adapters.TechnologyAdapter
@@ -76,11 +76,20 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
         skillAdapter = StringAdapter()
         technologyAdapter = TechnologyAdapter()
 
-        setUpFeaturesRecyclerView()
-        setUpSkillsRecyclerView()
+        setUpRecyclerViews()
 
         initListeners()
         setHasOptionsMenu(true)
+    }
+
+    //setting up all the recycler views
+    private fun setUpRecyclerViews() {
+
+        setUpFeaturesRecyclerView()
+        setUpSkillsRecyclerView()
+        setUpTechnologyRecyclerView()
+        setUpLinkResourceRecyclerView()
+
     }
 
     //Feature recycler view
@@ -142,6 +151,29 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
             e.printStackTrace()
         }
     }
+
+    //Link resource recycler view
+    private fun setUpLinkResourceRecyclerView() {
+
+/*
+        try {
+
+            technologyAdapter.submitList(project.technologyUsed)
+
+            includeBinding.technologyRV.apply {
+
+                setHasFixedSize(true)
+                adapter = technologyAdapter
+                layoutManager = LinearLayoutManager(requireContext())
+            }
+
+            technologyAdapter.setOnClickListener(this)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+*/
+    }
+
 
     override fun onTechnologyClicked(technology: Technology, position: Int) {
 
@@ -235,32 +267,15 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
             }
             includeBinding.addResourceBtn.id -> {
 
-                MaterialDialog(requireContext()).show {
-
-                    customView(
-                        R.layout.resource_type_choosing_layout_for_dialog
-                    )
-
-                    title(text = "Choose resource type")
-
-                    val resourceRG = getCustomView().findViewById<RadioGroup>(R.id.resourceTypeRG)
-                    val linkRB = getCustomView().findViewById<RadioButton>(R.id.linkRB)
-
-                    positiveButton(text = "Select") {
-
-                        if (resourceRG.checkedRadioButtonId == linkRB.id) {
-
-                            //todo : open dialog for adding link
-                            showToast(requireContext(), "Link Button clicked")
-                        } else {
-
-                            //todo : open to add image
-                            showToast(requireContext(), "image button clicked")
-                        }
+                showBottomSheetDialogForAddingLinkResource(
+                    position = if (
+                        project.resources?.urls?.size == 0
+                    ) {
+                        0
+                    } else {
+                        project.resources?.urls?.lastIndex?.plus(1)!!
                     }
-
-                    negativeButton(text = "Cancel") { it.dismiss() }
-                }
+                )
             }
             includeBinding.addSkillBtn.id -> {
 
@@ -282,7 +297,6 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
                     }
                 )
             }
-
             includeBinding.themeSeeInLayoutBtn.id -> {
 
             }
@@ -306,7 +320,138 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
             }
 
         }
+
+        if (includeBinding.projectNameET.hasFocus()) {
+
+            includeBinding.projectNameET.clearFocus()
+        }
     }
+
+    //showing bottomSheet for adding link resource to the list
+    private fun showBottomSheetDialogForAddingLinkResource(url: Url? = null, position: Int) {
+
+        MaterialDialog(requireContext(), BottomSheet()).show {
+
+            title(text = "Add Link/Url")
+
+            customView(
+                R.layout.add_link_resource_dialog_layout,
+                scrollable = true
+            )
+
+            val linkET = getCustomView().findViewById<TextInputLayout>(R.id.linkET).editText
+            val linkNameET = getCustomView().findViewById<TextInputLayout>(R.id.linkNameET).editText
+
+            if (url != null) {
+
+                initializeUrlFields(getCustomView(), url)
+            }
+
+            linkET?.addTextChangedListener(object : TextWatcher {
+
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+                    if (s?.isEmpty()!!) {
+
+                        getCustomView().findViewById<TextInputLayout>(R.id.linkET).error =
+                            EDIT_TEXT_EMPTY_MESSAGE
+                    } else {
+
+                        getCustomView().findViewById<TextInputLayout>(R.id.linkET).error = null
+                    }
+                }
+
+                override fun afterTextChanged(s: Editable?) {}
+            })
+
+            linkNameET?.addTextChangedListener(object : TextWatcher {
+
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+                    if (s?.isEmpty()!!) {
+
+                        getCustomView().findViewById<TextInputLayout>(R.id.linkNameET).error =
+                            EDIT_TEXT_EMPTY_MESSAGE
+                    } else {
+
+                        getCustomView().findViewById<TextInputLayout>(R.id.linkNameET).error = null
+                    }
+                }
+
+                override fun afterTextChanged(s: Editable?) {}
+            })
+
+            positiveButton(text = "Save") {
+
+                if (
+                    linkET?.text.toString().trim().isEmpty() ||
+                    linkNameET?.text.toString().trim().isEmpty()
+                ) {
+
+                    showToast(requireContext(), "Cannot add empty url!!!")
+                } else {
+
+                    val urlToBeAdded = Url(
+                        linkNameET?.text.toString().trim(),
+                        linkET?.text.toString().trim()
+                    )
+
+                    if (url == null) {
+
+                        //add
+
+                        project.resources?.urls?.add(position, urlToBeAdded)
+
+                        Log.d(
+                            TAG,
+                            "showBottomSheetDialogForAddingLinkResource: url added at position : $position"
+                        )
+                    } else {
+
+                        //edit
+
+                        project.resources?.urls?.set(position, urlToBeAdded)
+
+                        Log.d(
+                            TAG,
+                            "showBottomSheetDialogForAddingLinkResource: url edited at position : $position"
+                        )
+                    }
+
+                }
+            }
+
+        }.setOnDismissListener {
+
+            setUpLinkResourceRecyclerView()
+        }
+    }
+
+    private fun initializeUrlFields(customView: View, url: Url) {
+
+        val linkET = customView.findViewById<TextInputLayout>(R.id.linkET).editText
+        val linkNameET = customView.findViewById<TextInputLayout>(R.id.linkNameET).editText
+
+        linkET?.setText(url.url)
+        linkNameET?.setText(url.urlName)
+    }
+
 
     //showing bottomSheet for adding technology to the list
     private fun showBottomSheetDialogForAddingTechnology(
@@ -508,6 +653,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
         techBackgroundColorBtn.setBackgroundColor(technology.backgroundColor)
     }
 
+
     private fun showDialogForAddingSkills(skill: String? = null, position: Int = 0) {
 
         MaterialDialog(requireContext()).show {
@@ -565,6 +711,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
             setUpSkillsRecyclerView()
         }
     }
+
 
     //Showing bottom sheet dialog for adding/editing/deleting feature
     private fun openFeatureBottomSheetDialog(feature: Feature? = null, position: Int = 0) {

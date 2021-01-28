@@ -8,5 +8,5 @@ object Constants {
     const val NO_INTERNET_MESSAGE = "Please check your Internet connection!!!"
     const val URL = "url"
     const val IMAGE = "image"
-
+    const val EDIT_TEXT_EMPTY_MESSAGE = "----Mandatory Field---"
 }

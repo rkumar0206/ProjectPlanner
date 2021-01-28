@@ -17,4 +17,6 @@
     <string name="primary_color">Primary Color :</string>
     <string name="see_in_layout">See in layout</string>
     <string name="colors">Colors</string>
+    <string name="add_link_name_description">Add link name/description</string>
+    <string name="add_link_url">Add link/URL</string>
 </resources>
