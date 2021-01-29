@@ -14,8 +14,7 @@ import com.afollestad.materialdialogs.list.customListAdapter
 import com.rohitthebest.projectplanner.R
 import com.rohitthebest.projectplanner.databinding.FragmentHomeBinding
 import com.rohitthebest.projectplanner.db.entity.Project
-import com.rohitthebest.projectplanner.ui.adapters.FeatureAdapter
-import com.rohitthebest.projectplanner.ui.adapters.ProjectAdapter
+import com.rohitthebest.projectplanner.ui.adapters.*
 import com.rohitthebest.projectplanner.ui.viewModels.ProjectViewModel
 import com.rohitthebest.projectplanner.utils.Functions.Companion.showToast
 import com.rohitthebest.projectplanner.utils.converters.GsonConverter
@@ -140,15 +139,80 @@ class HomeFragment : Fragment(R.layout.fragment_home),
     }
 
     override fun onSkillClicked(project: Project) {
-        //TODO("Not yet implemented")
+
+        val skillList = project.skillsRequired
+
+        val skillAdapter = StringAdapter()
+
+        if (skillList.isEmpty()) {
+
+            showToast(requireContext(), "You haven't added any skills required to this project yet", Toast.LENGTH_LONG)
+        } else {
+
+            skillAdapter.submitList(skillList)
+
+
+            MaterialDialog(requireContext(), BottomSheet()).show {
+
+                title(text = "Skills required in ${project.description.name}")
+
+                customListAdapter(
+                        skillAdapter,
+                        LinearLayoutManager(requireContext())
+                )
+            }
+        }
     }
 
     override fun onTechnologyClicked(project: Project) {
-        //TODO("Not yet implemented")
+
+        val technologyList = project.technologyUsed
+
+        val technologyAdapter = TechnologyAdapter()
+
+        if (technologyList.isEmpty()) {
+
+            showToast(requireContext(), "You haven't added any technology used to this project yet", Toast.LENGTH_LONG)
+        } else {
+
+            technologyAdapter.submitList(technologyList)
+
+            MaterialDialog(requireContext(), BottomSheet()).show {
+
+                title(text = "Technologies used in ${project.description.name}")
+
+                customListAdapter(
+                        technologyAdapter,
+                        LinearLayoutManager(requireContext())
+                )
+            }
+        }
+
     }
 
     override fun onResourcesClicked(project: Project) {
-        //TODO("Not yet implemented")
+
+        val linkResourceList = project.resources?.urls
+
+        val linkAdapter = LinkResourceAdapter()
+
+        if (linkResourceList?.isEmpty() == true) {
+
+            showToast(requireContext(), "You haven't added any resource to this project yet", Toast.LENGTH_LONG)
+        } else {
+
+            linkAdapter.submitList(linkResourceList)
+
+            MaterialDialog(requireContext(), BottomSheet()).show {
+
+                title(text = "Resources for ${project.description.name}")
+
+                customListAdapter(
+                        linkAdapter,
+                        LinearLayoutManager(requireContext())
+                )
+            }
+        }
     }
 
     private fun initListeners() {

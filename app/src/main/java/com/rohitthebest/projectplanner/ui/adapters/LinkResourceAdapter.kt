@@ -32,7 +32,10 @@ class LinkResourceAdapter :
 
             binding.root.setOnClickListener {
 
-                mListener!!.onLinkClick(getItem(absoluteAdapterPosition))
+                if (checkForNullability(absoluteAdapterPosition)) {
+
+                    mListener!!.onLinkClick(getItem(absoluteAdapterPosition))
+                }
             }
 
             binding.adapterEditLink.setOnClickListener {
