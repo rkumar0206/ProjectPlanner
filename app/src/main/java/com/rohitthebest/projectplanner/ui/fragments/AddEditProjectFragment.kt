@@ -94,7 +94,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
         setUpSkillsRecyclerView()
         setUpTechnologyRecyclerView()
         setUpLinkResourceRecyclerView()
-
+        setUpColorsRecyclerView()
     }
 
     //Feature recycler view
@@ -178,6 +178,31 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    //Link resource recycler view
+    private fun setUpColorsRecyclerView() {
+
+/*
+        try {
+
+            project.resources.let {
+
+                linkResourceAdapter.submitList(it?.urls)
+
+                includeBinding.resourceLinkRV.apply {
+
+                    setHasFixedSize(true)
+                    adapter = linkResourceAdapter
+                    layoutManager = LinearLayoutManager(requireContext())
+                }
+
+                linkResourceAdapter.setOnClickListener(this)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+*/
     }
 
     override fun onLinkClick(link: Url) {
@@ -462,6 +487,8 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
         includeBinding.projectDescriptionET.editText?.removeFocus()
     }
 
+
+    //showing bottomSheet for adding colors to the list
     private fun showBottomSheetDialogForAddingColor(color: Colors? = null, position: Int = 0) {
 
         MaterialDialog(requireContext(), BottomSheet()).show {
@@ -493,7 +520,6 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
 
                             }
                             .show()
-
                 }
 
                 initializeColorFields(getCustomView(), color)
@@ -581,7 +607,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
             it.dismiss()
         }.setOnDismissListener {
 
-            //todo : set up colors recycler view
+            setUpColorsRecyclerView()
         }
     }
 
