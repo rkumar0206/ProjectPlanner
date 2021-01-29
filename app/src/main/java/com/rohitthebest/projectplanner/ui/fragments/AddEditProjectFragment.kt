@@ -30,10 +30,7 @@ import com.rohitthebest.projectplanner.R
 import com.rohitthebest.projectplanner.databinding.AddEditProjectLayoutBinding
 import com.rohitthebest.projectplanner.databinding.FragmentAddEditProjectBinding
 import com.rohitthebest.projectplanner.db.entity.*
-import com.rohitthebest.projectplanner.ui.adapters.FeatureAdapter
-import com.rohitthebest.projectplanner.ui.adapters.LinkResourceAdapter
-import com.rohitthebest.projectplanner.ui.adapters.StringAdapter
-import com.rohitthebest.projectplanner.ui.adapters.TechnologyAdapter
+import com.rohitthebest.projectplanner.ui.adapters.*
 import com.rohitthebest.projectplanner.ui.viewModels.ProjectViewModel
 import com.rohitthebest.projectplanner.utils.*
 import com.rohitthebest.projectplanner.utils.Functions.Companion.applyColor
@@ -48,8 +45,8 @@ private const val TAG = "AddEditProjectFragment"
 
 @AndroidEntryPoint
 class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
-    View.OnClickListener, FeatureAdapter.OnClickListener, StringAdapter.OnClickListener,
-    TechnologyAdapter.OnClickListener, LinkResourceAdapter.OnClickListener {
+        View.OnClickListener, FeatureAdapter.OnClickListener, StringAdapter.OnClickListener,
+        TechnologyAdapter.OnClickListener, LinkResourceAdapter.OnClickListener, ColorsAdapter.OnClickListener {
 
     private val projectViewModel by viewModels<ProjectViewModel>()
 
@@ -65,6 +62,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
     private lateinit var skillAdapter: StringAdapter
     private lateinit var technologyAdapter: TechnologyAdapter
     private lateinit var linkResourceAdapter: LinkResourceAdapter
+    private lateinit var colorsAdapter: ColorsAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -80,6 +78,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
         skillAdapter = StringAdapter()
         technologyAdapter = TechnologyAdapter()
         linkResourceAdapter = LinkResourceAdapter()
+        colorsAdapter = ColorsAdapter()
 
         setUpRecyclerViews()
 
@@ -180,30 +179,35 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
         }
     }
 
-    //Link resource recycler view
+    //Colors recycler view
     private fun setUpColorsRecyclerView() {
 
-/*
         try {
 
-            project.resources.let {
+            colorsAdapter.submitList(project.colors)
 
-                linkResourceAdapter.submitList(it?.urls)
+            includeBinding.colorsRV.apply {
 
-                includeBinding.resourceLinkRV.apply {
-
-                    setHasFixedSize(true)
-                    adapter = linkResourceAdapter
-                    layoutManager = LinearLayoutManager(requireContext())
-                }
-
-                linkResourceAdapter.setOnClickListener(this)
+                setHasFixedSize(true)
+                adapter = colorsAdapter
+                layoutManager = LinearLayoutManager(requireContext())
             }
+
+            colorsAdapter.setOnClickListener(this)
+
         } catch (e: Exception) {
             e.printStackTrace()
         }
-*/
     }
+
+    override fun onColorClicked(color: Colors, position: Int) {
+
+        showBottomSheetDialogForAddingColor(
+                color,
+                position
+        )
+    }
+
 
     override fun onLinkClick(link: Url) {
 
@@ -512,12 +516,13 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
                 getCustomView().findViewById<MaterialCardView>(R.id.deleteColorBtn).setOnClickListener {
 
                     project.colors.remove(color)
+                    this.dismiss()
 
                     Snackbar.make(binding.root, "Color deleted", Snackbar.LENGTH_LONG)
                             .setAction("Undo") {
 
                                 project.colors.add(position, color)
-
+                                setUpColorsRecyclerView()
                             }
                             .show()
                 }

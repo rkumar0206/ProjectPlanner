@@ -24,6 +24,26 @@ class ColorsAdapter : ListAdapter<Colors, ColorsAdapter.ColorsViewHolder>(DiffUt
                 binding.viewToBeColored.setBackgroundColor(Color.parseColor(color.colorHexCode))
             }
         }
+
+        init {
+
+            binding.root.setOnClickListener {
+
+                if (checkForNullability(absoluteAdapterPosition)) {
+
+                    mListener!!.onColorClicked(
+                            getItem(absoluteAdapterPosition),
+                            absoluteAdapterPosition
+                    )
+                }
+            }
+        }
+
+        private fun checkForNullability(position: Int): Boolean {
+
+            return position != RecyclerView.NO_POSITION && mListener != null
+        }
+
     }
 
     class DiffUtilCallback : DiffUtil.ItemCallback<Colors>() {
@@ -47,7 +67,7 @@ class ColorsAdapter : ListAdapter<Colors, ColorsAdapter.ColorsViewHolder>(DiffUt
 
     interface OnClickListener {
 
-        fun onColorClicked(color: Colors)
+        fun onColorClicked(color: Colors, position: Int)
     }
 
     fun setOnClickListener(listener: OnClickListener) {
