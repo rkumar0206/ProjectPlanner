@@ -10,7 +10,10 @@
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:id="@+id/projectAdapterRootLayout"
+        android:layout_height="match_parent"
+        app:strokeColor="@android:color/darker_gray"
+        app:strokeWidth="0.5dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -43,6 +46,17 @@
                 android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="@+id/projectNameTV"
                 app:layout_constraintEnd_toEndOf="parent"
+                tools:text="Modified On : 02-06-2000" />
+
+            <TextView
+                android:id="@+id/projectStartedOnTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="3dp"
+                android:padding="3dp"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toTopOf="@+id/projectModifiedOnTV"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/projectNameTV"
                 tools:text="Modified On : 02-06-2000" />
 
@@ -50,7 +64,7 @@
                 android:id="@+id/projectDescriptionTV"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="12dp"
                 android:layout_marginEnd="8dp"
                 android:ellipsize="end"
                 android:maxLines="4"
@@ -161,50 +175,57 @@
                 android:id="@+id/linearLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="5dp"
                 android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="@+id/projectDescriptionTV"
-                app:layout_constraintStart_toStartOf="@+id/projectDescriptionTV"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/projectModifiedOnTV"
+                app:layout_constraintStart_toEndOf="@+id/textView24"
                 app:layout_constraintTop_toBottomOf="@+id/textView20">
 
                 <View
                     android:id="@+id/primaryColorView"
                     android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_height="20dp"
                     android:background="@color/green_light" />
 
                 <View
                     android:id="@+id/primaryColorDarkView"
                     android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="3dp"
                     android:layout_weight="1"
                     android:background="@color/color_primary" />
 
                 <View
                     android:id="@+id/accentColorView"
                     android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="3dp"
                     android:layout_weight="1"
                     android:background="@color/color_secondary" />
 
                 <View
                     android:id="@+id/primaryTextColorView"
                     android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="3dp"
                     android:layout_weight="1"
                     android:background="@color/primary_text_color" />
 
                 <View
                     android:id="@+id/secondaryTextColorView"
                     android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="3dp"
                     android:layout_weight="1"
                     android:background="@color/secondary_text_color" />
 
                 <View
                     android:id="@+id/textOnPrimaryColorView"
                     android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="3dp"
                     android:layout_weight="1"
                     android:background="#C2C2C2" />
             </LinearLayout>
@@ -213,13 +234,11 @@
                 android:id="@+id/textView24"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
+                android:layout_marginStart="8dp"
                 android:text="@string/theme"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/linearLayout"
-                app:layout_constraintStart_toStartOf="@+id/linearLayout"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+                app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
+                app:layout_constraintStart_toStartOf="@+id/projectNameTV"
+                app:layout_constraintTop_toTopOf="@+id/linearLayout" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.card.MaterialCardView>

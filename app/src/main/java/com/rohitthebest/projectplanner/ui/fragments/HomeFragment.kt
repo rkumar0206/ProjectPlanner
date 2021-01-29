@@ -1,13 +1,15 @@
 package com.rohitthebest.projectplanner.ui.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.rohitthebest.projectplanner.R
 import com.rohitthebest.projectplanner.databinding.FragmentHomeBinding
+import com.rohitthebest.projectplanner.db.entity.Project
+import com.rohitthebest.projectplanner.ui.adapters.ProjectAdapter
 import com.rohitthebest.projectplanner.ui.viewModels.ProjectViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -15,12 +17,14 @@ private const val TAG = "HomeFragment"
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home),
-        View.OnClickListener {
+        View.OnClickListener, ProjectAdapter.OnClickListener {
 
     private val projectViewModel by viewModels<ProjectViewModel>()
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var projectAdapter: ProjectAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -29,6 +33,8 @@ class HomeFragment : Fragment(R.layout.fragment_home),
 
         initListeners()
 
+        projectAdapter = ProjectAdapter()
+
         getProjectList()
     }
 
@@ -36,15 +42,33 @@ class HomeFragment : Fragment(R.layout.fragment_home),
 
         projectViewModel.projects.observe(viewLifecycleOwner) {
 
-            if (it.isNotEmpty()) {
-
-                for (i in it) {
-
-                    Log.d(TAG, "getProjectList: $i\n")
-                }
-
-            }
+            setUpRecyclerView(it)
         }
+    }
+
+    private fun setUpRecyclerView(it: List<Project>?) {
+
+        try {
+
+            projectAdapter.submitList(it)
+
+            binding.rvProjects.apply {
+
+                setHasFixedSize(true)
+                adapter = projectAdapter
+                layoutManager = LinearLayoutManager(requireContext())
+            }
+
+            projectAdapter.setOnClickListener(this)
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    override fun onItemClick(project: Project) {
+
+
     }
 
     private fun initListeners() {
@@ -69,6 +93,5 @@ class HomeFragment : Fragment(R.layout.fragment_home),
 
         _binding = null
     }
-
 
 }

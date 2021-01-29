@@ -115,7 +115,6 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
 
         project = Project()
 
-        project.modifiedOn = System.currentTimeMillis()
         project.projectKey = generateKey()
     }
 
@@ -1301,6 +1300,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
 
         project.description = description
         project.theme = theme
+        project.modifiedOn = System.currentTimeMillis()
 
         projectViewModel.insertProject(project)
 
