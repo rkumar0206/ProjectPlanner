@@ -474,7 +474,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:backgroundTint="@color/green_light"
+                android:backgroundTint="@color/color_primary"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/divider2" />
 
@@ -551,7 +551,7 @@
                 android:id="@+id/themePrimaryColorTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/_30d140"
+                android:text="@string/_119A17"
                 android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="@+id/themePrimaryColorBtn"
                 app:layout_constraintStart_toStartOf="@+id/themePrimaryColorBtn"

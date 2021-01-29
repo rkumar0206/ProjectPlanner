@@ -27,10 +27,7 @@ import com.rohitthebest.projectplanner.Constants.EDIT_TEXT_EMPTY_MESSAGE
 import com.rohitthebest.projectplanner.R
 import com.rohitthebest.projectplanner.databinding.AddEditProjectLayoutBinding
 import com.rohitthebest.projectplanner.databinding.FragmentAddEditProjectBinding
-import com.rohitthebest.projectplanner.db.entity.Feature
-import com.rohitthebest.projectplanner.db.entity.Project
-import com.rohitthebest.projectplanner.db.entity.Technology
-import com.rohitthebest.projectplanner.db.entity.Url
+import com.rohitthebest.projectplanner.db.entity.*
 import com.rohitthebest.projectplanner.ui.adapters.FeatureAdapter
 import com.rohitthebest.projectplanner.ui.adapters.LinkResourceAdapter
 import com.rohitthebest.projectplanner.ui.adapters.StringAdapter
@@ -300,9 +297,6 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
 
         when (v?.id) {
 
-            includeBinding.addColorBtn.id -> {
-
-            }
             includeBinding.addFeatureBtn.id -> {
 
                 openFeatureBottomSheetDialog(
@@ -328,11 +322,11 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
             includeBinding.addSkillBtn.id -> {
 
                 showDialogForAddingSkills(
-                    position = if (project.skillsRequired.size == 0) {
-                        0
-                    } else {
-                        project.skillsRequired.lastIndex + 1
-                    }
+                        position = if (project.skillsRequired.size == 0) {
+                            0
+                        } else {
+                            project.skillsRequired.lastIndex + 1
+                        }
                 )
             }
             includeBinding.addTechnologyBtn.id -> {
@@ -343,6 +337,12 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
                         } else {
                             project.technologyUsed.lastIndex + 1
                         }
+                )
+            }
+            includeBinding.addColorBtn.id -> {
+
+                showBottomSheetDialogForAddingColor(
+                        position = if (project.colors.size == 0) 0 else project.colors.lastIndex + 1
                 )
             }
 
@@ -399,6 +399,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
                                 includeBinding.themeTextOnPrimaryColorTV
                         )
             }
+
             includeBinding.themeSeeInLayoutBtn.id -> {
 
                 //todo : Select layout and apply these colors
@@ -412,7 +413,6 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
                                 includeBinding.themePrimaryColorTV
                         )
             }
-
             includeBinding.themePrimaryColorDarkTV.id -> {
 
                 includeBinding.themePrimaryColorDarkBtn
@@ -421,7 +421,6 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
                                 includeBinding.themePrimaryColorDarkTV
                         )
             }
-
             includeBinding.themeAccentColorTV.id -> {
 
                 includeBinding.themeAccentColor
@@ -430,7 +429,6 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
                                 includeBinding.themeAccentColorTV
                         )
             }
-
             includeBinding.themePrimaryTextColorTV.id -> {
 
                 includeBinding.themePrimaryTextColor
@@ -439,7 +437,6 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
                                 includeBinding.themePrimaryTextColorTV
                         )
             }
-
             includeBinding.themeSecondaryTextColorTV.id -> {
 
                 includeBinding.themeSecondaryTextColor
@@ -448,7 +445,6 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
                                 includeBinding.themeSecondaryTextColorTV
                         )
             }
-
             includeBinding.themeTextOnPrimaryColorTV.id -> {
 
                 includeBinding.themeTextOnPrimaryColorBtn
@@ -463,8 +459,14 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
         includeBinding.projectDescriptionET.editText?.removeFocus()
     }
 
+    private fun showBottomSheetDialogForAddingColor(color: Colors? = null, position: Int = 0) {
+
+
+    }
+
+
     //showing bottomSheet for adding link resource to the list
-    private fun showBottomSheetDialogForAddingLinkResource(url: Url? = null, position: Int) {
+    private fun showBottomSheetDialogForAddingLinkResource(url: Url? = null, position: Int = 0) {
 
         MaterialDialog(requireContext(), BottomSheet()).show {
 
