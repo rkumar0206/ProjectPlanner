@@ -49,6 +49,13 @@ class ProjectAdapter : ListAdapter<Project, ProjectAdapter.ProjectViewModel>(Dif
         init {
 
             binding.projectAdapterRootLayout.setOnClickListener(this)
+
+            binding.featuresIconIV.setOnClickListener(this)
+            binding.skillsIconIV.setOnClickListener(this)
+            binding.technologyIconIV.setOnClickListener(this)
+            binding.resourcesIconIV.setOnClickListener(this)
+
+
         }
 
         override fun onClick(v: View?) {
@@ -61,6 +68,24 @@ class ProjectAdapter : ListAdapter<Project, ProjectAdapter.ProjectViewModel>(Dif
 
                         mListener!!.onItemClick(getItem(absoluteAdapterPosition))
                     }
+
+                    binding.featuresIconIV.id -> {
+
+                        mListener!!.onFeatureClicked(getItem(absoluteAdapterPosition))
+                    }
+                    binding.skillsIconIV.id -> {
+
+                        mListener!!.onSkillClicked(getItem(absoluteAdapterPosition))
+                    }
+                    binding.technologyIconIV.id -> {
+
+                        mListener!!.onTechnologyClicked(getItem(absoluteAdapterPosition))
+                    }
+                    binding.resourcesIconIV.id -> {
+
+                        mListener!!.onResourcesClicked(getItem(absoluteAdapterPosition))
+                    }
+
                 }
             }
         }
@@ -113,6 +138,11 @@ class ProjectAdapter : ListAdapter<Project, ProjectAdapter.ProjectViewModel>(Dif
     interface OnClickListener {
 
         fun onItemClick(project: Project)
+
+        fun onFeatureClicked(project: Project)
+        fun onSkillClicked(project: Project)
+        fun onTechnologyClicked(project: Project)
+        fun onResourcesClicked(project: Project)
     }
 
     fun setOnClickListener(listener: OnClickListener) {

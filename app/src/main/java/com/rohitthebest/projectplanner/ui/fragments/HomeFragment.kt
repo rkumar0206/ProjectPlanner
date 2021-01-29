@@ -3,15 +3,21 @@ package com.rohitthebest.projectplanner.ui.fragments
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.bottomsheets.BottomSheet
+import com.afollestad.materialdialogs.list.customListAdapter
 import com.rohitthebest.projectplanner.R
 import com.rohitthebest.projectplanner.databinding.FragmentHomeBinding
 import com.rohitthebest.projectplanner.db.entity.Project
+import com.rohitthebest.projectplanner.ui.adapters.FeatureAdapter
 import com.rohitthebest.projectplanner.ui.adapters.ProjectAdapter
 import com.rohitthebest.projectplanner.ui.viewModels.ProjectViewModel
+import com.rohitthebest.projectplanner.utils.Functions.Companion.showToast
 import com.rohitthebest.projectplanner.utils.converters.GsonConverter
 import com.rohitthebest.projectplanner.utils.hide
 import com.rohitthebest.projectplanner.utils.show
@@ -106,6 +112,43 @@ class HomeFragment : Fragment(R.layout.fragment_home),
                 findNavController().navigate(action)
             }
         }
+    }
+
+    override fun onFeatureClicked(project: Project) {
+
+        val featureList = project.features
+
+        val featureAdapter = FeatureAdapter()
+
+        if (featureList.isEmpty()) {
+
+            showToast(requireContext(), "You haven't added any features to this project yet", Toast.LENGTH_LONG)
+        } else {
+
+            featureAdapter.submitList(featureList)
+
+            MaterialDialog(requireContext(), BottomSheet()).show {
+
+                title(text = "Features of ${project.description.name}")
+
+                customListAdapter(
+                        featureAdapter,
+                        LinearLayoutManager(requireContext())
+                )
+            }
+        }
+    }
+
+    override fun onSkillClicked(project: Project) {
+        //TODO("Not yet implemented")
+    }
+
+    override fun onTechnologyClicked(project: Project) {
+        //TODO("Not yet implemented")
+    }
+
+    override fun onResourcesClicked(project: Project) {
+        //TODO("Not yet implemented")
     }
 
     private fun initListeners() {
