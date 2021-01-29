@@ -39,7 +39,9 @@ import com.rohitthebest.projectplanner.utils.Functions.Companion.isInternetAvail
 import com.rohitthebest.projectplanner.utils.Functions.Companion.openLinkInBrowser
 import com.rohitthebest.projectplanner.utils.Functions.Companion.showNoInternetMessage
 import com.rohitthebest.projectplanner.utils.Functions.Companion.showToast
+import com.rohitthebest.projectplanner.utils.converters.GsonConverter
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.*
 import yuku.ambilwarna.AmbilWarnaDialog
 
 private const val TAG = "AddEditProjectFragment"
@@ -72,6 +74,8 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
 
         includeBinding = binding.include
 
+        getMessage()
+
         initProject()
 
         //init adapters
@@ -87,6 +91,69 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
 
         initListeners()
         setHasOptionsMenu(true)
+    }
+
+    private fun getMessage() {
+
+        try {
+
+            if (!arguments?.isEmpty!!) {
+
+                val args = arguments?.let {
+
+                    AddEditProjectFragmentArgs.fromBundle(it)
+                }
+
+                project = args?.projectMessage?.let { GsonConverter().convertJsonStringToProject(it) }!!
+
+                Log.d(TAG, "getMessage: $project")
+
+                updateUI()
+
+                observeProject()
+
+                GlobalScope.launch {
+
+                    delay(300)
+
+                    withContext(Dispatchers.Main) {
+
+                        setUpRecyclerViews()
+                    }
+                }
+
+            }
+
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun updateUI() {
+
+        includeBinding.apply {
+
+            projectNameET.setText(project.description.name)
+            projectDescriptionET.editText?.setText(project.description.desc)
+
+            project.theme?.let {
+
+                themePrimaryColorBtn.setBackgroundColorByHexCode(it.primaryColor)
+                themePrimaryColorDarkBtn.setBackgroundColorByHexCode(it.darkPrimaryColor)
+                themeAccentColor.setBackgroundColorByHexCode(it.accentColor)
+                themePrimaryTextColor.setBackgroundColorByHexCode(it.primaryTextColor)
+                themeSecondaryTextColor.setBackgroundColorByHexCode(it.secondaryTextColor)
+                themeTextOnPrimaryColorBtn.setBackgroundColorByHexCode(it.textColorOnPrimaryColor)
+
+                themePrimaryColorTV.text = it.primaryColor
+                themePrimaryColorDarkTV.text = it.darkPrimaryColor
+                themeAccentColorTV.text = it.accentColor
+                themePrimaryTextColorTV.text = it.primaryTextColor
+                themeSecondaryTextColorTV.text = it.secondaryTextColor
+                themeTextOnPrimaryColorTV.text = it.textColorOnPrimaryColor
+            }
+        }
+
     }
 
     private fun observeProject() {

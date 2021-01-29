@@ -3,6 +3,7 @@ package com.rohitthebest.projectplanner.ui.adapters
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -17,7 +18,7 @@ class ProjectAdapter : ListAdapter<Project, ProjectAdapter.ProjectViewModel>(Dif
 
     private var mListener: OnClickListener? = null
 
-    inner class ProjectViewModel(val binding: AdapterProjectLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ProjectViewModel(val binding: AdapterProjectLayoutBinding) : RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
         @SuppressLint("SetTextI18n")
         fun setData(project: Project?) {
@@ -47,13 +48,23 @@ class ProjectAdapter : ListAdapter<Project, ProjectAdapter.ProjectViewModel>(Dif
 
         init {
 
-            binding.projectAdapterRootLayout.setOnClickListener {
+            binding.projectAdapterRootLayout.setOnClickListener(this)
+        }
 
-                //todo : pass project+
+        override fun onClick(v: View?) {
 
+            if (checkForNullability(absoluteAdapterPosition)) {
 
+                when (v?.id) {
+
+                    binding.projectAdapterRootLayout.id -> {
+
+                        mListener!!.onItemClick(getItem(absoluteAdapterPosition))
+                    }
+                }
             }
         }
+
 
         private fun setUpThemesColor(project: Project) {
 
@@ -71,6 +82,12 @@ class ProjectAdapter : ListAdapter<Project, ProjectAdapter.ProjectViewModel>(Dif
                 e.printStackTrace()
             }
         }
+
+        private fun checkForNullability(position: Int): Boolean {
+
+            return position != RecyclerView.NO_POSITION && mListener != null
+        }
+
     }
 
     class DiffUtilCallback : DiffUtil.ItemCallback<Project>() {

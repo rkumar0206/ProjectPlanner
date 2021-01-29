@@ -1,6 +1,7 @@
 package com.rohitthebest.projectplanner.ui.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -11,7 +12,11 @@ import com.rohitthebest.projectplanner.databinding.FragmentHomeBinding
 import com.rohitthebest.projectplanner.db.entity.Project
 import com.rohitthebest.projectplanner.ui.adapters.ProjectAdapter
 import com.rohitthebest.projectplanner.ui.viewModels.ProjectViewModel
+import com.rohitthebest.projectplanner.utils.converters.GsonConverter
+import com.rohitthebest.projectplanner.utils.hide
+import com.rohitthebest.projectplanner.utils.show
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.*
 
 private const val TAG = "HomeFragment"
 
@@ -35,10 +40,22 @@ class HomeFragment : Fragment(R.layout.fragment_home),
 
         projectAdapter = ProjectAdapter()
 
-        getProjectList()
+        showProgressBar()
+
+        GlobalScope.launch {
+
+            delay(250)
+
+            withContext(Dispatchers.Main) {
+
+                getProjectList()
+            }
+        }
     }
 
     private fun getProjectList() {
+
+        Log.d(TAG, "getProjectList: ")
 
         projectViewModel.projects.observe(viewLifecycleOwner) {
 
@@ -49,6 +66,8 @@ class HomeFragment : Fragment(R.layout.fragment_home),
     private fun setUpRecyclerView(it: List<Project>?) {
 
         try {
+
+            Log.d(TAG, "setUpRecyclerView: ")
 
             projectAdapter.submitList(it)
 
@@ -61,6 +80,7 @@ class HomeFragment : Fragment(R.layout.fragment_home),
 
             projectAdapter.setOnClickListener(this)
 
+            hideProgressBar()
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -68,7 +88,24 @@ class HomeFragment : Fragment(R.layout.fragment_home),
 
     override fun onItemClick(project: Project) {
 
+        val projectString = GsonConverter().convertProjectToString(project)
 
+        val action = HomeFragmentDirections.actionHomeFragmentToAddEditProjectFragment(
+                projectString
+        )
+
+        showProgressBar()
+
+        GlobalScope.launch {
+            delay(100)
+
+            withContext(Dispatchers.Main) {
+
+                hideProgressBar()
+
+                findNavController().navigate(action)
+            }
+        }
     }
 
     private fun initListeners() {
@@ -87,6 +124,27 @@ class HomeFragment : Fragment(R.layout.fragment_home),
 
         }
     }
+
+    private fun showProgressBar() {
+
+        try {
+
+            binding.progressBar.show()
+        } catch (e: IllegalStateException) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun hideProgressBar() {
+
+        try {
+
+            binding.progressBar.hide()
+        } catch (e: IllegalStateException) {
+            e.printStackTrace()
+        }
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

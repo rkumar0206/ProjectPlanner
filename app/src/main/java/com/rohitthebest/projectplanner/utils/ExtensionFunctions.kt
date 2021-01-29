@@ -213,16 +213,24 @@ fun TextView.changeTextColor(context: Context, color: Int) {
     this.setTextColor(ContextCompat.getColor(context, color))
 }
 
+fun View.setBackgroundColorByHexCode(hexCode: String) {
+
+    if (hexCode.isValidHexCode()) {
+
+        this.setBackgroundColor(Color.parseColor(hexCode))
+    }
+}
+
 @SuppressLint("SetTextI18n")
 fun TextView.setDateInTextView(
-    timeStamp: Long?,
-    pattern: String = "dd-MM-yyyy",
-    startingText: String = ""
+        timeStamp: Long?,
+        pattern: String = "dd-MM-yyyy",
+        startingText: String = ""
 ) {
 
     this.text = "$startingText${
         WorkingWithDateAndTime().convertMillisecondsToDateAndTimePattern(
-            timeStamp, pattern
+                timeStamp, pattern
         )
     }"
 
