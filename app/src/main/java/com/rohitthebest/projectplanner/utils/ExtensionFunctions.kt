@@ -18,7 +18,9 @@ import com.afollestad.materialdialogs.customview.getCustomView
 import com.google.android.material.textfield.TextInputLayout
 import com.rohitthebest.projectplanner.Constants.EDIT_TEXT_EMPTY_MESSAGE
 import com.rohitthebest.projectplanner.R
+import com.rohitthebest.projectplanner.utils.Functions.Companion.applyColor
 import com.rohitthebest.projectplanner.utils.Functions.Companion.showKeyboard
+import com.rohitthebest.projectplanner.utils.Functions.Companion.showToast
 import yuku.ambilwarna.AmbilWarnaDialog
 
 
@@ -79,7 +81,7 @@ fun View.invisible() {
     }
 }
 
-fun View.openColorPicker(context: Context, defaultColor: Int, textView: TextView? = null) {
+fun View.openColorPicker(context: Context, defaultColor: Int, textView: TextView? = null, editText: EditText? = null) {
 
     try {
         AmbilWarnaDialog(
@@ -94,6 +96,7 @@ fun View.openColorPicker(context: Context, defaultColor: Int, textView: TextView
 
                         this@openColorPicker.setBackgroundColor(color)
                         textView?.let { it.text = color.convertToHexString() }
+                        editText?.setText(color.convertToHexString())
                     }
                 }
         ).show()
@@ -103,19 +106,6 @@ fun View.openColorPicker(context: Context, defaultColor: Int, textView: TextView
     }
 }
 
-private fun applyColor(context: Context, view: View, textView: TextView?, hexCode: String) {
-
-    try {
-
-        view.setBackgroundColor(Color.parseColor(hexCode))
-        textView?.let { it.text = hexCode }
-
-    } catch (e: java.lang.Exception) {
-        e.printStackTrace()
-
-        Functions.showToast(context, "Incorrect hex code")
-    }
-}
 
 @SuppressLint("SetTextI18n")
 fun View.openDialogForWritingHexColor(activity: Activity, textView: TextView? = null) {
@@ -157,14 +147,17 @@ fun View.openDialogForWritingHexColor(activity: Activity, textView: TextView? = 
                     try {
                         if (s.length >= 6) {
 
-                            if (s.toString().trim().startsWith("#")) {
+                            val hexCode = if (s.toString().trim().startsWith("#")) {
 
-                                input.setTextColor(Color.parseColor(s.toString().trim()))
-
+                                s.toString().trim()
                             } else {
 
-                                input.setTextColor(Color.parseColor("#${s.toString().trim()}"))
+                                "#${s.toString().trim()}"
+                            }
 
+                            if (hexCode.isValidHexCode()) {
+
+                                input.setTextColor(Color.parseColor(hexCode))
                             }
                         } else if (s.length < 7) {
 
@@ -182,20 +175,23 @@ fun View.openDialogForWritingHexColor(activity: Activity, textView: TextView? = 
 
         positiveButton(text = "Ok") {
 
-            val hexCode = input?.text.toString().trim()
+            val hexCode = if (input?.text.toString().trim().startsWith("#")) {
 
-            if (hexCode.startsWith("#")) {
-
-                applyColor(activity, this@openDialogForWritingHexColor, textView, hexCode)
+                input?.text.toString().trim()
             } else {
-
-                applyColor(activity, this@openDialogForWritingHexColor, textView, "#$hexCode")
+                "#${input?.text.toString().trim()}"
             }
 
+            if (hexCode.isValidHexCode()) {
+
+                applyColor(activity, this@openDialogForWritingHexColor, textView, hexCode = hexCode)
+            } else {
+
+                showToast(context, "incorrect hex code")
+            }
         }
     }
 }
-
 
 fun TextView.strikeThrough(textToBeStriked: String) {
 
@@ -244,6 +240,13 @@ fun EditText.removeFocus() {
 fun Int.convertToHexString(): String {
 
     return java.lang.String.format("#%06X", 0xFFFFFF and this)
+}
+
+fun String.isValidHexCode(): Boolean {
+
+    val pattern = "^#[0-9A-F]{6}$"
+
+    return Regex(pattern, RegexOption.IGNORE_CASE).matches(this)
 }
 
 fun Long.toStringM(radix: Int = 0): String {
@@ -341,6 +344,7 @@ fun Long.toStringM(radix: Int = 0): String {
 
     return d.toString()
 }
+
 
 
 

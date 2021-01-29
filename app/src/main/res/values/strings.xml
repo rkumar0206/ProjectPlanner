@@ -25,4 +25,6 @@
     <string name="_212121">#212121</string>
     <string name="_757575">#757575</string>
     <string name="ffffff">#FFFFFF</string>
+    <string name="write_color_name">Write color name</string>
+    <string name="hex_code">hex code</string>
 </resources>

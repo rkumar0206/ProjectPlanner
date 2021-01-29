@@ -5,10 +5,13 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.util.Log
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import com.rohitthebest.projectplanner.Constants.NO_INTERNET_MESSAGE
 import kotlinx.coroutines.Dispatchers
@@ -139,11 +142,32 @@ class Functions {
                 this.requestFocus()
 
                 val inputMethodManager =
-                    activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
                 inputMethodManager.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
             } catch (e: java.lang.Exception) {
                 e.printStackTrace()
+            }
+        }
+
+        fun applyColor(
+                context: Context,
+                view: View,
+                textView: TextView? = null,
+                editText: EditText? = null,
+                hexCode: String
+        ) {
+
+            try {
+
+                view.setBackgroundColor(Color.parseColor(hexCode))
+                textView?.let { it.text = hexCode }
+                editText?.setText(hexCode)
+
+            } catch (e: java.lang.Exception) {
+                e.printStackTrace()
+
+                Functions.showToast(context, "Incorrect hex code")
             }
         }
 

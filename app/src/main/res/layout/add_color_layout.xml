@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent">
 
     <Button
@@ -20,13 +21,16 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:inputType="textPersonName"
-        android:maxLength="9"
+        android:autofillHints="@string/_119A17"
         android:maxLines="1"
-        android:text="#119A17"
+        android:hint="@string/hex_code"
         android:textSize="12sp"
+        android:maxLength="7"
         app:layout_constraintEnd_toEndOf="@+id/chooseColorBtn"
         app:layout_constraintStart_toStartOf="@+id/chooseColorBtn"
-        app:layout_constraintTop_toBottomOf="@+id/chooseColorBtn" />
+        android:text="@string/_119A17"
+        app:layout_constraintTop_toBottomOf="@+id/chooseColorBtn"
+        tools:ignore="LabelFor" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/colorNameEt"
@@ -45,6 +49,42 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Write color name" />
+            android:hint="@string/write_color_name"
+            android:inputType="textPersonName|textAutoComplete|textAutoCorrect" />
     </com.google.android.material.textfield.TextInputLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/deleteColorBtnOuter"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        app:cardBackgroundColor="@android:color/holo_red_light"
+        app:cardCornerRadius="1000dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/colorNameEt"
+        tools:visibility="visible">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/deleteColorBtn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:cardBackgroundColor="@android:color/holo_red_light">
+
+            <ImageView
+                android:id="@+id/imageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:backgroundTint="@android:color/transparent"
+                android:contentDescription="@string/imagebutton"
+                app:srcCompat="@drawable/ic_baseline_delete_24" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </androidx.cardview.widget.CardView>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

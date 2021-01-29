@@ -10,7 +10,9 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -34,6 +36,7 @@ import com.rohitthebest.projectplanner.ui.adapters.StringAdapter
 import com.rohitthebest.projectplanner.ui.adapters.TechnologyAdapter
 import com.rohitthebest.projectplanner.ui.viewModels.ProjectViewModel
 import com.rohitthebest.projectplanner.utils.*
+import com.rohitthebest.projectplanner.utils.Functions.Companion.applyColor
 import com.rohitthebest.projectplanner.utils.Functions.Companion.isInternetAvailable
 import com.rohitthebest.projectplanner.utils.Functions.Companion.openLinkInBrowser
 import com.rohitthebest.projectplanner.utils.Functions.Companion.showNoInternetMessage
@@ -360,7 +363,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
                 includeBinding.themePrimaryColorDarkBtn
                         .openColorPicker(
                                 requireContext(),
-                                Color.parseColor(includeBinding.themePrimaryColorTV.text.toString().trim()),
+                                Color.parseColor(includeBinding.themePrimaryColorDarkTV.text.toString().trim()),
                                 includeBinding.themePrimaryColorDarkTV
                         )
             }
@@ -461,7 +464,199 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
 
     private fun showBottomSheetDialogForAddingColor(color: Colors? = null, position: Int = 0) {
 
+        MaterialDialog(requireContext(), BottomSheet()).show {
 
+            title(text = "Add colors")
+
+            customView(
+                    R.layout.add_color_layout,
+                    scrollable = true
+            )
+
+            val colorBtn = getCustomView().findViewById<Button>(R.id.chooseColorBtn)
+            val colorHexEt = getCustomView().findViewById<EditText>(R.id.colorHexET)
+            val colorNameET = getCustomView().findViewById<TextInputLayout>(R.id.colorNameEt).editText
+
+            if (color != null) {
+
+                //for editing
+
+                getCustomView().findViewById<CardView>(R.id.deleteColorBtnOuter).show()
+                getCustomView().findViewById<MaterialCardView>(R.id.deleteColorBtn).setOnClickListener {
+
+                    project.colors.remove(color)
+
+                    Snackbar.make(binding.root, "Color deleted", Snackbar.LENGTH_LONG)
+                            .setAction("Undo") {
+
+                                project.colors.add(position, color)
+
+                            }
+                            .show()
+
+                }
+
+                initializeColorFields(getCustomView(), color)
+            }
+
+            colorBtn.setOnClickListener {
+
+                val hexCode = if (colorHexEt.text.toString().trim().startsWith("#")) {
+
+                    colorHexEt.text.toString().trim()
+                } else {
+                    "#${colorHexEt.text.toString().trim()}"
+                }
+
+                colorBtn.openColorPicker(
+                        requireContext(),
+
+                        if (colorHexEt.text.toString().trim().isEmpty()) {
+
+                            Color.parseColor(getString(R.string._119A17))
+                        } else {
+
+                            if (hexCode.isValidHexCode()) {
+
+                                Color.parseColor(hexCode)
+                            } else {
+
+                                Color.parseColor(getString(R.string._119A17))
+                            }
+                        },
+                        editText = colorHexEt
+                )
+            }
+
+            setTextWatcherInColorEditTexts(colorBtn, colorHexEt, getCustomView().findViewById(R.id.colorNameEt))
+
+            positiveButton(text = "Save") {
+
+                if (
+                        colorHexEt.text.toString().trim().isEmpty() || colorNameET?.text.toString().trim().isEmpty()
+                ) {
+
+                    showToast(requireContext(), "Mandatory fields can't be empty!!!", Toast.LENGTH_LONG)
+                } else {
+
+                    val hexCode = if (colorHexEt.text.toString().trim().startsWith("#")) {
+
+                        colorHexEt.text.toString().trim()
+                    } else {
+                        "#${colorHexEt.text.toString().trim()}"
+                    }
+
+                    if (hexCode.isValidHexCode()) {
+
+                        val colorToBeAdded = Colors(
+                                colorNameET?.text.toString().trim(),
+                                hexCode
+                        )
+
+                        if (color != null) {
+
+                            //edit
+
+                            project.colors[position] = colorToBeAdded
+
+                            Log.d(TAG, "showBottomSheetDialogForAddingColor: color edited at position $position Color : $colorToBeAdded")
+
+                        } else {
+
+                            //add
+
+                            project.colors.add(position, colorToBeAdded)
+
+                            Log.d(TAG, "showBottomSheetDialogForAddingColor: color added at position $position Color : $colorToBeAdded")
+
+                        }
+                    } else {
+
+                        showToast(requireContext(), "Not a valid hex code!!!", Toast.LENGTH_LONG)
+                    }
+                }
+            }
+        }.negativeButton(text = "Cancel") {
+
+            it.dismiss()
+        }.setOnDismissListener {
+
+            //todo : set up colors recycler view
+        }
+    }
+
+    private fun setTextWatcherInColorEditTexts(viewToColored: View, colorHexEt: EditText?, coloNameEt: TextInputLayout?) {
+
+        colorHexEt?.addTextChangedListener(object : TextWatcher {
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+                if (s?.isEmpty()!!) {
+
+                    colorHexEt.error = EDIT_TEXT_EMPTY_MESSAGE
+                } else {
+
+                    colorHexEt.error = null
+
+                    Log.d(TAG, "onTextChanged: s.length = ${s.length}")
+
+                    if (s.length in 6..7) {
+
+                        Log.d(TAG, "onTextChanged: s.length is in range 6..7")
+
+                        val hexCode = if (s.toString().trim().startsWith("#")) {
+                            s.toString().trim()
+                        } else {
+                            "#${s.toString().trim()}"
+                        }
+
+                        if (hexCode.isValidHexCode()) {
+
+                            applyColor(
+                                    requireContext(),
+                                    viewToColored,
+                                    hexCode = hexCode
+                            )
+                        } else {
+
+                            showToast(requireContext(), "Incorrect hex code")
+                        }
+                    }
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+        coloNameEt?.editText?.addTextChangedListener(object : TextWatcher {
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+                if (s?.isEmpty()!!) {
+
+                    coloNameEt.error = EDIT_TEXT_EMPTY_MESSAGE
+                } else {
+
+                    coloNameEt.error = null
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+    }
+
+    private fun initializeColorFields(customView: View, color: Colors) {
+
+        val colorBtn = customView.findViewById<Button>(R.id.chooseColorBtn)
+        val colorHexEt = customView.findViewById<EditText>(R.id.colorHexET)
+        val colorNameET = customView.findViewById<TextInputLayout>(R.id.colorNameEt).editText
+
+        colorBtn.setBackgroundColor(Color.parseColor(color.colorHexCode))
+        colorHexEt.setText(color.colorHexCode)
+        colorNameET?.setText(color.colorName)
     }
 
 

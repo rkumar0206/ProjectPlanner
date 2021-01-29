@@ -115,7 +115,7 @@ data class Technology(
 
 data class Colors(
         var colorName: String,
-        var colorHashCode: String
+        var colorHexCode: String
 ) {
 
         constructor() : this(
