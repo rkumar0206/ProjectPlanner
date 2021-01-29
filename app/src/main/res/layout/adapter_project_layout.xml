@@ -18,7 +18,7 @@
 
 
             <TextView
-                android:id="@+id/textView9"
+                android:id="@+id/projectNameTV"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -30,24 +30,24 @@
                 android:text="@string/project_name"
                 android:textColor="@color/primary_text_color"
                 android:textSize="22sp"
-                app:layout_constraintEnd_toStartOf="@+id/textView16"
+                app:layout_constraintEnd_toStartOf="@+id/projectModifiedOnTV"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/textView16"
+                android:id="@+id/projectModifiedOnTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="3dp"
                 android:padding="3dp"
                 android:textSize="12sp"
-                app:layout_constraintBottom_toBottomOf="@+id/textView9"
+                app:layout_constraintBottom_toBottomOf="@+id/projectNameTV"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/textView9"
+                app:layout_constraintTop_toTopOf="@+id/projectNameTV"
                 tools:text="Modified On : 02-06-2000" />
 
             <TextView
-                android:id="@+id/textView19"
+                android:id="@+id/projectDescriptionTV"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
@@ -56,35 +56,35 @@
                 android:maxLines="4"
                 android:padding="3dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/textView9"
-                app:layout_constraintTop_toBottomOf="@+id/textView9"
+                app:layout_constraintStart_toStartOf="@+id/projectNameTV"
+                app:layout_constraintTop_toBottomOf="@+id/projectNameTV"
                 tools:text="This app helps you to save links, texts, and documents in a categorised way."
                 tools:visibility="visible" />
 
             <ImageView
-                android:id="@+id/imageView"
+                android:id="@+id/featuresIconIV"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:contentDescription="@string/imagebutton"
-                app:layout_constraintEnd_toStartOf="@+id/imageView2"
+                app:layout_constraintEnd_toStartOf="@+id/skillsIconIV"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView19"
+                app:layout_constraintTop_toBottomOf="@+id/projectDescriptionTV"
                 app:srcCompat="@drawable/features_icon" />
 
             <ImageView
-                android:id="@+id/imageView2"
+                android:id="@+id/skillsIconIV"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_marginStart="8dp"
                 android:contentDescription="@string/imagebutton"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView"
-                app:layout_constraintEnd_toStartOf="@+id/imageView3"
+                app:layout_constraintBottom_toBottomOf="@+id/featuresIconIV"
+                app:layout_constraintEnd_toStartOf="@+id/technologyIconIV"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/imageView"
-                app:layout_constraintTop_toTopOf="@+id/imageView"
+                app:layout_constraintStart_toEndOf="@+id/featuresIconIV"
+                app:layout_constraintTop_toTopOf="@+id/featuresIconIV"
                 app:srcCompat="@drawable/skill_icon" />
 
             <TextView
@@ -93,9 +93,9 @@
                 android:layout_height="wrap_content"
                 android:text="@string/features"
                 android:textSize="10sp"
-                app:layout_constraintEnd_toEndOf="@+id/imageView"
-                app:layout_constraintStart_toStartOf="@+id/imageView"
-                app:layout_constraintTop_toBottomOf="@+id/imageView"
+                app:layout_constraintEnd_toEndOf="@+id/featuresIconIV"
+                app:layout_constraintStart_toStartOf="@+id/featuresIconIV"
+                app:layout_constraintTop_toBottomOf="@+id/featuresIconIV"
                 tools:ignore="SmallSp" />
 
             <TextView
@@ -104,9 +104,9 @@
                 android:layout_height="wrap_content"
                 android:text="@string/skills"
                 android:textSize="10sp"
-                app:layout_constraintEnd_toEndOf="@+id/imageView2"
-                app:layout_constraintStart_toStartOf="@+id/imageView2"
-                app:layout_constraintTop_toBottomOf="@+id/imageView2"
+                app:layout_constraintEnd_toEndOf="@+id/skillsIconIV"
+                app:layout_constraintStart_toStartOf="@+id/skillsIconIV"
+                app:layout_constraintTop_toBottomOf="@+id/skillsIconIV"
                 tools:ignore="SmallSp" />
 
             <TextView
@@ -115,9 +115,9 @@
                 android:layout_height="wrap_content"
                 android:text="@string/technology"
                 android:textSize="10sp"
-                app:layout_constraintEnd_toEndOf="@+id/imageView3"
-                app:layout_constraintStart_toStartOf="@+id/imageView3"
-                app:layout_constraintTop_toBottomOf="@+id/imageView3"
+                app:layout_constraintEnd_toEndOf="@+id/technologyIconIV"
+                app:layout_constraintStart_toStartOf="@+id/technologyIconIV"
+                app:layout_constraintTop_toBottomOf="@+id/technologyIconIV"
                 tools:ignore="SmallSp" />
 
             <TextView
@@ -126,35 +126,35 @@
                 android:layout_height="wrap_content"
                 android:text="@string/resources"
                 android:textSize="10sp"
-                app:layout_constraintEnd_toEndOf="@+id/imageView4"
-                app:layout_constraintStart_toStartOf="@+id/imageView4"
-                app:layout_constraintTop_toBottomOf="@+id/imageView4"
+                app:layout_constraintEnd_toEndOf="@+id/resourcesIconIV"
+                app:layout_constraintStart_toStartOf="@+id/resourcesIconIV"
+                app:layout_constraintTop_toBottomOf="@+id/resourcesIconIV"
                 tools:ignore="SmallSp" />
 
             <ImageView
-                android:id="@+id/imageView3"
+                android:id="@+id/technologyIconIV"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_marginStart="8dp"
                 android:contentDescription="@string/imagebutton"
                 app:layout_constraintBottom_toTopOf="@+id/textView21"
-                app:layout_constraintEnd_toStartOf="@+id/imageView4"
+                app:layout_constraintEnd_toStartOf="@+id/resourcesIconIV"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/imageView2"
-                app:layout_constraintTop_toTopOf="@+id/imageView2"
+                app:layout_constraintStart_toEndOf="@+id/skillsIconIV"
+                app:layout_constraintTop_toTopOf="@+id/skillsIconIV"
                 app:srcCompat="@drawable/technology_icon" />
 
             <ImageView
-                android:id="@+id/imageView4"
+                android:id="@+id/resourcesIconIV"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_marginStart="8dp"
                 android:contentDescription="@string/imagebutton"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+                app:layout_constraintBottom_toBottomOf="@+id/technologyIconIV"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/imageView3"
-                app:layout_constraintTop_toTopOf="@+id/imageView3"
+                app:layout_constraintStart_toEndOf="@+id/technologyIconIV"
+                app:layout_constraintTop_toTopOf="@+id/technologyIconIV"
                 app:srcCompat="@drawable/resources_icon" />
 
             <LinearLayout
@@ -163,48 +163,48 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="@+id/textView19"
-                app:layout_constraintStart_toStartOf="@+id/textView19"
+                app:layout_constraintEnd_toEndOf="@+id/projectDescriptionTV"
+                app:layout_constraintStart_toStartOf="@+id/projectDescriptionTV"
                 app:layout_constraintTop_toBottomOf="@+id/textView20">
 
                 <View
-                    android:id="@+id/view"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:id="@+id/primaryColorView"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:background="@color/green_light" />
 
                 <View
-                    android:id="@+id/view2"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:id="@+id/primaryColorDarkView"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:layout_weight="1"
                     android:background="@color/color_primary" />
 
                 <View
-                    android:id="@+id/view3"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:id="@+id/accentColorView"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:layout_weight="1"
                     android:background="@color/color_secondary" />
 
                 <View
-                    android:id="@+id/view4"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:id="@+id/primaryTextColorView"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:layout_weight="1"
                     android:background="@color/primary_text_color" />
 
                 <View
-                    android:id="@+id/view5"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:id="@+id/secondaryTextColorView"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:layout_weight="1"
                     android:background="@color/secondary_text_color" />
 
                 <View
-                    android:id="@+id/view6"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:id="@+id/textOnPrimaryColorView"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:layout_weight="1"
                     android:background="#C2C2C2" />
             </LinearLayout>
