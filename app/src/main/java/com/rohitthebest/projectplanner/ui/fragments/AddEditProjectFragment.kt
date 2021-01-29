@@ -83,8 +83,32 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
 
         setUpRecyclerViews()
 
+        observeProject()
+
         initListeners()
         setHasOptionsMenu(true)
+    }
+
+    private fun observeProject() {
+
+        try {
+
+            projectViewModel.getProjectByProjectKey(project.projectKey).observe(viewLifecycleOwner) {
+
+                Log.d(TAG, "observeProject: ")
+
+                if (it != null) {
+
+                    Log.d(TAG, "observeProject: project is not null")
+
+                    project = it
+                    setUpRecyclerViews()
+                }
+            }
+
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun initProject() {
@@ -1213,8 +1237,14 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
         colorNameET?.setText(color.colorName)
     }
 
-    /**[END OF COLORS]**/
+    override fun onPause() {
+        super.onPause()
 
+        if (includeBinding.projectNameET.text.toString().trim().isNotEmpty()) {
+
+            saveProjectToDatabase()
+        }
+    }
 
     //option menu for saving the project to database
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -1238,6 +1268,8 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
 
     private fun saveProjectToDatabase() {
 
+        Log.d(TAG, "saveProjectToDatabase: ")
+
         val projectName = includeBinding.projectNameET.text.toString().trim()
         val projectDescription = includeBinding.projectDescriptionET.editText?.text.toString().trim()
 
@@ -1254,7 +1286,6 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
 
         project.description = description
         project.theme = theme
-
 
         projectViewModel.insertProject(project)
 
