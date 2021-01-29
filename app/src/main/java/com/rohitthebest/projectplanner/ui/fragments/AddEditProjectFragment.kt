@@ -1150,7 +1150,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
                         }
                     } else {
 
-                        showToast(requireContext(), "Not a valid hex code!!!", Toast.LENGTH_LONG)
+                        showToast(requireContext(), "Incorrect hex code")
                     }
                 }
             }
@@ -1196,9 +1196,6 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
                                     viewToColored,
                                     hexCode = hexCode
                             )
-                        } else {
-
-                            showToast(requireContext(), "Incorrect hex code")
                         }
                     }
                 }
@@ -1237,12 +1234,21 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
         colorNameET?.setText(color.colorName)
     }
 
+    /**[END OF COLORS]**/
+
+    private var shouldSaveOnPause = true
+
     override fun onPause() {
         super.onPause()
 
-        if (includeBinding.projectNameET.text.toString().trim().isNotEmpty()) {
+        if (shouldSaveOnPause) {
 
-            saveProjectToDatabase()
+            if (includeBinding.projectNameET.text.toString().trim().isNotEmpty()) {
+
+                Log.d(TAG, "onPause: ")
+
+                saveProjectToDatabase()
+            }
         }
     }
 
@@ -1257,6 +1263,15 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
             if (includeBinding.projectNameET.text.toString().trim().isNotEmpty()) {
 
                 saveProjectToDatabase()
+
+                Snackbar.make(binding.root, "Project Saved", Snackbar.LENGTH_LONG)
+                        .setAction("Go to home") {
+
+                            requireActivity().onBackPressed()
+
+                            shouldSaveOnPause = false
+                        }
+                        .show()
 
             } else {
 
@@ -1288,8 +1303,6 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
         project.theme = theme
 
         projectViewModel.insertProject(project)
-
-        showToast(requireContext(), "Project saved")
 
         Log.d(TAG, "saveProjectToDatabase: Project Saved : $project")
     }
