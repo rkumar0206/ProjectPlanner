@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.afollestad.materialdialogs.list.customListAdapter
@@ -218,6 +219,30 @@ class HomeFragment : Fragment(R.layout.fragment_home),
     private fun initListeners() {
 
         binding.addProjectButton.setOnClickListener(this)
+
+        binding.rvProjects.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+
+                try {
+
+                    if (dy > 0 && binding.addProjectButton.visibility == View.VISIBLE) {
+
+                        binding.addProjectButton.hide()
+                    } else {
+
+                        if (binding.addProjectButton.visibility != View.VISIBLE) {
+
+                            binding.addProjectButton.show()
+                        }
+                    }
+
+                } catch (e: java.lang.Exception) {
+
+                    e.printStackTrace()
+                }
+            }
+        })
     }
 
     override fun onClick(v: View?) {
