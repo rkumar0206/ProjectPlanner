@@ -27,4 +27,6 @@
     <string name="ffffff">#FFFFFF</string>
     <string name="write_color_name">Write color name</string>
     <string name="hex_code">hex code</string>
+    <string name="skills">Skills</string>
+    <string name="technology">Technology</string>
 </resources>
