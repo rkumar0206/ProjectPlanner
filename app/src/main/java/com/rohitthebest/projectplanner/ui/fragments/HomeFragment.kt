@@ -1,6 +1,7 @@
 package com.rohitthebest.projectplanner.ui.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -27,6 +28,23 @@ class HomeFragment : Fragment(R.layout.fragment_home),
         _binding = FragmentHomeBinding.bind(view)
 
         initListeners()
+
+        getProjectList()
+    }
+
+    private fun getProjectList() {
+
+        projectViewModel.projects.observe(viewLifecycleOwner) {
+
+            if (it.isNotEmpty()) {
+
+                for (i in it) {
+
+                    Log.d(TAG, "getProjectList: $i\n")
+                }
+
+            }
+        }
     }
 
     private fun initListeners() {
