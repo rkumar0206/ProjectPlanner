@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.afollestad.materialdialogs.list.customListAdapter
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.rohitthebest.projectplanner.R
 import com.rohitthebest.projectplanner.databinding.FragmentHomeBinding
 import com.rohitthebest.projectplanner.db.entity.Project
@@ -262,6 +263,41 @@ class HomeFragment : Fragment(R.layout.fragment_home),
                 }
             }
         }
+    }
+
+    override fun onAddTaskBtnClicked(project: Project) {
+
+        //todo : add tasks
+    }
+
+    override fun onAddBugsBtnClicked(project: Project) {
+        //TODO("Not yet implemented")
+    }
+
+    override fun onUploadBtnClicked(project: Project) {
+        //TODO("Not yet implemented")
+    }
+
+    override fun onDeleteProjectBtnClicked(project: Project) {
+
+        // this is temporary method for deleting , remember to delete this project from cloud
+        MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Delete project")
+                .setMessage("This project will be no longer available to you.")
+                .setPositiveButton("Delete") { dialog, _ ->
+
+                    projectViewModel.deleteProject(project)
+                    dialog.dismiss()
+
+                    Log.d(TAG, "onDeleteProjectBtnClicked: project deleted")
+                    //todo : show snackbar for undoing the delete action
+                }
+                .setNegativeButton("Cancel") { dialog, _ ->
+
+                    dialog.dismiss()
+                }
+                .create()
+                .show()
     }
 
     override fun onLinkClick(link: Url) {

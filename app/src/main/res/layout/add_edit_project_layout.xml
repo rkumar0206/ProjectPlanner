@@ -18,7 +18,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="gone">
+        tools:visibility="visible">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -58,7 +58,7 @@
                 android:autofillHints="@string/project_name"
                 android:ems="10"
                 android:hint="@string/project_name"
-                android:inputType="textPersonName"
+                android:inputType="textPersonName|textCapSentences"
                 android:textColor="@color/primary_text_color"
                 android:textSize="24sp"
                 app:layout_constraintEnd_toEndOf="parent"

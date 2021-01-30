@@ -62,7 +62,10 @@ class ProjectAdapter : ListAdapter<Project, ProjectAdapter.ProjectViewModel>(Dif
             binding.technologyIconIV.setOnClickListener(this)
             binding.resourcesIconIV.setOnClickListener(this)
 
-
+            binding.addTasksToProjectBtn.setOnClickListener(this)
+            binding.addBugsToTheProjectBtn.setOnClickListener(this)
+            binding.uploadProjectToCloudBtn.setOnClickListener(this)
+            binding.deleteProjectBtn.setOnClickListener(this)
         }
 
         override fun onClick(v: View?) {
@@ -93,6 +96,22 @@ class ProjectAdapter : ListAdapter<Project, ProjectAdapter.ProjectViewModel>(Dif
                         mListener!!.onResourcesClicked(getItem(absoluteAdapterPosition))
                     }
 
+                    binding.addTasksToProjectBtn.id -> {
+
+                        mListener!!.onAddTaskBtnClicked(getItem(absoluteAdapterPosition))
+                    }
+                    binding.addBugsToTheProjectBtn.id -> {
+
+                        mListener!!.onAddBugsBtnClicked(getItem(absoluteAdapterPosition))
+                    }
+                    binding.uploadProjectToCloudBtn.id -> {
+
+                        mListener!!.onUploadBtnClicked(getItem(absoluteAdapterPosition))
+                    }
+                    binding.deleteProjectBtn.id -> {
+
+                        mListener!!.onDeleteProjectBtnClicked(getItem(absoluteAdapterPosition))
+                    }
                 }
             }
         }
@@ -150,6 +169,11 @@ class ProjectAdapter : ListAdapter<Project, ProjectAdapter.ProjectViewModel>(Dif
         fun onSkillClicked(project: Project)
         fun onTechnologyClicked(project: Project)
         fun onResourcesClicked(project: Project)
+
+        fun onAddTaskBtnClicked(project: Project)
+        fun onAddBugsBtnClicked(project: Project)
+        fun onUploadBtnClicked(project: Project)
+        fun onDeleteProjectBtnClicked(project: Project)
     }
 
     fun setOnClickListener(listener: OnClickListener) {

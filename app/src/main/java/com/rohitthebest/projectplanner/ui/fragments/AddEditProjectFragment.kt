@@ -67,6 +67,8 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
     private lateinit var linkResourceAdapter: LinkResourceAdapter
     private lateinit var colorsAdapter: ColorsAdapter
 
+    private var isProjectReceivedForEditing = false
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -103,6 +105,8 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
 
                     AddEditProjectFragmentArgs.fromBundle(it)
                 }
+
+                isProjectReceivedForEditing = true
 
                 project = args?.projectMessage?.let { GsonConverter().convertJsonStringToProject(it) }!!
 
@@ -1369,7 +1373,13 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
         project.theme = theme
         project.modifiedOn = System.currentTimeMillis()
 
-        projectViewModel.insertProject(project)
+        if (isProjectReceivedForEditing) {
+
+            projectViewModel.updateProject(project)
+        } else {
+
+            projectViewModel.insertProject(project)
+        }
 
         Log.d(TAG, "saveProjectToDatabase: Project Saved : $project")
     }
