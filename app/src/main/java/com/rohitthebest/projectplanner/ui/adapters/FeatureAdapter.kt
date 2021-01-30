@@ -8,30 +8,44 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.rohitthebest.projectplanner.databinding.AdapterFeatureLayoutBinding
 import com.rohitthebest.projectplanner.db.entity.Feature
+import com.rohitthebest.projectplanner.utils.boldSpan
 
-class FeatureAdapter : ListAdapter<Feature, FeatureAdapter.FeatureViewHolder>(DiffUtilCallback()) {
+          class FeatureAdapter : ListAdapter<Feature, FeatureAdapter.FeatureViewHolder>(DiffUtilCallback()) {
 
-    private var mListener: OnClickListener? = null
+              private var mListener: OnClickListener? = null
 
-    inner class FeatureViewHolder(val binding: AdapterFeatureLayoutBinding) :
-            RecyclerView.ViewHolder(binding.root) {
+              inner class FeatureViewHolder(val binding: AdapterFeatureLayoutBinding) :
+                      RecyclerView.ViewHolder(binding.root) {
 
-        @SuppressLint("SetTextI18n")
-        fun setData(feature: Feature?) {
+                  @SuppressLint("SetTextI18n")
+                  fun setData(feature: Feature?) {
 
-            feature?.let {
+                      feature?.let {
 
-                binding.featureNameTV.text = "${absoluteAdapterPosition + 1}. ${it.name}"
-                binding.featureDescriptionTV.text = if (it.description == "") {
-                    "no description added!!"
-                } else {
-                    "Description : ${it.description}"
-                }
-                binding.featureImplentation.text = if (it.implementation == "") {
-                    "no implementation added!!"
-                } else {
-                    "Implementation : ${it.implementation}"
-                }
+                          binding.featureNameTV.text = "${absoluteAdapterPosition + 1}. ${it.name}"
+
+                          if (it.description == "") {
+                              binding.featureDescriptionTV.text = "no description added!!"
+                          } else {
+
+                              binding.featureDescriptionTV
+                                      .boldSpan("Description : ${it.description}",
+                                              0, 10
+                                      )
+
+                          }
+
+                          if (it.implementation == "") {
+
+                              binding.featureImplentation.text = "no implementation added!!"
+                          } else {
+
+                              binding.featureImplentation.boldSpan(
+                                      "Implementation : ${it.implementation}",
+                                      0,
+                                      13
+                              )
+                          }
             }
         }
 

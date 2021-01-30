@@ -4,8 +4,10 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Typeface
 import android.text.*
 import android.text.style.StrikethroughSpan
+import android.text.style.StyleSpan
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.EditText
@@ -206,6 +208,28 @@ fun TextView.strikeThrough(textToBeStriked: String) {
     )
 
     this.text = spannableStringBuilder
+}
+
+fun TextView.boldSpan(textToBeBold: String, startIndex: Int = 0, endIndex: Int = textToBeBold.length) {
+
+    try {
+        val spannableStringBuilder = SpannableStringBuilder(textToBeBold)
+
+        val boldSpan = StyleSpan(Typeface.BOLD)
+
+        spannableStringBuilder.setSpan(
+                boldSpan,
+                startIndex,
+                endIndex + 1,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        this.text = spannableStringBuilder
+
+    } catch (e: IndexOutOfBoundsException) {
+
+        e.printStackTrace()
+    }
 }
 
 fun TextView.changeTextColor(context: Context, color: Int) {
