@@ -15,8 +15,12 @@ import com.afollestad.materialdialogs.list.customListAdapter
 import com.rohitthebest.projectplanner.R
 import com.rohitthebest.projectplanner.databinding.FragmentHomeBinding
 import com.rohitthebest.projectplanner.db.entity.Project
+import com.rohitthebest.projectplanner.db.entity.Url
 import com.rohitthebest.projectplanner.ui.adapters.*
 import com.rohitthebest.projectplanner.ui.viewModels.ProjectViewModel
+import com.rohitthebest.projectplanner.utils.Functions.Companion.isInternetAvailable
+import com.rohitthebest.projectplanner.utils.Functions.Companion.openLinkInBrowser
+import com.rohitthebest.projectplanner.utils.Functions.Companion.showNoInternetMessage
 import com.rohitthebest.projectplanner.utils.Functions.Companion.showToast
 import com.rohitthebest.projectplanner.utils.converters.GsonConverter
 import com.rohitthebest.projectplanner.utils.hide
@@ -28,7 +32,7 @@ private const val TAG = "HomeFragment"
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home),
-        View.OnClickListener, ProjectAdapter.OnClickListener {
+        View.OnClickListener, ProjectAdapter.OnClickListener, LinkResourceAdapter.OnClickListener {
 
     private val projectViewModel by viewModels<ProjectViewModel>()
 
@@ -94,6 +98,11 @@ class HomeFragment : Fragment(R.layout.fragment_home),
 
     override fun onItemClick(project: Project) {
 
+        openProjectFragmentWithProjectAsMessage(project)
+    }
+
+    private fun openProjectFragmentWithProjectAsMessage(project: Project) {
+
         val projectString = GsonConverter().convertProjectToString(project)
 
         val action = HomeFragmentDirections.actionHomeFragmentToAddEditProjectFragment(
@@ -118,7 +127,7 @@ class HomeFragment : Fragment(R.layout.fragment_home),
 
         val featureList = project.features
 
-        val featureAdapter = FeatureAdapter()
+        val featureAdapter = FeatureAdapter("hide")
 
         if (featureList.isEmpty()) {
 
@@ -135,6 +144,11 @@ class HomeFragment : Fragment(R.layout.fragment_home),
                         featureAdapter,
                         LinearLayoutManager(requireContext())
                 )
+
+                positiveButton(text = "Add/Edit feature") {
+
+                    openProjectFragmentWithProjectAsMessage(project)
+                }
             }
         }
     }
@@ -143,7 +157,7 @@ class HomeFragment : Fragment(R.layout.fragment_home),
 
         val skillList = project.skillsRequired
 
-        val skillAdapter = StringAdapter()
+        val skillAdapter = StringAdapter("hide")
 
         if (skillList.isEmpty()) {
 
@@ -151,7 +165,6 @@ class HomeFragment : Fragment(R.layout.fragment_home),
         } else {
 
             skillAdapter.submitList(skillList)
-
 
             MaterialDialog(requireContext(), BottomSheet()).show {
 
@@ -161,6 +174,12 @@ class HomeFragment : Fragment(R.layout.fragment_home),
                         skillAdapter,
                         LinearLayoutManager(requireContext())
                 )
+
+                positiveButton(text = "Add/Edit skill") {
+
+                    openProjectFragmentWithProjectAsMessage(project)
+                }
+
             }
         }
     }
@@ -169,7 +188,7 @@ class HomeFragment : Fragment(R.layout.fragment_home),
 
         val technologyList = project.technologyUsed
 
-        val technologyAdapter = TechnologyAdapter()
+        val technologyAdapter = TechnologyAdapter("hide")
 
         if (technologyList.isEmpty()) {
 
@@ -186,6 +205,12 @@ class HomeFragment : Fragment(R.layout.fragment_home),
                         technologyAdapter,
                         LinearLayoutManager(requireContext())
                 )
+
+                positiveButton(text = "Add/Edit technologies") {
+
+                    openProjectFragmentWithProjectAsMessage(project)
+                }
+
             }
         }
 
@@ -195,7 +220,7 @@ class HomeFragment : Fragment(R.layout.fragment_home),
 
         val linkResourceList = project.resources?.urls
 
-        val linkAdapter = LinkResourceAdapter()
+        val linkAdapter = LinkResourceAdapter("hide")
 
         if (linkResourceList?.isEmpty() == true) {
 
@@ -203,6 +228,8 @@ class HomeFragment : Fragment(R.layout.fragment_home),
         } else {
 
             linkAdapter.submitList(linkResourceList)
+
+            linkAdapter.setOnClickListener(this)
 
             MaterialDialog(requireContext(), BottomSheet()).show {
 
@@ -212,8 +239,32 @@ class HomeFragment : Fragment(R.layout.fragment_home),
                         linkAdapter,
                         LinearLayoutManager(requireContext())
                 )
+
+                positiveButton(text = "Add/Edit resource") {
+
+                    openProjectFragmentWithProjectAsMessage(project)
+                }
             }
         }
+    }
+
+    override fun onLinkClick(link: Url) {
+
+        if (isInternetAvailable(requireContext())) {
+
+            openLinkInBrowser(link.url, requireContext())
+        } else {
+
+            showNoInternetMessage(requireContext())
+        }
+    }
+
+    override fun onEditLinkButtonClicked(link: Url, position: Int) {
+        //TODO("Not yet implemented")
+    }
+
+    override fun onDeleteLinkClicked(link: Url, position: Int) {
+        //TODO("Not yet implemented")
     }
 
     private fun initListeners() {

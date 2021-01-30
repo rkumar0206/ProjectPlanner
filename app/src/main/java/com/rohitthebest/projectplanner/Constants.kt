@@ -9,4 +9,5 @@ object Constants {
     const val URL = "url"
     const val IMAGE = "image"
     const val EDIT_TEXT_EMPTY_MESSAGE = "----Mandatory Field---"
+    const val SHOW_UI = "show_the_ui"
 }

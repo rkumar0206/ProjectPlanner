@@ -1,4 +1,4 @@
-          package com.rohitthebest.projectplanner.ui.adapters
+package com.rohitthebest.projectplanner.ui.adapters
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -6,32 +6,33 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.rohitthebest.projectplanner.Constants.SHOW_UI
 import com.rohitthebest.projectplanner.databinding.AdapterFeatureLayoutBinding
 import com.rohitthebest.projectplanner.db.entity.Feature
 import com.rohitthebest.projectplanner.utils.boldSpan
 
-          class FeatureAdapter : ListAdapter<Feature, FeatureAdapter.FeatureViewHolder>(DiffUtilCallback()) {
+class FeatureAdapter(var showOrHideUI: String = SHOW_UI) : ListAdapter<Feature, FeatureAdapter.FeatureViewHolder>(DiffUtilCallback()) {
 
-              private var mListener: OnClickListener? = null
+    private var mListener: OnClickListener? = null
 
-              inner class FeatureViewHolder(val binding: AdapterFeatureLayoutBinding) :
-                      RecyclerView.ViewHolder(binding.root) {
+    inner class FeatureViewHolder(val binding: AdapterFeatureLayoutBinding) :
+            RecyclerView.ViewHolder(binding.root) {
 
-                  @SuppressLint("SetTextI18n")
-                  fun setData(feature: Feature?) {
+        @SuppressLint("SetTextI18n")
+        fun setData(feature: Feature?) {
 
-                      feature?.let {
+            feature?.let {
 
-                          binding.featureNameTV.text = "${absoluteAdapterPosition + 1}. ${it.name}"
+                binding.featureNameTV.text = "${absoluteAdapterPosition + 1}. ${it.name}"
 
-                          if (it.description == "") {
-                              binding.featureDescriptionTV.text = "no description added!!"
-                          } else {
+                if (it.description == "") {
+                    binding.featureDescriptionTV.text = "no description added!!"
+                } else {
 
-                              binding.featureDescriptionTV
-                                      .boldSpan("Description : ${it.description}",
-                                              0, 10
-                                      )
+                    binding.featureDescriptionTV
+                            .boldSpan("Description : ${it.description}",
+                                    0, 10
+                            )
 
                           }
 
@@ -51,11 +52,14 @@ import com.rohitthebest.projectplanner.utils.boldSpan
 
         init {
 
-            binding.root.setOnClickListener {
+            if (showOrHideUI != SHOW_UI) {
 
-                if (checkForNullability(absoluteAdapterPosition)) {
+                binding.root.setOnClickListener {
 
-                    mListener!!.onFeatureClicked(getItem(absoluteAdapterPosition), absoluteAdapterPosition)
+                    if (checkForNullability(absoluteAdapterPosition)) {
+
+                        mListener!!.onFeatureClicked(getItem(absoluteAdapterPosition), absoluteAdapterPosition)
+                    }
                 }
             }
         }

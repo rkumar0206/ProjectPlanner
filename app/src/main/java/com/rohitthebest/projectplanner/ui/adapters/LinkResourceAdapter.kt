@@ -5,16 +5,18 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.rohitthebest.projectplanner.Constants.SHOW_UI
 import com.rohitthebest.projectplanner.databinding.AdapterLinkResourceLayoutBinding
 import com.rohitthebest.projectplanner.db.entity.Url
+import com.rohitthebest.projectplanner.utils.hide
 
-class LinkResourceAdapter :
-    ListAdapter<Url, LinkResourceAdapter.LinkViewHolder>(DiffUtilCallback()) {
+class LinkResourceAdapter(var showOrHideUi: String = SHOW_UI) :
+        ListAdapter<Url, LinkResourceAdapter.LinkViewHolder>(DiffUtilCallback()) {
 
     private var mListener: OnClickListener? = null
 
     inner class LinkViewHolder(val binding: AdapterLinkResourceLayoutBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+            RecyclerView.ViewHolder(binding.root) {
 
         fun setData(link: Url?) {
 
@@ -30,33 +32,41 @@ class LinkResourceAdapter :
 
         init {
 
+            if (showOrHideUi != SHOW_UI) {
+
+                binding.adapterDeleteLinkBtn.hide()
+                binding.adapterEditLink.hide()
+            } else {
+
+                binding.adapterEditLink.setOnClickListener {
+
+                    if (checkForNullability(absoluteAdapterPosition)) {
+
+                        mListener!!.onEditLinkButtonClicked(
+                                getItem(absoluteAdapterPosition),
+                                absoluteAdapterPosition
+                        )
+                    }
+                }
+
+                binding.adapterDeleteLinkBtn.setOnClickListener {
+
+                    if (checkForNullability(absoluteAdapterPosition)) {
+
+                        mListener!!.onDeleteLinkClicked(
+                                getItem(absoluteAdapterPosition),
+                                absoluteAdapterPosition
+                        )
+                    }
+                }
+
+            }
+
             binding.root.setOnClickListener {
 
                 if (checkForNullability(absoluteAdapterPosition)) {
 
                     mListener!!.onLinkClick(getItem(absoluteAdapterPosition))
-                }
-            }
-
-            binding.adapterEditLink.setOnClickListener {
-
-                if (checkForNullability(absoluteAdapterPosition)) {
-
-                    mListener!!.onEditLinkButtonClicked(
-                        getItem(absoluteAdapterPosition),
-                        absoluteAdapterPosition
-                    )
-                }
-            }
-
-            binding.adapterDeleteLinkBtn.setOnClickListener {
-
-                if (checkForNullability(absoluteAdapterPosition)) {
-
-                    mListener!!.onDeleteLinkClicked(
-                        getItem(absoluteAdapterPosition),
-                        absoluteAdapterPosition
-                    )
                 }
             }
         }

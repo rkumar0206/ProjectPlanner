@@ -5,16 +5,18 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.rohitthebest.projectplanner.Constants.SHOW_UI
 import com.rohitthebest.projectplanner.databinding.AdapterTechnologyLayoutBinding
 import com.rohitthebest.projectplanner.db.entity.Technology
+import com.rohitthebest.projectplanner.utils.invisible
 
-class TechnologyAdapter :
-    ListAdapter<Technology, TechnologyAdapter.TechnologyViewHolder>(DiffUtilCallback()) {
+class TechnologyAdapter(var showOrHideUi: String = SHOW_UI) :
+        ListAdapter<Technology, TechnologyAdapter.TechnologyViewHolder>(DiffUtilCallback()) {
 
     private var mListener: OnClickListener? = null
 
     inner class TechnologyViewHolder(var binding: AdapterTechnologyLayoutBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+            RecyclerView.ViewHolder(binding.root) {
 
         fun setData(technology: Technology?) {
 
@@ -28,25 +30,31 @@ class TechnologyAdapter :
 
         init {
 
-            binding.root.setOnClickListener {
+            if (showOrHideUi != SHOW_UI) {
 
-                if (checkForNullability(absoluteAdapterPosition)) {
+                binding.techAdapterDeleteBtn.invisible()
+            } else {
 
-                    mListener!!.onTechnologyClicked(
-                        getItem(absoluteAdapterPosition),
-                        absoluteAdapterPosition
-                    )
+                binding.root.setOnClickListener {
+
+                    if (checkForNullability(absoluteAdapterPosition)) {
+
+                        mListener!!.onTechnologyClicked(
+                                getItem(absoluteAdapterPosition),
+                                absoluteAdapterPosition
+                        )
+                    }
                 }
-            }
 
-            binding.techAdapterDeleteBtn.setOnClickListener {
+                binding.techAdapterDeleteBtn.setOnClickListener {
 
-                if (checkForNullability(absoluteAdapterPosition)) {
+                    if (checkForNullability(absoluteAdapterPosition)) {
 
-                    mListener!!.onTechnologyDeleteBtnClicked(
-                        getItem(absoluteAdapterPosition),
-                        absoluteAdapterPosition
-                    )
+                        mListener!!.onTechnologyDeleteBtnClicked(
+                                getItem(absoluteAdapterPosition),
+                                absoluteAdapterPosition
+                        )
+                    }
                 }
             }
         }

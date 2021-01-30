@@ -210,7 +210,7 @@ fun TextView.strikeThrough(textToBeStriked: String) {
     this.text = spannableStringBuilder
 }
 
-fun TextView.boldSpan(textToBeBold: String, startIndex: Int = 0, endIndex: Int = textToBeBold.length) {
+fun TextView.boldSpan(textToBeBold: String, startIndex: Int = 0, endIndex: Int = textToBeBold.length - 1) {
 
     try {
         val spannableStringBuilder = SpannableStringBuilder(textToBeBold)

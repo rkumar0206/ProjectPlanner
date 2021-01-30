@@ -6,9 +6,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.rohitthebest.projectplanner.Constants.SHOW_UI
 import com.rohitthebest.projectplanner.databinding.AdapterStringLayoutBinding
+import com.rohitthebest.projectplanner.utils.hide
 
-class StringAdapter : ListAdapter<String, StringAdapter.SkillsViewHolder>(DiffUtilCallback()) {
+class StringAdapter(var showOrHideView: String = SHOW_UI) : ListAdapter<String, StringAdapter.SkillsViewHolder>(DiffUtilCallback()) {
 
     private var mListener: OnClickListener? = null
 
@@ -26,15 +28,32 @@ class StringAdapter : ListAdapter<String, StringAdapter.SkillsViewHolder>(DiffUt
 
         init {
 
-            binding.root.setOnClickListener {
+            if (showOrHideView != SHOW_UI) {
 
-                mListener!!.onStringClicked(getItem(absoluteAdapterPosition), absoluteAdapterPosition)
+                binding.deleteStringBtn.hide()
+            } else {
+
+                binding.root.setOnClickListener {
+
+                    if (checkForNullability(absoluteAdapterPosition)) {
+
+                        mListener!!.onStringClicked(getItem(absoluteAdapterPosition), absoluteAdapterPosition)
+                    }
+                }
+
+                binding.deleteStringBtn.setOnClickListener {
+
+                    if (checkForNullability(absoluteAdapterPosition)) {
+
+                        mListener!!.onDeleteStringClicked(getItem(absoluteAdapterPosition)!!, absoluteAdapterPosition)
+                    }
+                }
             }
+        }
 
-            binding.deleteStringBtn.setOnClickListener {
+        private fun checkForNullability(position: Int): Boolean {
 
-                mListener!!.onDeleteStringClicked(getItem(absoluteAdapterPosition)!!,absoluteAdapterPosition)
-            }
+            return position != RecyclerView.NO_POSITION && mListener != null
         }
     }
 
