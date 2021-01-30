@@ -108,6 +108,13 @@ fun View.openColorPicker(context: Context, defaultColor: Int, textView: TextView
     }
 }
 
+fun View.setBackgroundColorByHexCode(hexCode: String) {
+
+    if (hexCode.isValidHexCode()) {
+
+        this.setBackgroundColor(Color.parseColor(hexCode))
+    }
+}
 
 @SuppressLint("SetTextI18n")
 fun View.openDialogForWritingHexColor(activity: Activity, textView: TextView? = null) {
@@ -235,14 +242,6 @@ fun TextView.boldSpan(textToBeBold: String, startIndex: Int = 0, endIndex: Int =
 fun TextView.changeTextColor(context: Context, color: Int) {
 
     this.setTextColor(ContextCompat.getColor(context, color))
-}
-
-fun View.setBackgroundColorByHexCode(hexCode: String) {
-
-    if (hexCode.isValidHexCode()) {
-
-        this.setBackgroundColor(Color.parseColor(hexCode))
-    }
 }
 
 @SuppressLint("SetTextI18n")

@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.rohitthebest.projectplanner.databinding.AdapterProjectLayoutBinding
 import com.rohitthebest.projectplanner.db.entity.Project
-import com.rohitthebest.projectplanner.utils.WorkingWithDateAndTime
 import com.rohitthebest.projectplanner.utils.hide
+import com.rohitthebest.projectplanner.utils.setDateInTextView
 import com.rohitthebest.projectplanner.utils.show
 
 class ProjectAdapter : ListAdapter<Project, ProjectAdapter.ProjectViewModel>(DiffUtilCallback()) {
@@ -38,8 +38,15 @@ class ProjectAdapter : ListAdapter<Project, ProjectAdapter.ProjectViewModel>(Dif
                         projectDescriptionTV.text = it.description.desc
                     }
 
-                    projectModifiedOnTV.text = "Modified On : " + WorkingWithDateAndTime().convertMillisecondsToDateAndTimePattern(it.modifiedOn)
-                    projectStartedOnTV.text = "Started On : " + WorkingWithDateAndTime().convertMillisecondsToDateAndTimePattern(it.timeStamp)
+                    projectModifiedOnTV.setDateInTextView(
+                            it.modifiedOn,
+                            startingText = "Modified On : "
+                    )
+
+                    projectStartedOnTV.setDateInTextView(
+                            it.timeStamp,
+                            startingText = "Started On : "
+                    )
 
                     setUpThemesColor(it)
                 }

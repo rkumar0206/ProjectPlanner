@@ -2,8 +2,11 @@ package com.rohitthebest.projectplanner.ui.fragments
 
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -27,6 +30,7 @@ import com.rohitthebest.projectplanner.utils.hide
 import com.rohitthebest.projectplanner.utils.show
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
+import java.util.*
 
 private const val TAG = "HomeFragment"
 
@@ -40,6 +44,8 @@ class HomeFragment : Fragment(R.layout.fragment_home),
     private val binding get() = _binding!!
 
     private lateinit var projectAdapter: ProjectAdapter
+
+    private var projectList: List<Project>? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -61,6 +67,8 @@ class HomeFragment : Fragment(R.layout.fragment_home),
                 getProjectList()
             }
         }
+
+        setHasOptionsMenu(true)
     }
 
     private fun getProjectList() {
@@ -68,6 +76,8 @@ class HomeFragment : Fragment(R.layout.fragment_home),
         Log.d(TAG, "getProjectList: ")
 
         projectViewModel.projects.observe(viewLifecycleOwner) {
+
+            projectList = it
 
             setUpRecyclerView(it)
         }
@@ -213,7 +223,6 @@ class HomeFragment : Fragment(R.layout.fragment_home),
 
             }
         }
-
     }
 
     override fun onResourcesClicked(project: Project) {
@@ -308,6 +317,46 @@ class HomeFragment : Fragment(R.layout.fragment_home),
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+
+        inflater.inflate(R.menu.search_menu, menu)
+
+        val searchItem = menu.findItem(R.id.search_menu_btn)
+
+        val searchView = searchItem.actionView as SearchView
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+
+            override fun onQueryTextSubmit(query: String?): Boolean {
+
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+
+                projectList?.let {
+
+                    if (newText?.trim() == "") {
+
+                        projectAdapter = ProjectAdapter()
+
+                        setUpRecyclerView(it)
+                    } else {
+
+                        val filteredList = it.filter { p ->
+
+                            p.description.name.toLowerCase(Locale.ROOT).contains(newText?.trim()?.toLowerCase(Locale.ROOT)!!)
+                        }
+
+                        setUpRecyclerView(filteredList)
+                    }
+                }
+                return true
+            }
+        })
+    }
+
     private fun showProgressBar() {
 
         try {
@@ -327,7 +376,6 @@ class HomeFragment : Fragment(R.layout.fragment_home),
             e.printStackTrace()
         }
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()
