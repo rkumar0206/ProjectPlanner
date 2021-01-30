@@ -113,6 +113,50 @@
                 tools:ignore="SmallSp" />
 
             <TextView
+                android:id="@+id/textView9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add tasks"
+                android:textSize="10sp"
+                app:layout_constraintEnd_toEndOf="@+id/addTasksToProjectBtn"
+                app:layout_constraintStart_toStartOf="@+id/addTasksToProjectBtn"
+                app:layout_constraintTop_toBottomOf="@+id/addTasksToProjectBtn"
+                tools:ignore="SmallSp" />
+
+            <TextView
+                android:id="@+id/textView16"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add bugs"
+                android:textSize="10sp"
+                app:layout_constraintEnd_toEndOf="@+id/addBugsToTheProjectBtn"
+                app:layout_constraintStart_toStartOf="@+id/addBugsToTheProjectBtn"
+                app:layout_constraintTop_toBottomOf="@+id/addBugsToTheProjectBtn"
+                tools:ignore="SmallSp" />
+
+            <TextView
+                android:id="@+id/textView19"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Upload"
+                android:textSize="10sp"
+                app:layout_constraintEnd_toEndOf="@+id/uploadProjectToCloudBtn"
+                app:layout_constraintStart_toStartOf="@+id/uploadProjectToCloudBtn"
+                app:layout_constraintTop_toBottomOf="@+id/uploadProjectToCloudBtn"
+                tools:ignore="SmallSp" />
+
+            <TextView
+                android:id="@+id/textView25"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Delete project"
+                android:textSize="10sp"
+                app:layout_constraintEnd_toEndOf="@+id/deleteProjectBtn"
+                app:layout_constraintStart_toStartOf="@+id/deleteProjectBtn"
+                app:layout_constraintTop_toBottomOf="@+id/deleteProjectBtn"
+                tools:ignore="SmallSp" />
+
+            <TextView
                 android:id="@+id/textView21"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -179,8 +223,9 @@
                 android:layout_marginBottom="5dp"
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/textView24"
-                app:layout_constraintTop_toBottomOf="@+id/textView20">
+                app:layout_constraintTop_toBottomOf="@+id/textView9">
 
                 <View
                     android:id="@+id/primaryColorView"
@@ -237,6 +282,52 @@
                 app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
                 app:layout_constraintStart_toStartOf="@+id/projectNameTV"
                 app:layout_constraintTop_toTopOf="@+id/linearLayout" />
+
+            <ImageView
+                android:id="@+id/addTasksToProjectBtn"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toStartOf="@+id/addBugsToTheProjectBtn"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView20"
+                app:srcCompat="@drawable/task_icon" />
+
+            <ImageView
+                android:id="@+id/addBugsToTheProjectBtn"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                app:layout_constraintBottom_toTopOf="@+id/textView9"
+                app:layout_constraintEnd_toStartOf="@+id/uploadProjectToCloudBtn"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/addTasksToProjectBtn"
+                app:layout_constraintTop_toTopOf="@+id/addTasksToProjectBtn"
+                app:srcCompat="@drawable/bug_icon" />
+
+            <ImageView
+                android:id="@+id/uploadProjectToCloudBtn"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                app:layout_constraintBottom_toTopOf="@+id/textView16"
+                app:layout_constraintEnd_toStartOf="@+id/deleteProjectBtn"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/addBugsToTheProjectBtn"
+                app:layout_constraintTop_toTopOf="@+id/addBugsToTheProjectBtn"
+                app:srcCompat="@drawable/upload_icon" />
+
+            <ImageView
+                android:id="@+id/deleteProjectBtn"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:scaleType="centerInside"
+                app:layout_constraintBottom_toTopOf="@+id/textView16"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/uploadProjectToCloudBtn"
+                app:layout_constraintTop_toTopOf="@+id/addBugsToTheProjectBtn"
+                app:srcCompat="@drawable/ic_baseline_delete_24"
+                app:tint="#FF6E40" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

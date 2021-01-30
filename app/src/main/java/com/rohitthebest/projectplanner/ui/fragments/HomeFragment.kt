@@ -157,6 +157,8 @@ class HomeFragment : Fragment(R.layout.fragment_home),
 
                 positiveButton(text = "Add/Edit feature") {
 
+                    dismiss()
+
                     openProjectFragmentWithProjectAsMessage(project)
                 }
             }
@@ -185,7 +187,10 @@ class HomeFragment : Fragment(R.layout.fragment_home),
                         LinearLayoutManager(requireContext())
                 )
 
+
                 positiveButton(text = "Add/Edit skill") {
+
+                    dismiss()
 
                     openProjectFragmentWithProjectAsMessage(project)
                 }
@@ -218,6 +223,7 @@ class HomeFragment : Fragment(R.layout.fragment_home),
 
                 positiveButton(text = "Add/Edit technologies") {
 
+                    dismiss()
                     openProjectFragmentWithProjectAsMessage(project)
                 }
 
@@ -251,6 +257,7 @@ class HomeFragment : Fragment(R.layout.fragment_home),
 
                 positiveButton(text = "Add/Edit resource") {
 
+                    dismiss()
                     openProjectFragmentWithProjectAsMessage(project)
                 }
             }
