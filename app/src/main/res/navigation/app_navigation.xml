@@ -9,18 +9,31 @@
         android:id="@+id/homeFragment"
         android:name="com.rohitthebest.projectplanner.ui.fragments.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" >
+        tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_homeFragment_to_addEditProjectFragment"
             app:destination="@id/addEditProjectFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_taskFragment"
+            app:destination="@id/taskFragment" />
     </fragment>
     <fragment
         android:id="@+id/addEditProjectFragment"
         android:name="com.rohitthebest.projectplanner.ui.fragments.AddEditProjectFragment"
         android:label="fragment_add_edit_project"
-        tools:layout="@layout/fragment_add_edit_project" >
+        tools:layout="@layout/fragment_add_edit_project">
         <argument
             android:name="projectMessage"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/taskFragment"
+        android:name="com.rohitthebest.projectplanner.ui.fragments.TaskFragment"
+        android:label="fragment_task"
+        tools:layout="@layout/fragment_task">
+        <argument
+            android:name="message"
             app:argType="string"
             app:nullable="true" />
     </fragment>

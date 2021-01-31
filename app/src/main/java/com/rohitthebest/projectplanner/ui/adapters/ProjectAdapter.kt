@@ -14,11 +14,11 @@ import com.rohitthebest.projectplanner.utils.hide
 import com.rohitthebest.projectplanner.utils.setDateInTextView
 import com.rohitthebest.projectplanner.utils.show
 
-class ProjectAdapter : ListAdapter<Project, ProjectAdapter.ProjectViewModel>(DiffUtilCallback()) {
+class ProjectAdapter : ListAdapter<Project, ProjectAdapter.ProjectViewHolder>(DiffUtilCallback()) {
 
     private var mListener: OnClickListener? = null
 
-    inner class ProjectViewModel(val binding: AdapterProjectLayoutBinding) : RecyclerView.ViewHolder(binding.root), View.OnClickListener {
+    inner class ProjectViewHolder(val binding: AdapterProjectLayoutBinding) : RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
         @SuppressLint("SetTextI18n")
         fun setData(project: Project?) {
@@ -149,14 +149,14 @@ class ProjectAdapter : ListAdapter<Project, ProjectAdapter.ProjectViewModel>(Dif
         override fun areContentsTheSame(oldItem: Project, newItem: Project): Boolean = oldItem == newItem
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProjectViewModel {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProjectViewHolder {
 
         val binding = AdapterProjectLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
-        return ProjectViewModel(binding)
+        return ProjectViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: ProjectViewModel, position: Int) {
+    override fun onBindViewHolder(holder: ProjectViewHolder, position: Int) {
 
         holder.setData(getItem(position))
     }
