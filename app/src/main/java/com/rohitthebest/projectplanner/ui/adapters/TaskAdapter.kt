@@ -1,6 +1,8 @@
 package com.rohitthebest.projectplanner.ui.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -8,13 +10,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.rohitthebest.projectplanner.Constants.TRUE
 import com.rohitthebest.projectplanner.databinding.AdapterTaskLayoutBinding
 import com.rohitthebest.projectplanner.db.entity.Task
+import com.rohitthebest.projectplanner.utils.hide
+import com.rohitthebest.projectplanner.utils.show
 import com.rohitthebest.projectplanner.utils.strikeThrough
+
+private const val TAG = "TaskAdapter"
 
 class TaskAdapter : ListAdapter<Task, TaskAdapter.TaskViewHolder>(DiffUtilCallback()) {
 
     private var mListener: OnClickListener? = null
 
-    inner class TaskViewHolder(val binding: AdapterTaskLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class TaskViewHolder(val binding: AdapterTaskLayoutBinding) : RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
         fun setData(task: Task?) {
 
@@ -22,12 +28,66 @@ class TaskAdapter : ListAdapter<Task, TaskAdapter.TaskViewHolder>(DiffUtilCallba
 
                 if (it.isCompleted == TRUE) {
 
+                    Log.d(TAG, "setData: TRUE")
+
                     binding.checkBoxTaskName.isChecked = true
+                    binding.editTaskButton.hide()
                     binding.checkBoxTaskName.strikeThrough(it.taskName)
+                } else {
+
+                    Log.d(TAG, "setData: FALSE")
+
+                    binding.editTaskButton.show()
+                    binding.checkBoxTaskName.isChecked = false
+                    binding.checkBoxTaskName.text = it.taskName
                 }
-                binding.checkBoxTaskName.text = it.taskName
             }
         }
+
+        init {
+
+            binding.checkBoxTaskName.setOnClickListener(this)
+
+            binding.clearTopicButton.setOnClickListener(this)
+
+            binding.editTaskButton.setOnClickListener(this)
+        }
+
+        override fun onClick(v: View?) {
+
+            if (checkForNullability(absoluteAdapterPosition)) {
+
+                when (v?.id) {
+
+                    binding.checkBoxTaskName.id -> {
+
+                        mListener!!.onCheckChanged(
+                                getItem(absoluteAdapterPosition)
+                        )
+
+                    }
+
+                    binding.editTaskButton.id -> {
+
+                        mListener!!.onEditTaskClicked(getItem(absoluteAdapterPosition))
+                    }
+
+                    binding.clearTopicButton.id -> {
+
+                        mListener!!.onDeleteTaskClicked(getItem(
+                                absoluteAdapterPosition
+                        ))
+                    }
+                }
+            }
+
+        }
+
+        private fun checkForNullability(position: Int): Boolean {
+
+            return position != RecyclerView.NO_POSITION && mListener != null
+        }
+
     }
 
     class DiffUtilCallback : DiffUtil.ItemCallback<Task>() {
@@ -51,7 +111,9 @@ class TaskAdapter : ListAdapter<Task, TaskAdapter.TaskViewHolder>(DiffUtilCallba
 
     interface OnClickListener {
 
-        fun onItemClick(task: Task)
+        fun onCheckChanged(task: Task)
+        fun onEditTaskClicked(task: Task)
+        fun onDeleteTaskClicked(task: Task)
     }
 
     fun setOnClickListener(listener: OnClickListener) {

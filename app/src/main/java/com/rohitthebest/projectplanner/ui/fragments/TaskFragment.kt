@@ -8,7 +8,11 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.input.input
+import com.google.android.material.snackbar.Snackbar
 import com.rohitthebest.projectplanner.Constants.FALSE
+import com.rohitthebest.projectplanner.Constants.TRUE
 import com.rohitthebest.projectplanner.R
 import com.rohitthebest.projectplanner.databinding.FragmentTaskBinding
 import com.rohitthebest.projectplanner.db.entity.Project
@@ -19,9 +23,9 @@ import com.rohitthebest.projectplanner.ui.viewModels.TaskViewModel
 import com.rohitthebest.projectplanner.utils.Functions.Companion.generateKey
 import com.rohitthebest.projectplanner.utils.Functions.Companion.hideKeyBoard
 import com.rohitthebest.projectplanner.utils.Functions.Companion.showKeyboard
-import com.rohitthebest.projectplanner.utils.Functions.Companion.showToast
 import com.rohitthebest.projectplanner.utils.hide
 import com.rohitthebest.projectplanner.utils.hideViewBySlidingAnimation
+import com.rohitthebest.projectplanner.utils.removeFocus
 import com.rohitthebest.projectplanner.utils.showViewBySlidingAnimation
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -54,6 +58,30 @@ class TaskFragment : Fragment(R.layout.fragment_task), View.OnClickListener, Tas
         textWatcher()
     }
 
+    private fun getMessage() {
+
+        try {
+
+            if (!arguments?.isEmpty!!) {
+
+                val args = arguments?.let {
+
+                    TaskFragmentArgs.fromBundle(it)
+                }
+
+                val projectKey = args?.message
+
+                getProjectFromDatabase(projectKey!!)
+
+                getTasksFromProjectKey(projectKey)
+
+            }
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
     private fun textWatcher() {
 
         binding.etNewTask.editText?.addTextChangedListener(object : TextWatcher {
@@ -77,30 +105,6 @@ class TaskFragment : Fragment(R.layout.fragment_task), View.OnClickListener, Tas
 
             override fun afterTextChanged(s: Editable?) {}
         })
-    }
-
-    private fun getMessage() {
-
-        try {
-
-            if (!arguments?.isEmpty!!) {
-
-                val args = arguments?.let {
-
-                    TaskFragmentArgs.fromBundle(it)
-                }
-
-                val projectKey = args?.message
-
-                getProjectFromDatabase(projectKey!!)
-
-                getTasksFromProjectKey(projectKey)
-
-            }
-
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
     }
 
     private fun getTasksFromProjectKey(projectKey: String) {
@@ -149,10 +153,52 @@ class TaskFragment : Fragment(R.layout.fragment_task), View.OnClickListener, Tas
 
     }
 
+    override fun onCheckChanged(task: Task) {
 
-    override fun onItemClick(task: Task) {
+        binding.etNewTask.editText?.removeFocus()
 
-        showToast(requireContext(), task.taskKey)
+        task.isCompleted = if (task.isCompleted == FALSE) TRUE else FALSE
+
+        taskViewModel.updateTask(task)
+    }
+
+    override fun onEditTaskClicked(task: Task) {
+
+        binding.etNewTask.editText?.removeFocus()
+
+        MaterialDialog(requireContext()).show {
+
+            title(text = "Edit Task")
+
+            input(
+                    hint = "Task name",
+                    prefill = task.taskName,
+                    allowEmpty = false
+            ) { _, charSequence ->
+
+                task.taskName = charSequence.toString()
+                taskViewModel.updateTask(task)
+
+                dismiss()
+            }
+
+            positiveButton(text = "Save")
+            negativeButton(text = "Cancel")
+        }
+    }
+
+    override fun onDeleteTaskClicked(task: Task) {
+
+        binding.etNewTask.editText?.removeFocus()
+
+        taskViewModel.deleteTask(task)
+
+        Snackbar.make(binding.root, "task deleted", Snackbar.LENGTH_LONG)
+                .setAction("Undo") {
+
+                    taskViewModel.insertTask(task)
+                }
+                .show()
     }
 
     private fun getProjectFromDatabase(projectKey: String) {
@@ -232,4 +278,6 @@ class TaskFragment : Fragment(R.layout.fragment_task), View.OnClickListener, Tas
 
         _binding = null
     }
+
+
 }
