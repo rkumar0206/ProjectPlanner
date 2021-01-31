@@ -10,6 +10,7 @@ import android.text.style.StrikethroughSpan
 import android.text.style.StyleSpan
 import android.view.View
 import android.view.animation.AnimationUtils
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -202,7 +203,7 @@ fun View.openDialogForWritingHexColor(activity: Activity, textView: TextView? = 
     }
 }
 
-fun TextView.strikeThrough(textToBeStriked: String) {
+fun CheckBox.strikeThrough(textToBeStriked: String) {
 
     val spannableStringBuilder = SpannableStringBuilder(textToBeStriked)
     val strikeThroughSpan = StrikethroughSpan()
