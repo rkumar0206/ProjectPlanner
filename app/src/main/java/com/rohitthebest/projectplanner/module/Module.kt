@@ -3,7 +3,9 @@ package com.rohitthebest.projectplanner.module
 import android.content.Context
 import androidx.room.Room
 import com.rohitthebest.projectplanner.Constants.PROJECT_DATABASE_NAME
+import com.rohitthebest.projectplanner.Constants.TASK_DATABASE_NAME
 import com.rohitthebest.projectplanner.db.databases.ProjectDatabase
+import com.rohitthebest.projectplanner.db.databases.TaskDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,14 +22,31 @@ object Module {
     fun providesProjectDatabase(
         @ApplicationContext context: Context
     ) = Room.databaseBuilder(
-        context,
-        ProjectDatabase::class.java,
-        PROJECT_DATABASE_NAME
+            context,
+            ProjectDatabase::class.java,
+            PROJECT_DATABASE_NAME
     )
-        .fallbackToDestructiveMigration()
-        .build()
+            .fallbackToDestructiveMigration()
+            .build()
 
     @Provides
     @Singleton
     fun providesProjectDao(db: ProjectDatabase) = db.getProjectDao()
+
+
+    @Provides
+    @Singleton
+    fun providesTaskDatabase(
+            @ApplicationContext context: Context
+    ) = Room.databaseBuilder(
+            context,
+            TaskDatabase::class.java,
+            TASK_DATABASE_NAME
+    )
+            .fallbackToDestructiveMigration()
+            .build()
+
+    @Provides
+    @Singleton
+    fun providesTaskDao(db: TaskDatabase) = db.getTaskDao()
 }
