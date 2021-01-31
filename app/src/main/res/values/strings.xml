@@ -30,7 +30,7 @@
     <string name="skills">Skills</string>
     <string name="technology">Technology</string>
     <string name="search">Search</string>
-    <string name="add_your_first_topic">Add Your first topic</string>
+    <string name="add_your_first_task">Add Your first task</string>
     <string name="add_new_task">Add new Task</string>
     <string name="add_topic">Add topic</string>
 </resources>

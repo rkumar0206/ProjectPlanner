@@ -265,9 +265,13 @@ class HomeFragment : Fragment(R.layout.fragment_home),
         }
     }
 
-    override fun onAddTaskBtnClicked(project: Project) {
+    override fun onTaskBtnClicked(project: Project) {
 
-        //todo : add tasks
+        val action = HomeFragmentDirections.actionHomeFragmentToTaskFragment(
+                project.projectKey
+        )
+
+        findNavController().navigate(action)
     }
 
     override fun onAddBugsBtnClicked(project: Project) {

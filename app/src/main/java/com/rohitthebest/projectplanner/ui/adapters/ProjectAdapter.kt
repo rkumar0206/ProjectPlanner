@@ -98,7 +98,7 @@ class ProjectAdapter : ListAdapter<Project, ProjectAdapter.ProjectViewHolder>(Di
 
                     binding.addTasksToProjectBtn.id -> {
 
-                        mListener!!.onAddTaskBtnClicked(getItem(absoluteAdapterPosition))
+                        mListener!!.onTaskBtnClicked(getItem(absoluteAdapterPosition))
                     }
                     binding.addBugsToTheProjectBtn.id -> {
 
@@ -170,7 +170,7 @@ class ProjectAdapter : ListAdapter<Project, ProjectAdapter.ProjectViewHolder>(Di
         fun onTechnologyClicked(project: Project)
         fun onResourcesClicked(project: Project)
 
-        fun onAddTaskBtnClicked(project: Project)
+        fun onTaskBtnClicked(project: Project)
         fun onAddBugsBtnClicked(project: Project)
         fun onUploadBtnClicked(project: Project)
         fun onDeleteProjectBtnClicked(project: Project)

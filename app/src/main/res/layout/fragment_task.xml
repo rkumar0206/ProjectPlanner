@@ -107,7 +107,7 @@
         android:id="@+id/addFirstTaskBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/add_your_first_topic"
+        android:text="@string/add_your_first_task"
         android:textAllCaps="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
