@@ -116,7 +116,7 @@
                 android:id="@+id/textView9"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Add tasks"
+                android:text="Tasks"
                 android:textSize="10sp"
                 app:layout_constraintEnd_toEndOf="@+id/addTasksToProjectBtn"
                 app:layout_constraintStart_toStartOf="@+id/addTasksToProjectBtn"
@@ -127,7 +127,7 @@
                 android:id="@+id/textView16"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Add bugs"
+                android:text="Bug fixes"
                 android:textSize="10sp"
                 app:layout_constraintEnd_toEndOf="@+id/addBugsToTheProjectBtn"
                 app:layout_constraintStart_toStartOf="@+id/addBugsToTheProjectBtn"
@@ -303,7 +303,7 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/addTasksToProjectBtn"
                 app:layout_constraintTop_toTopOf="@+id/addTasksToProjectBtn"
-                app:srcCompat="@drawable/bug_icon" />
+                app:srcCompat="@drawable/ic_bug_fixing" />
 
             <ImageView
                 android:id="@+id/uploadProjectToCloudBtn"
@@ -314,20 +314,18 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/addBugsToTheProjectBtn"
                 app:layout_constraintTop_toTopOf="@+id/addBugsToTheProjectBtn"
-                app:srcCompat="@drawable/upload_icon" />
+                app:srcCompat="@drawable/ic_uploading" />
 
             <ImageView
                 android:id="@+id/deleteProjectBtn"
                 android:layout_width="75dp"
                 android:layout_height="75dp"
-                android:scaleType="centerInside"
                 app:layout_constraintBottom_toTopOf="@+id/textView16"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/uploadProjectToCloudBtn"
                 app:layout_constraintTop_toTopOf="@+id/addBugsToTheProjectBtn"
-                app:srcCompat="@drawable/ic_baseline_delete_24"
-                app:tint="#FF6E40" />
+                app:srcCompat="@drawable/ic_delete_illustration" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

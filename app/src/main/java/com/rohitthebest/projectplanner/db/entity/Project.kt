@@ -3,6 +3,7 @@ package com.rohitthebest.projectplanner.db.entity
 import android.graphics.Color
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.rohitthebest.projectplanner.Constants.FALSE
 
 @Entity(tableName = "project_table")
 data class Project(
@@ -17,8 +18,12 @@ data class Project(
         var estimatedTimeForCompleting: Long? = null,
         var resources: Resource? = null,
         var theme: Theme? = null,
-        var colors : ArrayList<Colors>,
-        var iconLink: String? = null
+        var colors: ArrayList<Colors>,
+        var iconLink: String? = null,
+
+        // vars for cloud uploading
+        var isSynced: String = FALSE,
+        var uid: String = ""
 ) {
 
     constructor() : this(
@@ -34,6 +39,8 @@ data class Project(
             Resource(),
             Theme(),
             ArrayList(),
+            "",
+            FALSE,
             ""
     )
 }
