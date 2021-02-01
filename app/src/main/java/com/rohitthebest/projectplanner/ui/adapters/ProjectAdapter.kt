@@ -5,16 +5,19 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.rohitthebest.projectplanner.Constants.TRUE
 import com.rohitthebest.projectplanner.databinding.AdapterProjectLayoutBinding
 import com.rohitthebest.projectplanner.db.entity.Project
+import com.rohitthebest.projectplanner.ui.viewModels.TaskViewModel
 import com.rohitthebest.projectplanner.utils.hide
 import com.rohitthebest.projectplanner.utils.setDateInTextView
 import com.rohitthebest.projectplanner.utils.show
 
-class ProjectAdapter : ListAdapter<Project, ProjectAdapter.ProjectViewHolder>(DiffUtilCallback()) {
+class ProjectAdapter(val taskViewModel: TaskViewModel, val lifeCycleOwner: LifecycleOwner) : ListAdapter<Project, ProjectAdapter.ProjectViewHolder>(DiffUtilCallback()) {
 
     private var mListener: OnClickListener? = null
 
@@ -47,6 +50,73 @@ class ProjectAdapter : ListAdapter<Project, ProjectAdapter.ProjectViewHolder>(Di
                             it.timeStamp,
                             startingText = "Started On : "
                     )
+
+                    taskViewModel.getAllTaskByProjectKey(it.projectKey).observe(lifeCycleOwner) {
+
+                        if (it.isNotEmpty()) {
+
+                            val inCompleted = it.filter { t ->
+
+                                t.isCompleted != TRUE
+                            }
+
+                            when {
+                                inCompleted.size in 1..99 -> {
+
+                                    numberOfTasksCV.show()
+                                    numberOfTasksTV.text = "${inCompleted.size}"
+                                }
+                                inCompleted.size > 99 -> {
+
+                                    numberOfTasksCV.show()
+                                    numberOfTasksTV.text = "99+"
+                                }
+                                else -> {
+                                    numberOfTasksCV.hide()
+                                }
+                            }
+
+                        }
+                    }
+
+/*
+                    when {
+                        numberOfTasks != 0 -> {
+
+                            numberOfTasksCV.show()
+                            numberOfTasksTV.text = "$numberOfTasks"
+                        }
+                        numberOfTasks > 100 -> {
+
+                            numberOfTasksCV.show()
+                            numberOfTasksTV.text = "$numberOfTasks +"
+                        }
+                        else -> {
+
+                            numberOfTasksCV.hide()
+                        }
+                    }
+*/
+
+/*
+                    when {
+                        numberOfBugs != 0 -> {
+
+                            noOfBugsCV.show()
+                            numberOfBugsTV.text = "$numberOfBugs"
+                        }
+                        numberOfBugs > 100 -> {
+
+                            noOfBugsCV.show()
+                            numberOfBugsTV.text = "$numberOfBugs +"
+                        }
+                        else -> {
+
+                            noOfBugsCV.hide()
+                        }
+                    }
+*/
+
 
                     setUpThemesColor(it)
                 }

@@ -22,6 +22,7 @@ import com.rohitthebest.projectplanner.db.entity.Project
 import com.rohitthebest.projectplanner.db.entity.Url
 import com.rohitthebest.projectplanner.ui.adapters.*
 import com.rohitthebest.projectplanner.ui.viewModels.ProjectViewModel
+import com.rohitthebest.projectplanner.ui.viewModels.TaskViewModel
 import com.rohitthebest.projectplanner.utils.Functions
 import com.rohitthebest.projectplanner.utils.Functions.Companion.isInternetAvailable
 import com.rohitthebest.projectplanner.utils.Functions.Companion.openLinkInBrowser
@@ -41,6 +42,7 @@ class HomeFragment : Fragment(R.layout.fragment_home),
         View.OnClickListener, ProjectAdapter.OnClickListener, LinkResourceAdapter.OnClickListener {
 
     private val projectViewModel by viewModels<ProjectViewModel>()
+    private val taskViewModel by viewModels<TaskViewModel>()
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -56,7 +58,7 @@ class HomeFragment : Fragment(R.layout.fragment_home),
 
         initListeners()
 
-        projectAdapter = ProjectAdapter()
+        projectAdapter = ProjectAdapter(taskViewModel, viewLifecycleOwner)
 
         showProgressBar()
 
@@ -72,6 +74,7 @@ class HomeFragment : Fragment(R.layout.fragment_home),
 
         setHasOptionsMenu(true)
     }
+
 
     private fun getProjectList() {
 
@@ -396,7 +399,7 @@ class HomeFragment : Fragment(R.layout.fragment_home),
 
                     if (newText?.trim() == "") {
 
-                        projectAdapter = ProjectAdapter()
+                        projectAdapter = ProjectAdapter(taskViewModel, viewLifecycleOwner)
 
                         setUpRecyclerView(it)
                     } else {

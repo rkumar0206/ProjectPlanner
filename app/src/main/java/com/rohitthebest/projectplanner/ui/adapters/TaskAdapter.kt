@@ -8,11 +8,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.rohitthebest.projectplanner.Constants.TRUE
+import com.rohitthebest.projectplanner.R
 import com.rohitthebest.projectplanner.databinding.AdapterTaskLayoutBinding
 import com.rohitthebest.projectplanner.db.entity.Task
-import com.rohitthebest.projectplanner.utils.hide
-import com.rohitthebest.projectplanner.utils.show
-import com.rohitthebest.projectplanner.utils.strikeThrough
+import com.rohitthebest.projectplanner.utils.*
 
 private const val TAG = "TaskAdapter"
 
@@ -33,6 +32,7 @@ class TaskAdapter : ListAdapter<Task, TaskAdapter.TaskViewHolder>(DiffUtilCallba
                     binding.checkBoxTaskName.isChecked = true
                     binding.editTaskButton.hide()
                     binding.checkBoxTaskName.strikeThrough(it.taskName)
+                    binding.checkBoxTaskName.changeTextColor(itemView.context, R.color.secondary_text_color)
                 } else {
 
                     Log.d(TAG, "setData: FALSE")
@@ -41,6 +41,12 @@ class TaskAdapter : ListAdapter<Task, TaskAdapter.TaskViewHolder>(DiffUtilCallba
                     binding.checkBoxTaskName.isChecked = false
                     binding.checkBoxTaskName.text = it.taskName
                 }
+
+                binding.taskAddedOnTV.setDateInTextView(
+                        it.timeStamp,
+                        "dd-MM-yyyy, hh:mm a",
+                        "Added On : "
+                )
             }
         }
 

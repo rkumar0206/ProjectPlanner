@@ -303,6 +303,7 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/addTasksToProjectBtn"
                 app:layout_constraintTop_toTopOf="@+id/addTasksToProjectBtn"
+                app:layout_constraintVertical_bias="0.0"
                 app:srcCompat="@drawable/ic_bug_fixing" />
 
             <ImageView
@@ -326,6 +327,71 @@
                 app:layout_constraintStart_toEndOf="@+id/uploadProjectToCloudBtn"
                 app:layout_constraintTop_toTopOf="@+id/addBugsToTheProjectBtn"
                 app:srcCompat="@drawable/ic_delete_illustration" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/noOfBugsCV"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginBottom="32dp"
+                app:cardBackgroundColor="@color/error_color"
+                app:cardCornerRadius="10000dp"
+                app:layout_constraintBottom_toTopOf="@+id/textView16"
+                app:layout_constraintEnd_toEndOf="@+id/addBugsToTheProjectBtn"
+                app:layout_constraintTop_toTopOf="@+id/addBugsToTheProjectBtn"
+                app:layout_constraintVertical_bias="0.0">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/numberOfBugsTV"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:maxLength="5"
+                        android:textColor="@color/white"
+                        android:textSize="8sp"
+                        tools:ignore="SmallSp"
+                        tools:text="99+" />
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/numberOfTasksCV"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginBottom="32dp"
+                app:cardBackgroundColor="@color/error_color"
+                app:cardCornerRadius="10000dp"
+                app:layout_constraintBottom_toTopOf="@+id/textView9"
+                app:layout_constraintEnd_toEndOf="@+id/addTasksToProjectBtn"
+                app:layout_constraintTop_toTopOf="@+id/addTasksToProjectBtn"
+                app:layout_constraintVertical_bias="0.0">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/numberOfTasksTV"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:maxLength="5"
+                        android:text="99+"
+                        android:textColor="@color/white"
+                        android:textSize="8sp"
+                        tools:ignore="SmallSp" />
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

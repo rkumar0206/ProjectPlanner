@@ -17,4 +17,7 @@
     <color name="fab_color">#304FFE</color>
     <color name="url_text_color">#2962FF</color>
     <color name="secondary_text_color">#757575</color>
+    <color name="error_color">#EA1601</color>
+    <color name="success_color">#64BC26</color>
+    <color name="warning_color">#FAD202</color>
 </resources>

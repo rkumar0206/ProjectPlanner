@@ -240,7 +240,7 @@ fun TextView.boldSpan(textToBeBold: String, startIndex: Int = 0, endIndex: Int =
     }
 }
 
-fun TextView.changeTextColor(context: Context, color: Int) {
+fun CheckBox.changeTextColor(context: Context, color: Int) {
 
     this.setTextColor(ContextCompat.getColor(context, color))
 }
