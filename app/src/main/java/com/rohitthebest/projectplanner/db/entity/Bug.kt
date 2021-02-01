@@ -13,4 +13,14 @@ data class Bug(
         var possibleSolution: String?,
         var attachedURL: ArrayList<Url>
 ) {
+
+    constructor() : this(
+            System.currentTimeMillis(),
+            "",
+            "",
+            "",
+            "",
+            "",
+            ArrayList()
+    )
 }
