@@ -69,6 +69,14 @@ class LinkResourceAdapter(var showOrHideUi: String = SHOW_UI) :
                     mListener!!.onLinkClick(getItem(absoluteAdapterPosition))
                 }
             }
+
+            binding.linkResourceShareBtn.setOnClickListener {
+
+                if (checkForNullability(absoluteAdapterPosition)) {
+
+                    mListener!!.onShareLinkBtnClicked(getItem(absoluteAdapterPosition).url)
+                }
+            }
         }
 
         private fun checkForNullability(position: Int): Boolean {
@@ -106,6 +114,7 @@ class LinkResourceAdapter(var showOrHideUi: String = SHOW_UI) :
         fun onLinkClick(link: Url)
         fun onEditLinkButtonClicked(link: Url, position: Int)
         fun onDeleteLinkClicked(link: Url, position: Int)
+        fun onShareLinkBtnClicked(url: String)
     }
 
     fun setOnClickListener(listener: OnClickListener) {

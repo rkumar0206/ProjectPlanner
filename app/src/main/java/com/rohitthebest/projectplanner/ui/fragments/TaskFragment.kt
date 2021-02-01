@@ -278,6 +278,4 @@ class TaskFragment : Fragment(R.layout.fragment_task), View.OnClickListener, Tas
 
         _binding = null
     }
-
-
 }

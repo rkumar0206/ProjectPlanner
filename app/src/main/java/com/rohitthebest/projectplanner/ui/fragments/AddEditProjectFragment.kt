@@ -950,6 +950,15 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
 
     }
 
+    override fun onShareLinkBtnClicked(url: String) {
+
+        Functions.shareAsText(
+                url,
+                "URL",
+                requireContext()
+        )
+    }
+
     //showing bottomSheet for adding link resource to the list
     private fun showBottomSheetDialogForAddingLinkResource(url: Url? = null, position: Int = 0) {
 

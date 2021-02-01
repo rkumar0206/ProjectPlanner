@@ -52,7 +52,7 @@ class FeatureAdapter(var showOrHideUI: String = SHOW_UI) : ListAdapter<Feature, 
 
         init {
 
-            if (showOrHideUI != SHOW_UI) {
+            if (showOrHideUI == SHOW_UI) {
 
                 binding.root.setOnClickListener {
 

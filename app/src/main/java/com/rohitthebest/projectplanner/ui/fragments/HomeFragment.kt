@@ -22,6 +22,7 @@ import com.rohitthebest.projectplanner.db.entity.Project
 import com.rohitthebest.projectplanner.db.entity.Url
 import com.rohitthebest.projectplanner.ui.adapters.*
 import com.rohitthebest.projectplanner.ui.viewModels.ProjectViewModel
+import com.rohitthebest.projectplanner.utils.Functions
 import com.rohitthebest.projectplanner.utils.Functions.Companion.isInternetAvailable
 import com.rohitthebest.projectplanner.utils.Functions.Companion.openLinkInBrowser
 import com.rohitthebest.projectplanner.utils.Functions.Companion.showNoInternetMessage
@@ -321,6 +322,15 @@ class HomeFragment : Fragment(R.layout.fragment_home),
 
     override fun onDeleteLinkClicked(link: Url, position: Int) {
         //TODO("Not yet implemented")
+    }
+
+    override fun onShareLinkBtnClicked(url: String) {
+
+        Functions.shareAsText(
+                url,
+                "URL",
+                requireContext()
+        )
     }
 
     private fun initListeners() {
