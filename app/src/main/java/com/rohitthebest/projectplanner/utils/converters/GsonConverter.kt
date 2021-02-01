@@ -97,10 +97,10 @@ class GsonConverter {
     }
 
     @TypeConverter
-    fun convertListOfUrlToString(urls: ArrayList<Url>): String = gson.toJson(urls)
+    fun convertArrayListOfUrlToString(urls: ArrayList<Url>): String = gson.toJson(urls)
 
     @TypeConverter
-    fun convertJsonStringToUrlList(jsonString: String): ArrayList<Url> {
+    fun convertJsonStringToUrlArrayList(jsonString: String): ArrayList<Url> {
 
         val type = object : TypeToken<ArrayList<Url>>() {}.type
 
