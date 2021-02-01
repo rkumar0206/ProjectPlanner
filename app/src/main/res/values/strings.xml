@@ -33,4 +33,5 @@
     <string name="add_your_first_task">Add Your first task</string>
     <string name="add_new_task">Add new Task</string>
     <string name="add_topic">Add topic</string>
+    <string name="fabbutton">fabButton</string>
 </resources>
