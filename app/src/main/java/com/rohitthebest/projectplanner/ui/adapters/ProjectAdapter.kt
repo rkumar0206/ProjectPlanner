@@ -129,11 +129,11 @@ class ProjectAdapter(val taskViewModel: TaskViewModel, val lifeCycleOwner: Lifec
 
                     binding.addTasksToProjectBtn.id -> {
 
-                        mListener!!.onTaskBtnClicked(getItem(absoluteAdapterPosition))
+                        mListener!!.onTaskBtnClicked(getItem(absoluteAdapterPosition).projectKey)
                     }
                     binding.addBugsToTheProjectBtn.id -> {
 
-                        mListener!!.onAddBugsBtnClicked(getItem(absoluteAdapterPosition))
+                        mListener!!.onAddBugsBtnClicked(getItem(absoluteAdapterPosition).projectKey)
                     }
                     binding.uploadProjectToCloudBtn.id -> {
 
@@ -201,8 +201,8 @@ class ProjectAdapter(val taskViewModel: TaskViewModel, val lifeCycleOwner: Lifec
         fun onTechnologyClicked(project: Project)
         fun onResourcesClicked(project: Project)
 
-        fun onTaskBtnClicked(project: Project)
-        fun onAddBugsBtnClicked(project: Project)
+        fun onTaskBtnClicked(projectKey: String)
+        fun onAddBugsBtnClicked(projectKey: String)
         fun onUploadBtnClicked(project: Project)
         fun onDeleteProjectBtnClicked(project: Project)
     }

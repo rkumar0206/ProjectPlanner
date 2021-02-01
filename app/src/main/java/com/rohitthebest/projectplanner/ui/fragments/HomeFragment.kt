@@ -271,17 +271,23 @@ class HomeFragment : Fragment(R.layout.fragment_home),
         }
     }
 
-    override fun onTaskBtnClicked(project: Project) {
+    override fun onTaskBtnClicked(projectKey: String) {
 
         val action = HomeFragmentDirections.actionHomeFragmentToTaskFragment(
-                project.projectKey
+                projectKey
         )
 
         findNavController().navigate(action)
     }
 
-    override fun onAddBugsBtnClicked(project: Project) {
-        //TODO("Not yet implemented")
+    override fun onAddBugsBtnClicked(projectKey: String) {
+
+        val action = HomeFragmentDirections.actionHomeFragmentToBugFragment(
+                projectKey
+        )
+
+        findNavController().navigate(action)
+
     }
 
     override fun onUploadBtnClicked(project: Project) {

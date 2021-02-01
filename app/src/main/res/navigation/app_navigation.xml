@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_homeFragment_to_taskFragment"
             app:destination="@id/taskFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_bugFragment"
+            app:destination="@id/bugFragment" />
     </fragment>
     <fragment
         android:id="@+id/addEditProjectFragment"
@@ -34,6 +37,16 @@
         tools:layout="@layout/fragment_task">
         <argument
             android:name="message"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/bugFragment"
+        android:name="com.rohitthebest.projectplanner.ui.fragments.BugFragment"
+        android:label="fragment_bug"
+        tools:layout="@layout/fragment_bug">
+        <argument
+            android:name="projectMessage"
             app:argType="string"
             app:nullable="true" />
     </fragment>
