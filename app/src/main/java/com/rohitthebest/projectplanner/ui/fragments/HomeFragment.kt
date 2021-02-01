@@ -21,6 +21,7 @@ import com.rohitthebest.projectplanner.databinding.FragmentHomeBinding
 import com.rohitthebest.projectplanner.db.entity.Project
 import com.rohitthebest.projectplanner.db.entity.Url
 import com.rohitthebest.projectplanner.ui.adapters.*
+import com.rohitthebest.projectplanner.ui.viewModels.BugViewModel
 import com.rohitthebest.projectplanner.ui.viewModels.ProjectViewModel
 import com.rohitthebest.projectplanner.ui.viewModels.TaskViewModel
 import com.rohitthebest.projectplanner.utils.Functions
@@ -43,6 +44,7 @@ class HomeFragment : Fragment(R.layout.fragment_home),
 
     private val projectViewModel by viewModels<ProjectViewModel>()
     private val taskViewModel by viewModels<TaskViewModel>()
+    private val bugViewModel by viewModels<BugViewModel>()
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -75,7 +77,6 @@ class HomeFragment : Fragment(R.layout.fragment_home),
         setHasOptionsMenu(true)
 
     }
-
 
     private fun getProjectList() {
 
@@ -295,7 +296,8 @@ class HomeFragment : Fragment(R.layout.fragment_home),
                 .setMessage("This project will be no longer available to you.")
                 .setPositiveButton("Delete") { dialog, _ ->
 
-                    projectViewModel.deleteProject(project)
+                    deleteProject(project)
+
                     dialog.dismiss()
 
                     Log.d(TAG, "onDeleteProjectBtnClicked: project deleted")
@@ -307,6 +309,15 @@ class HomeFragment : Fragment(R.layout.fragment_home),
                 }
                 .create()
                 .show()
+    }
+
+    private fun deleteProject(project: Project) {
+
+        projectViewModel.deleteProject(project)
+
+        taskViewModel.deleteTaskByProjectKey(projectKey = project.projectKey)
+
+        bugViewModel.deleteByProjectKey(project.projectKey)
     }
 
     override fun onLinkClick(link: Url) {
