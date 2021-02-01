@@ -41,8 +41,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center"
         android:layout_margin="16dp"
+        android:tooltipText="Add Bug"
         android:contentDescription="@string/fabbutton"
         android:src="@drawable/ic_baseline_bug_report_24"
-        app:tint="@color/error_color" />
+        app:tint="@color/error_color"
+        tools:targetApi="o" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

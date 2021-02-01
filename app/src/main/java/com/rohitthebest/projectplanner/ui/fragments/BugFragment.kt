@@ -69,7 +69,7 @@ class BugFragment : Fragment(R.layout.fragment_bug) {
 
         bugViewModel.getAllBugsByProjectKey(projectKey).observe(viewLifecycleOwner) {
 
-            if (it.isEmpty()) {
+            if (it.isNotEmpty()) {
 
                 binding.noBugReportFoundTV.hide()
             } else {
