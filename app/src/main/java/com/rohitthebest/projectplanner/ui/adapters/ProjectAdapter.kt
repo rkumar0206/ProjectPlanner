@@ -79,45 +79,6 @@ class ProjectAdapter(val taskViewModel: TaskViewModel, val lifeCycleOwner: Lifec
                         }
                     }
 
-/*
-                    when {
-                        numberOfTasks != 0 -> {
-
-                            numberOfTasksCV.show()
-                            numberOfTasksTV.text = "$numberOfTasks"
-                        }
-                        numberOfTasks > 100 -> {
-
-                            numberOfTasksCV.show()
-                            numberOfTasksTV.text = "$numberOfTasks +"
-                        }
-                        else -> {
-
-                            numberOfTasksCV.hide()
-                        }
-                    }
-*/
-
-/*
-                    when {
-                        numberOfBugs != 0 -> {
-
-                            noOfBugsCV.show()
-                            numberOfBugsTV.text = "$numberOfBugs"
-                        }
-                        numberOfBugs > 100 -> {
-
-                            noOfBugsCV.show()
-                            numberOfBugsTV.text = "$numberOfBugs +"
-                        }
-                        else -> {
-
-                            noOfBugsCV.hide()
-                        }
-                    }
-*/
-
-
                     setUpThemesColor(it)
                 }
             }
