@@ -40,6 +40,7 @@ class TaskAdapter : ListAdapter<Task, TaskAdapter.TaskViewHolder>(DiffUtilCallba
                     binding.editTaskButton.show()
                     binding.checkBoxTaskName.isChecked = false
                     binding.checkBoxTaskName.text = it.taskName
+                    binding.checkBoxTaskName.changeTextColor(itemView.context, R.color.primary_text_color)
                 }
 
                 binding.taskAddedOnTV.setDateInTextView(

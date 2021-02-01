@@ -333,12 +333,14 @@
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:layout_marginBottom="32dp"
+                android:visibility="gone"
                 app:cardBackgroundColor="@color/error_color"
                 app:cardCornerRadius="10000dp"
                 app:layout_constraintBottom_toTopOf="@+id/textView16"
                 app:layout_constraintEnd_toEndOf="@+id/addBugsToTheProjectBtn"
                 app:layout_constraintTop_toTopOf="@+id/addBugsToTheProjectBtn"
-                app:layout_constraintVertical_bias="0.0">
+                app:layout_constraintVertical_bias="0.0"
+                tools:visibility="visible">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -366,12 +368,14 @@
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:layout_marginBottom="32dp"
+                android:visibility="gone"
                 app:cardBackgroundColor="@color/error_color"
                 app:cardCornerRadius="10000dp"
                 app:layout_constraintBottom_toTopOf="@+id/textView9"
                 app:layout_constraintEnd_toEndOf="@+id/addTasksToProjectBtn"
                 app:layout_constraintTop_toTopOf="@+id/addTasksToProjectBtn"
-                app:layout_constraintVertical_bias="0.0">
+                app:layout_constraintVertical_bias="0.0"
+                tools:visibility="visible">
 
                 <LinearLayout
                     android:layout_width="match_parent"
