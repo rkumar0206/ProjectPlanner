@@ -44,6 +44,8 @@ class TaskFragment : Fragment(R.layout.fragment_task), View.OnClickListener, Tas
 
     private lateinit var taskAdapter: TaskAdapter
 
+    private var recyclerViewPosition = 1
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -122,6 +124,18 @@ class TaskFragment : Fragment(R.layout.fragment_task), View.OnClickListener, Tas
                 }
 
                 setUpTaskRecyclerView(it)
+
+                try {
+                    if (recyclerViewPosition !in 0..7) {
+
+                        binding.rvProjectTask.scrollToPosition(recyclerViewPosition - 1)
+
+                        recyclerViewPosition = 1
+                    }
+                } catch (e: Exception) {
+
+                    e.printStackTrace()
+                }
             }
 
         } catch (e: java.lang.Exception) {
@@ -153,18 +167,22 @@ class TaskFragment : Fragment(R.layout.fragment_task), View.OnClickListener, Tas
 
     }
 
-    override fun onCheckChanged(task: Task) {
+    override fun onCheckChanged(task: Task, position: Int) {
 
         binding.etNewTask.editText?.removeFocus()
+
+        recyclerViewPosition = position + 1
 
         task.isCompleted = if (task.isCompleted == FALSE) TRUE else FALSE
 
         taskViewModel.updateTask(task)
     }
 
-    override fun onEditTaskClicked(task: Task) {
+    override fun onEditTaskClicked(task: Task, position: Int) {
 
         binding.etNewTask.editText?.removeFocus()
+
+        recyclerViewPosition = position
 
         MaterialDialog(requireContext()).show {
 
@@ -187,15 +205,18 @@ class TaskFragment : Fragment(R.layout.fragment_task), View.OnClickListener, Tas
         }
     }
 
-    override fun onDeleteTaskClicked(task: Task) {
+    override fun onDeleteTaskClicked(task: Task, position: Int) {
 
         binding.etNewTask.editText?.removeFocus()
+
+        recyclerViewPosition = position
 
         taskViewModel.deleteTask(task)
 
         Snackbar.make(binding.root, "task deleted", Snackbar.LENGTH_LONG)
                 .setAction("Undo") {
 
+                    recyclerViewPosition = position
                     taskViewModel.insertTask(task)
                 }
                 .show()

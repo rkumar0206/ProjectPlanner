@@ -62,21 +62,22 @@ class TaskAdapter : ListAdapter<Task, TaskAdapter.TaskViewHolder>(DiffUtilCallba
                     binding.checkBoxTaskName.id -> {
 
                         mListener!!.onCheckChanged(
-                                getItem(absoluteAdapterPosition)
+                                getItem(absoluteAdapterPosition),
+                                absoluteAdapterPosition
                         )
 
                     }
 
                     binding.editTaskButton.id -> {
 
-                        mListener!!.onEditTaskClicked(getItem(absoluteAdapterPosition))
+                        mListener!!.onEditTaskClicked(getItem(absoluteAdapterPosition), absoluteAdapterPosition)
                     }
 
                     binding.clearTopicButton.id -> {
 
                         mListener!!.onDeleteTaskClicked(getItem(
                                 absoluteAdapterPosition
-                        ))
+                        ), absoluteAdapterPosition)
                     }
                 }
             }
@@ -111,9 +112,9 @@ class TaskAdapter : ListAdapter<Task, TaskAdapter.TaskViewHolder>(DiffUtilCallba
 
     interface OnClickListener {
 
-        fun onCheckChanged(task: Task)
-        fun onEditTaskClicked(task: Task)
-        fun onDeleteTaskClicked(task: Task)
+        fun onCheckChanged(task: Task, position: Int)
+        fun onEditTaskClicked(task: Task, position: Int)
+        fun onDeleteTaskClicked(task: Task, position: Int)
     }
 
     fun setOnClickListener(listener: OnClickListener) {
