@@ -41,4 +41,9 @@ class ProjectViewModel @ViewModelInject constructor(
 
     val projects = repository.getAllProjects().asLiveData()
 
+    fun getResourceList() = repository.getResourceList()
+
+    fun getSkillsLists() = repository.getSkillsLists()
+
+    fun getTechnologyList() = repository.getTechnologyList()
 }

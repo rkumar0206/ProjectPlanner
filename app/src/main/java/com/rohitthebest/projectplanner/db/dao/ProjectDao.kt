@@ -3,6 +3,7 @@ package com.rohitthebest.projectplanner.db.dao
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.rohitthebest.projectplanner.db.entity.Project
+import com.rohitthebest.projectplanner.db.entity.Resource
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -28,4 +29,13 @@ interface ProjectDao {
 
     @Query("SELECT * FROM project_table WHERE projectKey= :projectKey")
     fun getProjectByProjectKey(projectKey: String): LiveData<Project>
+
+    @Query("SELECT resources FROM project_table")
+    fun getResourceList(): LiveData<List<Resource>>
+
+    @Query("SELECT skillsRequired FROM project_table")
+    fun getSkillsLists(): LiveData<List<String>>
+
+    @Query("SELECT technologyUsed FROM project_table")
+    fun getTechnologyList(): LiveData<List<String>>
 }

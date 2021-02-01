@@ -175,6 +175,12 @@ class Functions {
 
             return "${System.currentTimeMillis().toStringM(69)}_${Random.nextLong(1000, 99999999).toStringM(69)}"
         }
+
+        fun <T> concatenate(vararg lists: List<T>): List<T> {
+
+            return listOf(*lists).flatten()
+        }
+
     }
 
 }

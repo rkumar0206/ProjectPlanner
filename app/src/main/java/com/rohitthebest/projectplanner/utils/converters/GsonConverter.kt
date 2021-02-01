@@ -86,7 +86,7 @@ class GsonConverter {
 
     @TypeConverter
     fun convertArrayListOfTechnologyToString(technologies: ArrayList<Technology>): String =
-        gson.toJson(technologies)
+            gson.toJson(technologies)
 
     @TypeConverter
     fun convertJsonStringToArrayListOfTechnology(jsonString: String): ArrayList<Technology> {
@@ -95,7 +95,6 @@ class GsonConverter {
 
         return gson.fromJson(jsonString, type)
     }
-
 
     @TypeConverter
     fun convertListOfUrlToString(urls: ArrayList<Url>): String = gson.toJson(urls)

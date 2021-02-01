@@ -21,4 +21,10 @@ class ProjectRepository @Inject constructor(
     fun getAllProjects() = dao.getAllProjects()
 
     fun getProjectByProjectKey(projectKey: String) = dao.getProjectByProjectKey(projectKey)
+
+    fun getResourceList() = dao.getResourceList()
+
+    fun getSkillsLists() = dao.getSkillsLists()
+
+    fun getTechnologyList() = dao.getTechnologyList()
 }
