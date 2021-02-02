@@ -1,10 +1,10 @@
 package com.rohitthebest.projectplanner.ui.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.afollestad.materialdialogs.LayoutMode
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.afollestad.materialdialogs.customview.customView
@@ -15,7 +15,6 @@ import com.rohitthebest.projectplanner.R
 import com.rohitthebest.projectplanner.databinding.FragmentBugBinding
 import com.rohitthebest.projectplanner.db.entity.Bug
 import com.rohitthebest.projectplanner.ui.viewModels.BugViewModel
-import com.rohitthebest.projectplanner.ui.viewModels.ProjectViewModel
 import com.rohitthebest.projectplanner.utils.Functions.Companion.generateKey
 import com.rohitthebest.projectplanner.utils.hide
 import com.rohitthebest.projectplanner.utils.show
@@ -27,7 +26,6 @@ private const val TAG = "BugFragment"
 class BugFragment : Fragment(R.layout.fragment_bug) {
 
     private val bugViewModel by viewModels<BugViewModel>()
-    private val projectViewModel by viewModels<ProjectViewModel>()
 
     private var _binding: FragmentBugBinding? = null
     private val binding get() = _binding!!
@@ -150,15 +148,9 @@ class BugFragment : Fragment(R.layout.fragment_bug) {
         )
 
         bugViewModel.insert(bug)
-    }
 
-    private fun showBottomSheetForAddingLink() {
+        Log.d(TAG, "saveBugReportToDatabase: BugReport inserted: $bug")
 
-        MaterialDialog(requireContext(), BottomSheet(LayoutMode.WRAP_CONTENT)).show {
-
-            title(text = "Add link")
-
-        }
     }
 
     override fun onDestroyView() {
