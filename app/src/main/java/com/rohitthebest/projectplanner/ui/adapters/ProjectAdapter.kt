@@ -12,12 +12,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.rohitthebest.projectplanner.Constants.TRUE
 import com.rohitthebest.projectplanner.databinding.AdapterProjectLayoutBinding
 import com.rohitthebest.projectplanner.db.entity.Project
+import com.rohitthebest.projectplanner.ui.viewModels.BugViewModel
 import com.rohitthebest.projectplanner.ui.viewModels.TaskViewModel
 import com.rohitthebest.projectplanner.utils.hide
 import com.rohitthebest.projectplanner.utils.setDateInTextView
 import com.rohitthebest.projectplanner.utils.show
 
-class ProjectAdapter(val taskViewModel: TaskViewModel, val lifeCycleOwner: LifecycleOwner) : ListAdapter<Project, ProjectAdapter.ProjectViewHolder>(DiffUtilCallback()) {
+class ProjectAdapter(
+        val taskViewModel: TaskViewModel,
+        val bugViewModel: BugViewModel,
+        val lifeCycleOwner: LifecycleOwner
+) : ListAdapter<Project, ProjectAdapter.ProjectViewHolder>(DiffUtilCallback()) {
 
     private var mListener: OnClickListener? = null
 
@@ -73,6 +78,33 @@ class ProjectAdapter(val taskViewModel: TaskViewModel, val lifeCycleOwner: Lifec
                                 }
                                 else -> {
                                     numberOfTasksCV.hide()
+                                }
+                            }
+
+                        }
+                    }
+
+                    bugViewModel.getAllBugsByProjectKey(it.projectKey).observe(lifeCycleOwner) {
+
+                        if (it.isNotEmpty()) {
+
+                            val notResolvedList = it.filter { b ->
+                                b.isResolved != TRUE
+                            }
+
+                            when {
+                                notResolvedList.size in 1..99 -> {
+
+                                    noOfBugsCV.show()
+                                    numberOfBugsTV.text = "${notResolvedList.size}"
+                                }
+                                notResolvedList.size > 99 -> {
+
+                                    noOfBugsCV.show()
+                                    numberOfBugsTV.text = "99+"
+                                }
+                                else -> {
+                                    noOfBugsCV.hide()
                                 }
                             }
 

@@ -60,7 +60,7 @@ class HomeFragment : Fragment(R.layout.fragment_home),
 
         initListeners()
 
-        projectAdapter = ProjectAdapter(taskViewModel, viewLifecycleOwner)
+        projectAdapter = ProjectAdapter(taskViewModel, bugViewModel, viewLifecycleOwner)
 
         showProgressBar()
 
@@ -338,11 +338,11 @@ class HomeFragment : Fragment(R.layout.fragment_home),
     }
 
     override fun onEditLinkButtonClicked(link: Url, position: Int) {
-        //TODO("Not yet implemented")
+        //("Not yet implemented")
     }
 
     override fun onDeleteLinkClicked(link: Url, position: Int) {
-        //TODO("Not yet implemented")
+        //("Not yet implemented")
     }
 
     override fun onShareLinkBtnClicked(url: String) {
@@ -417,7 +417,7 @@ class HomeFragment : Fragment(R.layout.fragment_home),
 
                     if (newText?.trim() == "") {
 
-                        projectAdapter = ProjectAdapter(taskViewModel, viewLifecycleOwner)
+                        projectAdapter = ProjectAdapter(taskViewModel, bugViewModel, viewLifecycleOwner)
 
                         setUpRecyclerView(it)
                     } else {
