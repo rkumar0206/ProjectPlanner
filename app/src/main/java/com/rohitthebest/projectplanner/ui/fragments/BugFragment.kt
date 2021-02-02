@@ -20,6 +20,7 @@ import com.rohitthebest.projectplanner.db.entity.Bug
 import com.rohitthebest.projectplanner.ui.adapters.BugAdapter
 import com.rohitthebest.projectplanner.ui.viewModels.BugViewModel
 import com.rohitthebest.projectplanner.utils.Functions.Companion.generateKey
+import com.rohitthebest.projectplanner.utils.Functions.Companion.showToast
 import com.rohitthebest.projectplanner.utils.hide
 import com.rohitthebest.projectplanner.utils.show
 import dagger.hilt.android.AndroidEntryPoint
@@ -92,7 +93,7 @@ class BugFragment : Fragment(R.layout.fragment_bug), BugAdapter.OnClickListener 
             setUpBugRecyclerView(it)
 
             try {
-                if (recyclerViewPosition !in 0..7) {
+                if (recyclerViewPosition !in -1..7) {
 
                     binding.bugRV.scrollToPosition(recyclerViewPosition - 1)
 
@@ -134,6 +135,8 @@ class BugFragment : Fragment(R.layout.fragment_bug), BugAdapter.OnClickListener 
         bug.isResolved = if (bug.isResolved == TRUE) FALSE else TRUE
 
         bugViewModel.updateBug(bug)
+
+        showToast(requireContext(), "Bug resolved")
     }
 
     override fun onEditBugBtnClicked(bug: Bug, position: Int) {
@@ -158,7 +161,6 @@ class BugFragment : Fragment(R.layout.fragment_bug), BugAdapter.OnClickListener 
                 .show()
 
     }
-
 
     private fun openBottomSheetForAddingBugReport(bug: Bug? = null) {
 
