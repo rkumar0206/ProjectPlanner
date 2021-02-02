@@ -105,21 +105,17 @@ class BugFragment : Fragment(R.layout.fragment_bug) {
                     scrollable = true
             )
 
-            val bugNameET = getCustomView().findViewById<TextInputLayout>(R.id.whatsBugET)
             val bugDescriptionET = getCustomView().findViewById<TextInputLayout>(R.id.bugDescriptionET)
             val possibleSolutionET = getCustomView().findViewById<TextInputLayout>(R.id.possibleSolutionET)
 
             positiveButton(text = "Save") {
 
-                val bugName = bugNameET.editText?.text?.toString()?.trim()
                 val bugDescription = bugDescriptionET.editText?.text?.toString()?.trim()
                 val possibleSolution = possibleSolutionET.editText?.text?.toString()?.trim()
 
-                if (bugName?.isNotEmpty()!! ||
-                        bugDescription?.isNotEmpty()!!) {
+                if (bugDescription?.isNotEmpty()!!) {
 
                     saveBugReportToDatabase(
-                            bugName,
                             bugDescription,
                             possibleSolution
                     )
@@ -135,13 +131,12 @@ class BugFragment : Fragment(R.layout.fragment_bug) {
         }
     }
 
-    private fun saveBugReportToDatabase(bugName: String, bugDescription: String?, possibleSolution: String?) {
+    private fun saveBugReportToDatabase(bugDescription: String?, possibleSolution: String?) {
 
         val bug = Bug(
                 System.currentTimeMillis(),
                 generateKey(),
                 projectKey,
-                bugName,
                 bugDescription.toString(),
                 possibleSolution,
                 FALSE

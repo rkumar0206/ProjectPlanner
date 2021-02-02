@@ -9,7 +9,6 @@ data class Bug(
         var timestamp: Long = System.currentTimeMillis(),
         @PrimaryKey var bugKey: String,
         var projectKey: String,
-        var whatBug: String,
         var bugDescription: String,
         var possibleSolution: String?,
         var isResolved: String = FALSE,
@@ -17,7 +16,6 @@ data class Bug(
 
     constructor() : this(
             System.currentTimeMillis(),
-            "",
             "",
             "",
             "",
