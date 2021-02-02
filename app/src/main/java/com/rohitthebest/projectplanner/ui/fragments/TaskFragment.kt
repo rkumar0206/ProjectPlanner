@@ -126,7 +126,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), View.OnClickListener, Tas
                 setUpTaskRecyclerView(it)
 
                 try {
-                    if (recyclerViewPosition !in 0..7) {
+                    if (recyclerViewPosition !in -1..7) {
 
                         binding.rvProjectTask.scrollToPosition(recyclerViewPosition - 1)
 
@@ -171,7 +171,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), View.OnClickListener, Tas
 
         binding.etNewTask.editText?.removeFocus()
 
-        recyclerViewPosition = position + 1
+        recyclerViewPosition = position
 
         task.isCompleted = if (task.isCompleted == FALSE) TRUE else FALSE
 

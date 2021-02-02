@@ -10,6 +10,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import com.rohitthebest.projectplanner.Constants.FALSE
 import com.rohitthebest.projectplanner.Constants.TRUE
@@ -142,7 +143,20 @@ class BugFragment : Fragment(R.layout.fragment_bug), BugAdapter.OnClickListener 
     }
 
     override fun onDeleteBugBtnClicked(bug: Bug, position: Int) {
-        //TODO("Not yet implemented")
+
+        recyclerViewPosition = position
+
+        bugViewModel.deleteBug(bug)
+
+        Snackbar.make(binding.root, "Bug Deleted", Snackbar.LENGTH_LONG)
+                .setAction("Undo") {
+
+                    recyclerViewPosition = position + 1
+
+                    bugViewModel.insert(bug)
+                }
+                .show()
+
     }
 
 
