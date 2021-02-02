@@ -12,7 +12,7 @@
         android:layout_height="match_parent">
 
         <CheckBox
-            android:id="@+id/bugNameCB"
+            android:id="@+id/bugDescriptionCB"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -30,7 +30,7 @@
             android:layout_marginEnd="5dp"
             android:backgroundTint="@android:color/transparent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/bugNameCB"
+            app:layout_constraintTop_toTopOf="@+id/bugDescriptionCB"
             app:srcCompat="@drawable/ic_baseline_close_24" />
 
         <TextView
@@ -45,8 +45,8 @@
             android:textIsSelectable="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/bugNameCB"
-            app:layout_constraintTop_toBottomOf="@+id/bugNameCB"
+            app:layout_constraintStart_toStartOf="@+id/bugDescriptionCB"
+            app:layout_constraintTop_toBottomOf="@+id/bugDescriptionCB"
             tools:text="Solution : nvnvnkmnkvnknvn n n vkfnvjjajvnjkfvnn\nfkajvjdcjshdk;lsdk;lkdscl;mlcn\nsjdhckjscnkjnckcnkcnkNCCNkncjkndjcnjsdcnjksdnkdcnkj\nsdjkcsjkdcnjcncnjkcnjcnjcnjkcn\nsdjsdnjkcnjcnjncjndcjds" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
