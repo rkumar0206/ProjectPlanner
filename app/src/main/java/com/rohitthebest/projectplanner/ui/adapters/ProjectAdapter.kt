@@ -129,6 +129,8 @@ class ProjectAdapter(
             binding.addBugsToTheProjectBtn.setOnClickListener(this)
             binding.uploadProjectToCloudBtn.setOnClickListener(this)
             binding.deleteProjectBtn.setOnClickListener(this)
+
+            binding.addFeatureCV.setOnClickListener(this)
         }
 
         override fun onClick(v: View?) {
@@ -174,6 +176,11 @@ class ProjectAdapter(
                     binding.deleteProjectBtn.id -> {
 
                         mListener!!.onDeleteProjectBtnClicked(getItem(absoluteAdapterPosition))
+                    }
+
+                    binding.addFeatureCV.id -> {
+
+                        mListener!!.onAddFeatureBtnClicked(getItem(absoluteAdapterPosition))
                     }
                 }
             }
@@ -237,6 +244,7 @@ class ProjectAdapter(
         fun onAddBugsBtnClicked(projectKey: String)
         fun onUploadBtnClicked(project: Project)
         fun onDeleteProjectBtnClicked(project: Project)
+        fun onAddFeatureBtnClicked(project: Project)
     }
 
     fun setOnClickListener(listener: OnClickListener) {

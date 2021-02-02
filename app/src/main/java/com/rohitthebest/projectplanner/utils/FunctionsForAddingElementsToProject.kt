@@ -32,7 +32,7 @@ data class ClassForAddingProject(
 
 private const val TAG = "AddingToProjectFunction"
 
-class FuntionsForAddingElementsToProject {
+class FunctionsForAddingElementsToProject {
 
     companion object {
 

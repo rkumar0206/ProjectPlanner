@@ -24,11 +24,13 @@ import com.rohitthebest.projectplanner.ui.adapters.*
 import com.rohitthebest.projectplanner.ui.viewModels.BugViewModel
 import com.rohitthebest.projectplanner.ui.viewModels.ProjectViewModel
 import com.rohitthebest.projectplanner.ui.viewModels.TaskViewModel
+import com.rohitthebest.projectplanner.utils.ClassForAddingProject
 import com.rohitthebest.projectplanner.utils.Functions
 import com.rohitthebest.projectplanner.utils.Functions.Companion.isInternetAvailable
 import com.rohitthebest.projectplanner.utils.Functions.Companion.openLinkInBrowser
 import com.rohitthebest.projectplanner.utils.Functions.Companion.showNoInternetMessage
 import com.rohitthebest.projectplanner.utils.Functions.Companion.showToast
+import com.rohitthebest.projectplanner.utils.FunctionsForAddingElementsToProject.Companion.openFeatureBottomSheetDialog
 import com.rohitthebest.projectplanner.utils.converters.GsonConverter
 import com.rohitthebest.projectplanner.utils.hide
 import com.rohitthebest.projectplanner.utils.show
@@ -53,6 +55,8 @@ class HomeFragment : Fragment(R.layout.fragment_home),
 
     private var projectList: List<Project>? = null
 
+    private lateinit var classForAddingProject: ClassForAddingProject
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -73,6 +77,11 @@ class HomeFragment : Fragment(R.layout.fragment_home),
                 getProjectList()
             }
         }
+
+        classForAddingProject = ClassForAddingProject(
+                requireContext(),
+                projectViewModel
+        )
 
         setHasOptionsMenu(true)
 
@@ -315,6 +324,19 @@ class HomeFragment : Fragment(R.layout.fragment_home),
                 }
                 .create()
                 .show()
+    }
+
+    override fun onAddFeatureBtnClicked(project: Project) {
+
+        openFeatureBottomSheetDialog(
+                classForAddingProject,
+                project,
+                position = if (project.features.size == 0) {
+                    0
+                } else {
+                    project.features.lastIndex + 1
+                }
+        )
     }
 
     private fun deleteProject(project: Project) {
