@@ -2,30 +2,14 @@ package com.rohitthebest.projectplanner.ui.fragments
 
 import android.graphics.Color
 import android.os.Bundle
-import android.text.Editable
-import android.text.InputType
-import android.text.TextWatcher
 import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
-import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.bottomsheets.BottomSheet
-import com.afollestad.materialdialogs.customview.customView
-import com.afollestad.materialdialogs.customview.getCustomView
-import com.afollestad.materialdialogs.input.input
-import com.google.android.material.card.MaterialCardView
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.textfield.TextInputLayout
-import com.rohitthebest.projectplanner.Constants.EDIT_TEXT_EMPTY_MESSAGE
 import com.rohitthebest.projectplanner.R
 import com.rohitthebest.projectplanner.databinding.AddEditProjectLayoutBinding
 import com.rohitthebest.projectplanner.databinding.FragmentAddEditProjectBinding
@@ -33,16 +17,18 @@ import com.rohitthebest.projectplanner.db.entity.*
 import com.rohitthebest.projectplanner.ui.adapters.*
 import com.rohitthebest.projectplanner.ui.viewModels.ProjectViewModel
 import com.rohitthebest.projectplanner.utils.*
-import com.rohitthebest.projectplanner.utils.Functions.Companion.applyColor
 import com.rohitthebest.projectplanner.utils.Functions.Companion.generateKey
 import com.rohitthebest.projectplanner.utils.Functions.Companion.isInternetAvailable
 import com.rohitthebest.projectplanner.utils.Functions.Companion.openLinkInBrowser
 import com.rohitthebest.projectplanner.utils.Functions.Companion.showNoInternetMessage
-import com.rohitthebest.projectplanner.utils.Functions.Companion.showToast
+import com.rohitthebest.projectplanner.utils.FuntionsForAddingElementsToProject.Companion.openFeatureBottomSheetDialog
+import com.rohitthebest.projectplanner.utils.FuntionsForAddingElementsToProject.Companion.showBottomSheetDialogForAddingColor
+import com.rohitthebest.projectplanner.utils.FuntionsForAddingElementsToProject.Companion.showBottomSheetDialogForAddingLinkResource
+import com.rohitthebest.projectplanner.utils.FuntionsForAddingElementsToProject.Companion.showBottomSheetDialogForAddingTechnology
+import com.rohitthebest.projectplanner.utils.FuntionsForAddingElementsToProject.Companion.showDialogForAddingSkills
 import com.rohitthebest.projectplanner.utils.converters.GsonConverter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
-import yuku.ambilwarna.AmbilWarnaDialog
 
 private const val TAG = "AddEditProjectFragment"
 
@@ -68,6 +54,8 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
     private lateinit var colorsAdapter: ColorsAdapter
 
     private var isProjectReceivedForEditing = false
+
+    private lateinit var classForAddingProject: ClassForAddingProject
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -187,6 +175,11 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
         project = Project()
 
         project.projectKey = generateKey()
+
+        classForAddingProject = ClassForAddingProject(
+                requireContext(),
+                projectViewModel
+        )
     }
 
     //initialising listeners
@@ -221,6 +214,8 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
             includeBinding.addFeatureBtn.id -> {
 
                 openFeatureBottomSheetDialog(
+                        classForAddingProject = classForAddingProject,
+                        project = project,
                         position = if (project.features.size == 0) {
                             0
                         } else {
@@ -231,6 +226,8 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
             includeBinding.addResourceBtn.id -> {
 
                 showBottomSheetDialogForAddingLinkResource(
+                        classForAddingProject,
+                        project,
                         position = if (
                                 project.resources?.urls?.size == 0
                         ) {
@@ -243,16 +240,20 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
             includeBinding.addSkillBtn.id -> {
 
                 showDialogForAddingSkills(
+                        classForAddingProject,
                         position = if (project.skillsRequired.size == 0) {
                             0
                         } else {
                             project.skillsRequired.lastIndex + 1
-                        }
+                        },
+                        project = project
                 )
             }
             includeBinding.addTechnologyBtn.id -> {
 
                 showBottomSheetDialogForAddingTechnology(
+                        classForAddingProject,
+                        project,
                         position = if (project.technologyUsed.size == 0) {
                             0
                         } else {
@@ -263,6 +264,8 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
             includeBinding.addColorBtn.id -> {
 
                 showBottomSheetDialogForAddingColor(
+                        classForAddingProject,
+                        project,
                         position = if (project.colors.size == 0) 0 else project.colors.lastIndex + 1
                 )
             }
@@ -380,7 +383,6 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
         includeBinding.projectDescriptionET.editText?.removeFocus()
     }
 
-    /**[START OF FEATURE]*/
 
     //setting up all the recycler views
     private fun setUpRecyclerViews() {
@@ -392,131 +394,8 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
         setUpColorsRecyclerView()
     }
 
-    //Showing bottom sheet dialog for adding/editing/deleting feature
-    private fun openFeatureBottomSheetDialog(feature: Feature? = null, position: Int = 0) {
 
-        MaterialDialog(requireContext(), BottomSheet()).show {
-
-            title(text = "Add New Feature")
-
-            customView(
-                    R.layout.add_feature_layout,
-                    scrollable = true
-            )
-
-            if (feature != null) {
-
-                getCustomView().findViewById<CardView>(R.id.deleteBtnOuter).show()
-
-                title(text = "Edit Feature")
-
-                getCustomView().findViewById<MaterialCardView>(R.id.deleteBtn).setOnClickListener {
-
-                    project.features.remove(feature)
-                    this.dismiss()
-
-                    Snackbar.make(binding.root, "Feature deleted", Snackbar.LENGTH_LONG)
-                            .setAction("Undo") {
-
-                                project.features.add(position, feature)
-                                setUpFeaturesRecyclerView()
-                            }
-                            .show()
-                }
-
-                setInitialFeatureValues(getCustomView(), feature)
-            }
-
-            val featureName = getCustomView().findViewById<TextInputLayout>(R.id.featureNameET).editText
-            val featureDescription = getCustomView().findViewById<TextInputLayout>(R.id.featureDescriptionET).editText
-            val featureImplementation = getCustomView().findViewById<TextInputLayout>(R.id.featureInplementationET).editText
-
-            //adding text watcher on feature name editText
-            featureName?.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(
-                        s: CharSequence?,
-                        start: Int,
-                        count: Int,
-                        after: Int
-                ) {
-                }
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
-                    if (s?.isEmpty()!!) {
-
-                        getCustomView().findViewById<TextInputLayout>(R.id.featureNameET).error =
-                                "This is a mandatory field!!"
-                    } else {
-
-                        getCustomView().findViewById<TextInputLayout>(R.id.featureNameET).error =
-                                null
-                    }
-                }
-
-                override fun afterTextChanged(s: Editable?) {}
-            })
-
-            positiveButton(text = "Save") {
-
-                if (featureName?.text.toString().trim().isEmpty()) {
-
-                    showToast(requireContext(), "Cannot add empty feature!!")
-                } else {
-
-                    val featureToBeAdded = Feature(
-                            featureName?.text.toString().trim(),
-                            featureDescription?.text.toString().trim(),
-                            featureImplementation?.text.toString().trim()
-                    )
-
-                    if (feature == null) {
-
-                        //add
-
-                        project.features.add(position, featureToBeAdded)
-
-                        Log.d(
-                                TAG,
-                                "openFeatureBottomSheetDialog: feature added at position $position " +
-                                        ": $featureToBeAdded"
-                        )
-                    } else {
-
-                        //edit
-
-                        project.features[position] = featureToBeAdded
-
-                        Log.d(
-                                TAG,
-                                "openFeatureBottomSheetDialog: feature edited at position $position " +
-                                        ": $featureToBeAdded"
-                        )
-                    }
-                    it.dismiss()
-                }
-            }
-
-        }.negativeButton(text = "Cancel") {
-
-            it.dismiss()
-        }.setOnDismissListener {
-
-            setUpFeaturesRecyclerView()
-        }
-    }
-
-    private fun setInitialFeatureValues(customView: View, feature: Feature) {
-
-        val featureName = customView.findViewById<TextInputLayout>(R.id.featureNameET).editText
-        val featureDescription = customView.findViewById<TextInputLayout>(R.id.featureDescriptionET).editText
-        val featureImplementation = customView.findViewById<TextInputLayout>(R.id.featureInplementationET).editText
-
-        featureName?.setText(feature.name)
-        featureDescription?.setText(feature.description)
-        featureImplementation?.setText(feature.implementation)
-
-    }
+    /**[START OF FEATURE]*/
 
     //Feature recycler view
     private fun setUpFeaturesRecyclerView() {
@@ -541,7 +420,10 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
     //handling the clicks on feature
     override fun onFeatureClicked(feature: Feature, position: Int) {
 
-        openFeatureBottomSheetDialog(feature, position)
+        openFeatureBottomSheetDialog(
+                classForAddingProject = classForAddingProject,
+                project = project,
+                feature, position)
     }
 
     /**[END OF FEATURE]**/
@@ -572,7 +454,12 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
     //handling on click on skill texts
     override fun onStringClicked(text: String?, position: Int) {
 
-        showDialogForAddingSkills(text, position)
+        showDialogForAddingSkills(
+                classForAddingProject = classForAddingProject,
+                skill = text,
+                position = position,
+                project = project
+        )
     }
 
     override fun onDeleteStringClicked(text: String, position: Int) {
@@ -590,64 +477,6 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
 
                 }
                 .show()
-    }
-
-    private fun showDialogForAddingSkills(skill: String? = null, position: Int = 0) {
-
-        MaterialDialog(requireContext()).show {
-
-            title(text = "Add Skill")
-
-            if (skill != null) {
-
-                title(text = "Edit Skill")
-
-                input(
-                        hint = "Edit Skill", prefill = skill,
-                        inputType = InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
-                ) { _, charSequence ->
-
-                    if (charSequence.toString().trim().isEmpty()) {
-
-                        showToast(requireContext(), "Cannot edit empty skill!!!")
-                    } else {
-
-                        project.skillsRequired[position] = charSequence.toString().trim()
-                        Log.d(
-                                TAG,
-                                "showDialogForAddingSkills: Skill edited at position $position Skill = ${
-                                    charSequence.toString().trim()
-                                }"
-                        )
-                    }
-                }
-            } else {
-
-                input(hint = "Add skill", inputType = InputType.TYPE_TEXT_FLAG_CAP_SENTENCES) { _, charSequence ->
-
-                    if (charSequence.toString().trim().isEmpty()) {
-
-                        showToast(requireContext(), "Cannot add empty skill!!!")
-                    } else {
-
-                        project.skillsRequired.add(position, charSequence.toString().trim())
-
-                        Log.d(
-                                TAG,
-                                "showDialogForAddingSkills: Skill Added at position $position Skill = ${
-                                    charSequence.toString().trim()
-                                }"
-                        )
-                    }
-                }
-            }
-        }.negativeButton(text = "Cancel") {
-
-            it.dismiss()
-        }.setOnDismissListener {
-
-            setUpSkillsRecyclerView()
-        }
     }
 
     /**[END OF SKILL]**/
@@ -677,7 +506,10 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
 
     override fun onTechnologyClicked(technology: Technology, position: Int) {
 
-        showBottomSheetDialogForAddingTechnology(technology, position)
+        showBottomSheetDialogForAddingTechnology(
+                classForAddingProject,
+                project,
+                technology, position)
     }
 
     override fun onTechnologyDeleteBtnClicked(technology: Technology, position: Int) {
@@ -686,176 +518,6 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
         technologyAdapter.notifyItemRemoved(position)
 
         setUpTechnologyRecyclerView()
-    }
-
-    //showing bottomSheet for adding technology to the list
-    private fun showBottomSheetDialogForAddingTechnology(
-            technology: Technology? = null,
-            position: Int = 0
-    ) {
-
-        MaterialDialog(requireContext(), BottomSheet()).show {
-
-            title(text = "Add technology used")
-
-            customView(
-                    R.layout.add_technology_layout,
-                    scrollable = true
-            )
-
-            val techName = getCustomView().findViewById<TextInputLayout>(R.id.techNameET).editText
-            val techTextColorBtn = getCustomView().findViewById<Button>(R.id.techTextColorBtn)
-            val techBackgroundColorBtn =
-                    getCustomView().findViewById<Button>(R.id.techBackgroundColorBtn)
-            val previewText = getCustomView().findViewById<TextView>(R.id.previewTechTV)
-            val previewBackgroundColor = getCustomView().findViewById<CardView>(R.id.previewTechCV)
-
-            if (technology != null) {
-
-                title(text = "Edit")
-
-                getCustomView().findViewById<CardView>(R.id.deleteTechnologyBtnOuter).show()
-
-                getCustomView().findViewById<MaterialCardView>(R.id.deleteTechnologyBtn)
-                        .setOnClickListener {
-
-                            deleteTechnology(technology, position)
-                            this.dismiss()
-                        }
-
-                initializeTechnologyField(getCustomView(), technology)
-            }
-
-            techName?.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(
-                        s: CharSequence?,
-                        start: Int,
-                        count: Int,
-                        after: Int
-                ) {
-                }
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
-                    if (s?.isEmpty()!!) {
-
-                        getCustomView().findViewById<TextInputLayout>(R.id.techNameET).error =
-                                "Mandatory field!!"
-                    } else {
-
-                        getCustomView().findViewById<TextInputLayout>(R.id.techNameET).error = null
-                    }
-
-                    previewText.text = s.toString().trim()
-                }
-
-                override fun afterTextChanged(s: Editable?) {}
-            })
-
-            var mDefaultTextColor: Int = if (technology != null) {
-
-                if (technology.textColor == null) {
-
-                    Color.WHITE
-                } else {
-
-                    technology.textColor!!
-                }
-
-            } else {
-
-                Color.WHITE
-            }
-            var mDefaultBackgroundColor = if (technology != null) {
-                technology.backgroundColor ?: Color.parseColor("#FF6E40")
-
-            } else {
-
-                Color.parseColor("#FF6E40")
-            }
-
-            techTextColorBtn.setOnClickListener {
-
-                AmbilWarnaDialog(requireContext(),
-                        mDefaultTextColor,
-                        object : AmbilWarnaDialog.OnAmbilWarnaListener {
-                            override fun onCancel(dialog: AmbilWarnaDialog?) {}
-
-                            override fun onOk(dialog: AmbilWarnaDialog?, color: Int) {
-
-                                mDefaultTextColor = color
-
-                                showToast(requireContext(), mDefaultTextColor.convertToHexString())
-
-                                previewText.setTextColor(mDefaultTextColor)
-                                techTextColorBtn.setBackgroundColor(mDefaultTextColor)
-                            }
-                        }
-                ).show()
-
-            }
-            techBackgroundColorBtn.setOnClickListener {
-
-                AmbilWarnaDialog(requireContext(),
-                        mDefaultBackgroundColor,
-                        object : AmbilWarnaDialog.OnAmbilWarnaListener {
-                            override fun onCancel(dialog: AmbilWarnaDialog?) {}
-
-                            override fun onOk(dialog: AmbilWarnaDialog?, color: Int) {
-
-                                mDefaultBackgroundColor = color
-                                showToast(requireContext(), color.toString())
-
-                                previewBackgroundColor.setCardBackgroundColor(mDefaultBackgroundColor)
-                                techBackgroundColorBtn.setBackgroundColor(mDefaultBackgroundColor)
-                            }
-                        }
-                ).show()
-            }
-
-            positiveButton(text = "Save") {
-
-                if (techName?.text.toString().trim().isEmpty()) {
-
-                    showToast(requireContext(), "Cannot add empty technology...")
-                } else {
-
-                    val technologyForAdding = Technology(
-                            techName?.text.toString().trim(),
-                            mDefaultBackgroundColor,
-                            mDefaultTextColor
-                    )
-
-                    if (technology == null) {
-
-                        //add
-                        project.technologyUsed.add(position, technologyForAdding)
-
-                        Log.d(
-                                TAG,
-                                "showBottomSheetDialogForAddingTechnology: technology Added at position $position : $technologyForAdding"
-                        )
-
-                    } else {
-
-                        //edit
-                        project.technologyUsed[position] = technologyForAdding
-
-                        Log.d(
-                                TAG,
-                                "showBottomSheetDialogForAddingTechnology: technology edited at position $position"
-                        )
-                    }
-                }
-            }
-
-        }.negativeButton(text = "Cancel") {
-
-            it.dismiss()
-        }.setOnDismissListener {
-
-            setUpTechnologyRecyclerView()
-        }
     }
 
     private fun deleteTechnology(technology: Technology, position: Int) {
@@ -869,23 +531,6 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
                     setUpTechnologyRecyclerView()
                 }
                 .show()
-    }
-
-    private fun initializeTechnologyField(customView: View, technology: Technology) {
-
-        val techName = customView.findViewById<TextInputLayout>(R.id.techNameET).editText
-        val techTextColorBtn = customView.findViewById<Button>(R.id.techTextColorBtn)
-        val techBackgroundColorBtn = customView.findViewById<Button>(R.id.techBackgroundColorBtn)
-        val previewTextColor = customView.findViewById<TextView>(R.id.previewTechTV)
-        val previewBackgroundColor = customView.findViewById<CardView>(R.id.previewTechCV)
-
-        previewTextColor.text = technology.name
-        previewTextColor.setTextColor(technology.textColor!!)
-        previewBackgroundColor.setCardBackgroundColor(technology.backgroundColor!!)
-
-        techName?.setText(technology.name)
-        techTextColorBtn.setBackgroundColor(technology.textColor!!)
-        techBackgroundColorBtn.setBackgroundColor(technology.backgroundColor)
     }
 
     /**[END OF TECHNOLOGY]**/
@@ -930,6 +575,8 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
     override fun onEditLinkButtonClicked(link: Url, position: Int) {
 
         showBottomSheetDialogForAddingLinkResource(
+                classForAddingProject,
+                project,
                 link,
                 position
         )
@@ -957,131 +604,6 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
                 "URL",
                 requireContext()
         )
-    }
-
-    //showing bottomSheet for adding link resource to the list
-    private fun showBottomSheetDialogForAddingLinkResource(url: Url? = null, position: Int = 0) {
-
-        MaterialDialog(requireContext(), BottomSheet()).show {
-
-            title(text = "Add Link/Url")
-
-            customView(
-                    R.layout.add_link_resource_dialog_layout,
-                    scrollable = true
-            )
-
-            val linkET = getCustomView().findViewById<TextInputLayout>(R.id.linkET).editText
-            val linkNameET = getCustomView().findViewById<TextInputLayout>(R.id.linkNameET).editText
-
-            if (url != null) {
-
-                initializeUrlFields(getCustomView(), url)
-            }
-
-            linkET?.addTextChangedListener(object : TextWatcher {
-
-                override fun beforeTextChanged(
-                        s: CharSequence?,
-                        start: Int,
-                        count: Int,
-                        after: Int
-                ) {
-                }
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
-                    if (s?.isEmpty()!!) {
-
-                        getCustomView().findViewById<TextInputLayout>(R.id.linkET).error =
-                                EDIT_TEXT_EMPTY_MESSAGE
-                    } else {
-
-                        getCustomView().findViewById<TextInputLayout>(R.id.linkET).error = null
-                    }
-                }
-
-                override fun afterTextChanged(s: Editable?) {}
-            })
-
-            linkNameET?.addTextChangedListener(object : TextWatcher {
-
-                override fun beforeTextChanged(
-                        s: CharSequence?,
-                        start: Int,
-                        count: Int,
-                        after: Int
-                ) {
-                }
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
-                    if (s?.isEmpty()!!) {
-
-                        getCustomView().findViewById<TextInputLayout>(R.id.linkNameET).error =
-                                EDIT_TEXT_EMPTY_MESSAGE
-                    } else {
-
-                        getCustomView().findViewById<TextInputLayout>(R.id.linkNameET).error = null
-                    }
-                }
-
-                override fun afterTextChanged(s: Editable?) {}
-            })
-
-            positiveButton(text = "Save") {
-
-                if (
-                        linkET?.text.toString().trim().isEmpty() ||
-                        linkNameET?.text.toString().trim().isEmpty()
-                ) {
-
-                    showToast(requireContext(), "Cannot add empty url!!!")
-                } else {
-
-                    val urlToBeAdded = Url(
-                            linkNameET?.text.toString().trim(),
-                            linkET?.text.toString().trim()
-                    )
-
-                    if (url == null) {
-
-                        //add
-
-                        project.resources?.urls?.add(position, urlToBeAdded)
-
-                        Log.d(
-                                TAG,
-                                "showBottomSheetDialogForAddingLinkResource: url added at position : $position"
-                        )
-                    } else {
-
-                        //edit
-
-                        project.resources?.urls?.set(position, urlToBeAdded)
-
-                        Log.d(
-                                TAG,
-                                "showBottomSheetDialogForAddingLinkResource: url edited at position : $position"
-                        )
-                    }
-
-                }
-            }
-
-        }.setOnDismissListener {
-
-            setUpLinkResourceRecyclerView()
-        }
-    }
-
-    private fun initializeUrlFields(customView: View, url: Url) {
-
-        val linkET = customView.findViewById<TextInputLayout>(R.id.linkET).editText
-        val linkNameET = customView.findViewById<TextInputLayout>(R.id.linkNameET).editText
-
-        linkET?.setText(url.url)
-        linkNameET?.setText(url.urlName)
     }
 
     /**[END OF LINK RESOURCE]**/
@@ -1113,204 +635,11 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
     override fun onColorClicked(color: Colors, position: Int) {
 
         showBottomSheetDialogForAddingColor(
+                classForAddingProject,
+                project,
                 color,
                 position
         )
-    }
-
-    //showing bottomSheet for adding colors to the list
-    private fun showBottomSheetDialogForAddingColor(color: Colors? = null, position: Int = 0) {
-
-        MaterialDialog(requireContext(), BottomSheet()).show {
-
-            title(text = "Add colors")
-
-            customView(
-                    R.layout.add_color_layout,
-                    scrollable = true
-            )
-
-            val colorBtn = getCustomView().findViewById<Button>(R.id.chooseColorBtn)
-            val colorHexEt = getCustomView().findViewById<EditText>(R.id.colorHexET)
-            val colorNameET = getCustomView().findViewById<TextInputLayout>(R.id.colorNameEt).editText
-
-            if (color != null) {
-
-                //for editing
-
-                getCustomView().findViewById<CardView>(R.id.deleteColorBtnOuter).show()
-                getCustomView().findViewById<MaterialCardView>(R.id.deleteColorBtn).setOnClickListener {
-
-                    project.colors.remove(color)
-                    this.dismiss()
-
-                    Snackbar.make(binding.root, "Color deleted", Snackbar.LENGTH_LONG)
-                            .setAction("Undo") {
-
-                                project.colors.add(position, color)
-                                setUpColorsRecyclerView()
-                            }
-                            .show()
-                }
-
-                initializeColorFields(getCustomView(), color)
-            }
-
-            colorBtn.setOnClickListener {
-
-                val hexCode = if (colorHexEt.text.toString().trim().startsWith("#")) {
-
-                    colorHexEt.text.toString().trim()
-                } else {
-                    "#${colorHexEt.text.toString().trim()}"
-                }
-
-                colorBtn.openColorPicker(
-                        requireContext(),
-
-                        if (colorHexEt.text.toString().trim().isEmpty()) {
-
-                            Color.parseColor(getString(R.string._119A17))
-                        } else {
-
-                            if (hexCode.isValidHexCode()) {
-
-                                Color.parseColor(hexCode)
-                            } else {
-
-                                Color.parseColor(getString(R.string._119A17))
-                            }
-                        },
-                        editText = colorHexEt
-                )
-            }
-
-            setTextWatcherInColorEditTexts(colorBtn, colorHexEt, getCustomView().findViewById(R.id.colorNameEt))
-
-            positiveButton(text = "Save") {
-
-                if (
-                        colorHexEt.text.toString().trim().isEmpty() || colorNameET?.text.toString().trim().isEmpty()
-                ) {
-
-                    showToast(requireContext(), "Mandatory fields can't be empty!!!", Toast.LENGTH_LONG)
-                } else {
-
-                    val hexCode = if (colorHexEt.text.toString().trim().startsWith("#")) {
-
-                        colorHexEt.text.toString().trim()
-                    } else {
-                        "#${colorHexEt.text.toString().trim()}"
-                    }
-
-                    if (hexCode.isValidHexCode()) {
-
-                        val colorToBeAdded = Colors(
-                                colorNameET?.text.toString().trim(),
-                                hexCode
-                        )
-
-                        if (color != null) {
-
-                            //edit
-
-                            project.colors[position] = colorToBeAdded
-
-                            Log.d(TAG, "showBottomSheetDialogForAddingColor: color edited at position $position Color : $colorToBeAdded")
-
-                        } else {
-
-                            //add
-
-                            project.colors.add(position, colorToBeAdded)
-
-                            Log.d(TAG, "showBottomSheetDialogForAddingColor: color added at position $position Color : $colorToBeAdded")
-
-                        }
-                    } else {
-
-                        showToast(requireContext(), "Incorrect hex code")
-                    }
-                }
-            }
-        }.negativeButton(text = "Cancel") {
-
-            it.dismiss()
-        }.setOnDismissListener {
-
-            setUpColorsRecyclerView()
-        }
-    }
-
-    private fun setTextWatcherInColorEditTexts(viewToColored: View, colorHexEt: EditText?, coloNameEt: TextInputLayout?) {
-
-        colorHexEt?.addTextChangedListener(object : TextWatcher {
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
-                if (s?.isEmpty()!!) {
-
-                    colorHexEt.error = EDIT_TEXT_EMPTY_MESSAGE
-                } else {
-
-                    colorHexEt.error = null
-
-                    Log.d(TAG, "onTextChanged: s.length = ${s.length}")
-
-                    if (s.length in 6..7) {
-
-                        Log.d(TAG, "onTextChanged: s.length is in range 6..7")
-
-                        val hexCode = if (s.toString().trim().startsWith("#")) {
-                            s.toString().trim()
-                        } else {
-                            "#${s.toString().trim()}"
-                        }
-
-                        if (hexCode.isValidHexCode()) {
-
-                            applyColor(
-                                    requireContext(),
-                                    viewToColored,
-                                    hexCode = hexCode
-                            )
-                        }
-                    }
-                }
-            }
-
-            override fun afterTextChanged(s: Editable?) {}
-        })
-
-        coloNameEt?.editText?.addTextChangedListener(object : TextWatcher {
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
-                if (s?.isEmpty()!!) {
-
-                    coloNameEt.error = EDIT_TEXT_EMPTY_MESSAGE
-                } else {
-
-                    coloNameEt.error = null
-                }
-            }
-
-            override fun afterTextChanged(s: Editable?) {}
-        })
-
-    }
-
-    private fun initializeColorFields(customView: View, color: Colors) {
-
-        val colorBtn = customView.findViewById<Button>(R.id.chooseColorBtn)
-        val colorHexEt = customView.findViewById<EditText>(R.id.colorHexET)
-        val colorNameET = customView.findViewById<TextInputLayout>(R.id.colorNameEt).editText
-
-        colorBtn.setBackgroundColor(Color.parseColor(color.colorHexCode))
-        colorHexEt.setText(color.colorHexCode)
-        colorNameET?.setText(color.colorName)
     }
 
     /**[END OF COLORS]**/

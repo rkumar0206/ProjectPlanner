@@ -214,7 +214,7 @@ class HomeFragment : Fragment(R.layout.fragment_home),
 
         if (technologyList.isEmpty()) {
 
-            showToast(requireContext(), "You haven't added any technology used to this project yet", Toast.LENGTH_LONG)
+            showToast(requireContext(), "You haven't added any technology used in this project yet", Toast.LENGTH_LONG)
         } else {
 
             technologyAdapter.submitList(technologyList)
