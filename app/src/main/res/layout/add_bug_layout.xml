@@ -54,10 +54,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="16dp"
         app:errorEnabled="true"
-        app:layout_constraintEnd_toStartOf="@+id/attachLinkBtn"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/bugDescriptionET">
 
@@ -67,19 +66,5 @@
             android:hint="@string/possible_solution_if_any"
             android:inputType="textMultiLine|textAutoCorrect|textAutoComplete" />
     </com.google.android.material.textfield.TextInputLayout>
-
-    <ImageButton
-        android:id="@+id/attachLinkBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="3dp"
-        android:layout_marginBottom="8dp"
-        android:backgroundTint="@android:color/transparent"
-        android:rotation="140"
-        app:layout_constraintBottom_toBottomOf="@+id/possibleSolutionET"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/possibleSolutionET"
-        app:srcCompat="@drawable/ic_baseline_insert_link_24"
-        app:tint="@color/url_text_color" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

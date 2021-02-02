@@ -37,5 +37,5 @@
     <string name="no_bug_report_found_yet">No Bug report found yet</string>
     <string name="possible_solution_if_any">Possible solution (If any)</string>
     <string name="bug_description">Bug description</string>
-    <string name="what_s_the_bug">What\'s the bug</string>
+    <string name="what_s_the_bug">What\'s the bug (bug name)</string>
 </resources>

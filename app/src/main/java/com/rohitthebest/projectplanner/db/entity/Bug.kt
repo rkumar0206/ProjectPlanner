@@ -2,6 +2,7 @@ package com.rohitthebest.projectplanner.db.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.rohitthebest.projectplanner.Constants.FALSE
 
 @Entity(tableName = "bug_table")
 data class Bug(
@@ -11,7 +12,7 @@ data class Bug(
         var whatBug: String,
         var bugDescription: String,
         var possibleSolution: String?,
-        var attachedURL: ArrayList<Url>
+        var isResolved: String = FALSE,
 ) {
 
     constructor() : this(
@@ -21,6 +22,6 @@ data class Bug(
             "",
             "",
             "",
-            ArrayList()
+            FALSE
     )
 }
