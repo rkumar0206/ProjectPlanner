@@ -4,8 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="3dp"
-    app:cardBackgroundColor="@android:color/transparent">
+    android:layout_marginStart="5dp"
+    android:layout_marginTop="2dp"
+    android:layout_marginEnd="5dp"
+    android:layout_marginBottom="2dp"
+    app:strokeColor="@color/error_color"
+    app:strokeWidth="1dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -17,8 +21,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="2dp"
-            android:layout_marginEnd="2dp"
-            app:layout_constraintEnd_toStartOf="@+id/deleteBugBtn"
+            android:layout_marginEnd="3dp"
+            app:layout_constraintEnd_toStartOf="@+id/editBtn"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Everytime when this fragment is opened it crashes" />
@@ -40,14 +44,35 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="3dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="5dp"
             android:padding="3dp"
             android:textIsSelectable="true"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/bugDescriptionCB"
             app:layout_constraintTop_toBottomOf="@+id/bugDescriptionCB"
             tools:text="Solution : nvnvnkmnkvnknvn n n vkfnvjjajvnjkfvnn\nfkajvjdcjshdk;lsdk;lkdscl;mlcn\nsjdhckjscnkjnckcnkcnkNCCNkncjkndjcnjsdcnjksdnkdcnkj\nsdjkcsjkdcnjcncnjkcnjcnjcnjkcn\nsdjsdnjkcnjcnjncjndcjds" />
+
+        <ImageButton
+            android:id="@+id/editBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@android:color/transparent"
+            app:layout_constraintBottom_toBottomOf="@+id/deleteBugBtn"
+            app:layout_constraintEnd_toStartOf="@+id/deleteBugBtn"
+            app:layout_constraintTop_toTopOf="@+id/deleteBugBtn"
+            app:srcCompat="@drawable/ic_baseline_edit_24" />
+
+        <TextView
+            android:id="@+id/addedOnTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="5dp"
+            android:textSize="10sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/bugDescriptionCB"
+            app:layout_constraintTop_toBottomOf="@+id/bugSolutionTV"
+            tools:text="Added on : " />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.google.android.material.card.MaterialCardView>
