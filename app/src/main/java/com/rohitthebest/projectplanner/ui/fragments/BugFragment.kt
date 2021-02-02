@@ -136,7 +136,9 @@ class BugFragment : Fragment(R.layout.fragment_bug), BugAdapter.OnClickListener 
     }
 
     override fun onEditBugBtnClicked(bug: Bug, position: Int) {
-        //TODO("Not yet implemented")
+
+        recyclerViewPosition = position
+        openBottomSheetForAddingBugReport(bug)
     }
 
     override fun onDeleteBugBtnClicked(bug: Bug, position: Int) {
@@ -144,7 +146,7 @@ class BugFragment : Fragment(R.layout.fragment_bug), BugAdapter.OnClickListener 
     }
 
 
-    private fun openBottomSheetForAddingBugReport() {
+    private fun openBottomSheetForAddingBugReport(bug: Bug? = null) {
 
         MaterialDialog(requireContext(), BottomSheet()).show {
 
@@ -158,6 +160,11 @@ class BugFragment : Fragment(R.layout.fragment_bug), BugAdapter.OnClickListener 
             val bugDescriptionET = getCustomView().findViewById<TextInputLayout>(R.id.bugDescriptionET)
             val possibleSolutionET = getCustomView().findViewById<TextInputLayout>(R.id.possibleSolutionET)
 
+            if (bug != null) {
+
+                bugDescriptionET.editText?.setText(bug.bugDescription)
+                possibleSolutionET.editText?.setText(bug.possibleSolution)
+            }
             positiveButton(text = "Save") {
                 val bugDescription = bugDescriptionET.editText?.text?.toString()?.trim()
 
@@ -166,10 +173,10 @@ class BugFragment : Fragment(R.layout.fragment_bug), BugAdapter.OnClickListener 
                 if (bugDescription?.isNotEmpty()!!) {
 
                     saveBugReportToDatabase(
+                            bug,
                             bugDescription,
                             possibleSolution
                     )
-
                     dismiss()
                 }
             }
@@ -181,20 +188,35 @@ class BugFragment : Fragment(R.layout.fragment_bug), BugAdapter.OnClickListener 
         }
     }
 
-    private fun saveBugReportToDatabase(bugDescription: String?, possibleSolution: String?) {
+    private fun saveBugReportToDatabase(bug: Bug? = null, bugDescription: String?, possibleSolution: String?) {
 
-        val bug = Bug(
-                System.currentTimeMillis(),
-                generateKey(),
-                projectKey,
-                bugDescription.toString(),
-                possibleSolution,
-                FALSE
-        )
+        val bugToBeAdded: Bug
 
-        bugViewModel.insert(bug)
+        if (bug == null) {
 
-        Log.d(TAG, "saveBugReportToDatabase: BugReport inserted: $bug")
+            bugToBeAdded = Bug(
+                    System.currentTimeMillis(),
+                    generateKey(),
+                    projectKey,
+                    bugDescription.toString(),
+                    possibleSolution,
+                    FALSE
+            )
+
+            bugViewModel.insert(bugToBeAdded)
+            Log.d(TAG, "saveBugReportToDatabase: BugReport inserted: $bug")
+
+        } else {
+
+            bugToBeAdded = bug
+            bugToBeAdded.bugDescription = bugDescription.toString()
+            bugToBeAdded.possibleSolution = possibleSolution
+
+            bugViewModel.updateBug(bugToBeAdded)
+            Log.d(TAG, "saveBugReportToDatabase: BugReport updated: $bug")
+
+        }
+
 
     }
 

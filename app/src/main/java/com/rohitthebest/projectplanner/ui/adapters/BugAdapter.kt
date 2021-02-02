@@ -31,12 +31,14 @@ class BugAdapter : ListAdapter<Bug, BugAdapter.BugViewHolder>(DiffUtilCallback()
                         bugDescriptionCB.text = it.bugDescription
                         binding.bugDescriptionCB.changeTextColor(itemView.context, R.color.primary_text_color)
                         bugDescriptionCB.isChecked = false
+                        editBtn.show()
                     } else {
 
                         binding.root.strokeColor = ContextCompat.getColor(itemView.context, R.color.success_color)
                         bugDescriptionCB.strikeThrough(it.bugDescription)
                         binding.bugDescriptionCB.changeTextColor(itemView.context, R.color.secondary_text_color)
                         bugDescriptionCB.isChecked = true
+                        editBtn.hide()
                     }
 
                     if (it.possibleSolution != "") {
