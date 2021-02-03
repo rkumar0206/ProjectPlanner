@@ -131,6 +131,9 @@ class ProjectAdapter(
             binding.deleteProjectBtn.setOnClickListener(this)
 
             binding.addFeatureCV.setOnClickListener(this)
+            binding.addSkillCV.setOnClickListener(this)
+            binding.addTechnologyCV.setOnClickListener(this)
+            binding.addResourceCV.setOnClickListener(this)
         }
 
         override fun onClick(v: View?) {
@@ -167,7 +170,7 @@ class ProjectAdapter(
                     }
                     binding.addBugsToTheProjectBtn.id -> {
 
-                        mListener!!.onAddBugsBtnClicked(getItem(absoluteAdapterPosition).projectKey)
+                        mListener!!.onBugFixBtnClicked(getItem(absoluteAdapterPosition).projectKey)
                     }
                     binding.uploadProjectToCloudBtn.id -> {
 
@@ -181,6 +184,19 @@ class ProjectAdapter(
                     binding.addFeatureCV.id -> {
 
                         mListener!!.onAddFeatureBtnClicked(getItem(absoluteAdapterPosition))
+                    }
+
+                    binding.addSkillCV.id -> {
+
+                        mListener!!.onAddSkillBtnClicked(getItem(absoluteAdapterPosition))
+                    }
+                    binding.addTechnologyCV.id -> {
+
+                        mListener!!.onAddTechnologyBtnClicked(getItem(absoluteAdapterPosition))
+                    }
+                    binding.addResourceCV.id -> {
+
+                        mListener!!.onAddResourceBtnClicked(getItem(absoluteAdapterPosition))
                     }
                 }
             }
@@ -241,10 +257,15 @@ class ProjectAdapter(
         fun onResourcesClicked(project: Project)
 
         fun onTaskBtnClicked(projectKey: String)
-        fun onAddBugsBtnClicked(projectKey: String)
+        fun onBugFixBtnClicked(projectKey: String)
         fun onUploadBtnClicked(project: Project)
         fun onDeleteProjectBtnClicked(project: Project)
+
         fun onAddFeatureBtnClicked(project: Project)
+        fun onAddSkillBtnClicked(project: Project)
+        fun onAddTechnologyBtnClicked(project: Project)
+        fun onAddResourceBtnClicked(project: Project)
+
     }
 
     fun setOnClickListener(listener: OnClickListener) {

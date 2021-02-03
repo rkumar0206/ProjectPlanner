@@ -31,6 +31,9 @@ import com.rohitthebest.projectplanner.utils.Functions.Companion.openLinkInBrows
 import com.rohitthebest.projectplanner.utils.Functions.Companion.showNoInternetMessage
 import com.rohitthebest.projectplanner.utils.Functions.Companion.showToast
 import com.rohitthebest.projectplanner.utils.FunctionsForAddingElementsToProject.Companion.openFeatureBottomSheetDialog
+import com.rohitthebest.projectplanner.utils.FunctionsForAddingElementsToProject.Companion.showBottomSheetDialogForAddingLinkResource
+import com.rohitthebest.projectplanner.utils.FunctionsForAddingElementsToProject.Companion.showBottomSheetDialogForAddingTechnology
+import com.rohitthebest.projectplanner.utils.FunctionsForAddingElementsToProject.Companion.showDialogForAddingSkills
 import com.rohitthebest.projectplanner.utils.converters.GsonConverter
 import com.rohitthebest.projectplanner.utils.hide
 import com.rohitthebest.projectplanner.utils.show
@@ -289,7 +292,7 @@ class HomeFragment : Fragment(R.layout.fragment_home),
         findNavController().navigate(action)
     }
 
-    override fun onAddBugsBtnClicked(projectKey: String) {
+    override fun onBugFixBtnClicked(projectKey: String) {
 
         val action = HomeFragmentDirections.actionHomeFragmentToBugFragment(
                 projectKey
@@ -335,6 +338,49 @@ class HomeFragment : Fragment(R.layout.fragment_home),
                     0
                 } else {
                     project.features.lastIndex + 1
+                }
+        )
+    }
+
+    override fun onAddSkillBtnClicked(project: Project) {
+
+        showDialogForAddingSkills(
+                classForAddingProject,
+                project = project,
+                position = if (project.skillsRequired.size == 0) {
+                    0
+                } else {
+
+                    project.skillsRequired.lastIndex + 1
+                }
+        )
+    }
+
+    override fun onAddTechnologyBtnClicked(project: Project) {
+
+        showBottomSheetDialogForAddingTechnology(
+                classForAddingProject,
+                project,
+                position = if (project.technologyUsed.size == 0) {
+                    0
+                } else {
+
+                    project.technologyUsed.lastIndex + 1
+                }
+        )
+    }
+
+    override fun onAddResourceBtnClicked(project: Project) {
+
+        showBottomSheetDialogForAddingLinkResource(
+                classForAddingProject,
+                project,
+                position = if (
+                        project.resources?.urls?.size == 0
+                ) {
+                    0
+                } else {
+                    project.resources?.urls?.lastIndex?.plus(1)!!
                 }
         )
     }
