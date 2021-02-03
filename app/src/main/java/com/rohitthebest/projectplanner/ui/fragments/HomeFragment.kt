@@ -21,6 +21,7 @@ import com.rohitthebest.projectplanner.R
 import com.rohitthebest.projectplanner.databinding.FragmentHomeBinding
 import com.rohitthebest.projectplanner.db.entity.Feature
 import com.rohitthebest.projectplanner.db.entity.Project
+import com.rohitthebest.projectplanner.db.entity.Technology
 import com.rohitthebest.projectplanner.db.entity.Url
 import com.rohitthebest.projectplanner.ui.adapters.*
 import com.rohitthebest.projectplanner.ui.viewModels.BugViewModel
@@ -47,7 +48,7 @@ private const val TAG = "HomeFragment"
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home),
-        View.OnClickListener, ProjectAdapter.OnClickListener, LinkResourceAdapter.OnClickListener, FeatureAdapter.OnClickListener {
+        View.OnClickListener, ProjectAdapter.OnClickListener, LinkResourceAdapter.OnClickListener, FeatureAdapter.OnClickListener, StringAdapter.OnClickListener, TechnologyAdapter.OnClickListener {
 
     private val projectViewModel by viewModels<ProjectViewModel>()
     private val taskViewModel by viewModels<TaskViewModel>()
@@ -225,11 +226,14 @@ class HomeFragment : Fragment(R.layout.fragment_home),
                 .show()
     }
 
+
     override fun onSkillClicked(project: Project) {
+
+        clickedProject = project
 
         val skillList = project.skillsRequired
 
-        val skillAdapter = StringAdapter("hide")
+        val skillAdapter = StringAdapter()
 
         if (skillList.isEmpty()) {
 
@@ -238,7 +242,9 @@ class HomeFragment : Fragment(R.layout.fragment_home),
 
             skillAdapter.submitList(skillList)
 
-            MaterialDialog(requireContext(), BottomSheet()).show {
+            skillAdapter.setOnClickListener(this)
+
+            openedDialog = MaterialDialog(requireContext(), BottomSheet()).show {
 
                 title(text = "Skills required in ${project.description.name}")
 
@@ -259,11 +265,43 @@ class HomeFragment : Fragment(R.layout.fragment_home),
         }
     }
 
+    override fun onStringClicked(text: String?, position: Int) {
+
+        showDialogForAddingSkills(
+                classForAddingProject,
+                text,
+                clickedProject!!,
+                position
+        )
+
+        openedDialog?.dismiss()
+    }
+
+    override fun onDeleteStringClicked(text: String, position: Int) {
+
+        clickedProject!!.skillsRequired.remove(text)
+        projectViewModel.updateProject(clickedProject!!)
+
+        openedDialog?.dismiss()
+
+        Snackbar.make(binding.root, "Skill deleted", Snackbar.LENGTH_LONG)
+                .setAction("Undo") {
+
+                    clickedProject!!.skillsRequired.add(position, text)
+
+                    projectViewModel.updateProject(clickedProject!!)
+                }
+                .show()
+    }
+
+
     override fun onTechnologyClicked(project: Project) {
+
+        clickedProject = project
 
         val technologyList = project.technologyUsed
 
-        val technologyAdapter = TechnologyAdapter("hide")
+        val technologyAdapter = TechnologyAdapter()
 
         if (technologyList.isEmpty()) {
 
@@ -271,8 +309,9 @@ class HomeFragment : Fragment(R.layout.fragment_home),
         } else {
 
             technologyAdapter.submitList(technologyList)
+            technologyAdapter.setOnClickListener(this)
 
-            MaterialDialog(requireContext(), BottomSheet()).show {
+            openedDialog = MaterialDialog(requireContext(), BottomSheet()).show {
 
                 title(text = "Technologies used in ${project.description.name}")
 
@@ -291,11 +330,43 @@ class HomeFragment : Fragment(R.layout.fragment_home),
         }
     }
 
+    override fun onTechnologyClicked(technology: Technology, position: Int) {
+
+        showBottomSheetDialogForAddingTechnology(
+                classForAddingProject,
+                clickedProject!!,
+                technology,
+                position
+        )
+
+        openedDialog?.dismiss()
+    }
+
+    override fun onTechnologyDeleteBtnClicked(technology: Technology, position: Int) {
+
+        clickedProject!!.technologyUsed.remove(technology)
+        projectViewModel.updateProject(clickedProject!!)
+
+        openedDialog?.dismiss()
+
+        Snackbar.make(binding.root, "Technology deleted", Snackbar.LENGTH_LONG)
+                .setAction("Undo") {
+
+                    clickedProject!!.technologyUsed.add(position, technology)
+                    projectViewModel.updateProject(clickedProject!!)
+
+                }
+                .show()
+    }
+
+
     override fun onResourcesClicked(project: Project) {
+
+        clickedProject = project
 
         val linkResourceList = project.resources?.urls
 
-        val linkAdapter = LinkResourceAdapter("hide")
+        val linkAdapter = LinkResourceAdapter()
 
         if (linkResourceList?.isEmpty() == true) {
 
@@ -303,10 +374,9 @@ class HomeFragment : Fragment(R.layout.fragment_home),
         } else {
 
             linkAdapter.submitList(linkResourceList)
-
             linkAdapter.setOnClickListener(this)
 
-            MaterialDialog(requireContext(), BottomSheet()).show {
+            openedDialog = MaterialDialog(requireContext(), BottomSheet()).show {
 
                 title(text = "Resources for ${project.description.name}")
 
@@ -323,6 +393,57 @@ class HomeFragment : Fragment(R.layout.fragment_home),
             }
         }
     }
+
+    override fun onLinkClick(link: Url) {
+
+        if (isInternetAvailable(requireContext())) {
+
+            openLinkInBrowser(link.url, requireContext())
+        } else {
+
+            showNoInternetMessage(requireContext())
+        }
+    }
+
+    override fun onEditLinkButtonClicked(link: Url, position: Int) {
+
+        showBottomSheetDialogForAddingLinkResource(
+                classForAddingProject,
+                clickedProject!!,
+                link,
+                position
+        )
+
+        openedDialog?.dismiss()
+    }
+
+    override fun onDeleteLinkClicked(link: Url, position: Int) {
+
+        clickedProject!!.resources?.urls?.remove(link)
+        projectViewModel.updateProject(clickedProject!!)
+
+        openedDialog?.dismiss()
+
+        Snackbar.make(binding.root, "Link deleted", Snackbar.LENGTH_LONG)
+                .setAction("Undo") {
+
+                    clickedProject!!.resources?.urls?.add(position, link)
+                    projectViewModel.updateProject(clickedProject!!)
+
+                }
+                .show()
+
+    }
+
+    override fun onShareLinkBtnClicked(url: String) {
+
+        Functions.shareAsText(
+                url,
+                "URL",
+                requireContext()
+        )
+    }
+
 
     override fun onTaskBtnClicked(projectKey: String) {
 
@@ -433,34 +554,6 @@ class HomeFragment : Fragment(R.layout.fragment_home),
         taskViewModel.deleteTaskByProjectKey(projectKey = project.projectKey)
 
         bugViewModel.deleteByProjectKey(project.projectKey)
-    }
-
-    override fun onLinkClick(link: Url) {
-
-        if (isInternetAvailable(requireContext())) {
-
-            openLinkInBrowser(link.url, requireContext())
-        } else {
-
-            showNoInternetMessage(requireContext())
-        }
-    }
-
-    override fun onEditLinkButtonClicked(link: Url, position: Int) {
-        //("Not yet implemented")
-    }
-
-    override fun onDeleteLinkClicked(link: Url, position: Int) {
-        //("Not yet implemented")
-    }
-
-    override fun onShareLinkBtnClicked(url: String) {
-
-        Functions.shareAsText(
-                url,
-                "URL",
-                requireContext()
-        )
     }
 
     /**[end OF PROJECT ADAPTER CLICK LISTENERS] **/
