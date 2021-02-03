@@ -10,6 +10,7 @@ import com.rohitthebest.projectplanner.Constants.SHOW_UI
 import com.rohitthebest.projectplanner.databinding.AdapterFeatureLayoutBinding
 import com.rohitthebest.projectplanner.db.entity.Feature
 import com.rohitthebest.projectplanner.utils.boldSpan
+import com.rohitthebest.projectplanner.utils.hide
 
 class FeatureAdapter(var showOrHideUI: String = SHOW_UI) : ListAdapter<Feature, FeatureAdapter.FeatureViewHolder>(DiffUtilCallback()) {
 
@@ -52,7 +53,13 @@ class FeatureAdapter(var showOrHideUI: String = SHOW_UI) : ListAdapter<Feature, 
 
         init {
 
-            if (showOrHideUI == SHOW_UI) {
+            if (showOrHideUI != SHOW_UI) {
+
+                binding.deleteFeatureBtn.hide()
+
+            } else {
+
+                //binding.deleteFeatureBtn.show()
 
                 binding.root.setOnClickListener {
 
@@ -60,6 +67,11 @@ class FeatureAdapter(var showOrHideUI: String = SHOW_UI) : ListAdapter<Feature, 
 
                         mListener!!.onFeatureClicked(getItem(absoluteAdapterPosition), absoluteAdapterPosition)
                     }
+                }
+
+                binding.deleteFeatureBtn.setOnClickListener {
+
+                    mListener!!.onDeleteFeatureBtnClicked(getItem(absoluteAdapterPosition), absoluteAdapterPosition)
                 }
             }
         }
@@ -93,6 +105,7 @@ class FeatureAdapter(var showOrHideUI: String = SHOW_UI) : ListAdapter<Feature, 
     interface OnClickListener {
 
         fun onFeatureClicked(feature: Feature, position: Int)
+        fun onDeleteFeatureBtnClicked(feature: Feature, position: Int)
     }
 
     fun setOnClickListener(listener: OnClickListener) {

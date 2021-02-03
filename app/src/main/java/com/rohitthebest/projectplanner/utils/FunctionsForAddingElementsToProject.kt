@@ -17,7 +17,6 @@ import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
 import com.afollestad.materialdialogs.input.input
-import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textfield.TextInputLayout
 import com.rohitthebest.projectplanner.Constants
 import com.rohitthebest.projectplanner.R
@@ -56,25 +55,7 @@ class FunctionsForAddingElementsToProject {
 
                 if (feature != null) {
 
-                    getCustomView().findViewById<CardView>(R.id.deleteBtnOuter).show()
-
                     title(text = "Edit Feature")
-
-                    getCustomView().findViewById<MaterialCardView>(R.id.deleteBtn).setOnClickListener {
-
-                        project.features.remove(feature)
-                        this.dismiss()
-
-/*
-                        Snackbar.make(view, "Feature deleted", Snackbar.LENGTH_LONG)
-                                .setAction("Undo") {
-
-                                    project.features.add(position, feature)
-                                    //setUpFeaturesRecyclerView()
-                                }
-                                .show()
-*/
-                    }
 
                     setInitialFeatureValues(getCustomView(), feature)
                 }

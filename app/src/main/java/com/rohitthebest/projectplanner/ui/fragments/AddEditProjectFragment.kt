@@ -426,6 +426,21 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
                 feature, position)
     }
 
+    override fun onDeleteFeatureBtnClicked(feature: Feature, position: Int) {
+
+        project.features.remove(feature)
+        projectViewModel.updateProject(project)
+
+        Snackbar.make(binding.root, "Feature deleted", Snackbar.LENGTH_LONG)
+                .setAction("Undo") {
+
+                    project.features.add(position, feature)
+
+                    projectViewModel.updateProject(project)
+                }
+                .show()
+    }
+
     /**[END OF FEATURE]**/
 
 
@@ -466,15 +481,14 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
 
         project.skillsRequired.remove(text)
 
-        setUpSkillsRecyclerView()
+        projectViewModel.updateProject(project)
 
         Snackbar.make(binding.root, "Skill deleted", Snackbar.LENGTH_LONG)
                 .setAction("Undo") {
 
                     project.skillsRequired.add(position, text)
 
-                    setUpSkillsRecyclerView()
-
+                    projectViewModel.updateProject(project)
                 }
                 .show()
     }
@@ -523,12 +537,14 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
     private fun deleteTechnology(technology: Technology, position: Int) {
 
         project.technologyUsed.remove(technology)
+        projectViewModel.updateProject(project)
 
         Snackbar.make(binding.root, "Technology deleted", Snackbar.LENGTH_LONG)
                 .setAction("Undo") {
 
                     project.technologyUsed.add(position, technology)
-                    setUpTechnologyRecyclerView()
+                    projectViewModel.updateProject(project)
+
                 }
                 .show()
     }
@@ -585,13 +601,14 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
     override fun onDeleteLinkClicked(link: Url, position: Int) {
 
         project.resources?.urls?.remove(link)
-        setUpLinkResourceRecyclerView()
+        projectViewModel.updateProject(project)
 
         Snackbar.make(binding.root, "Link deleted", Snackbar.LENGTH_LONG)
                 .setAction("Undo") {
 
                     project.resources?.urls?.add(position, link)
-                    setUpLinkResourceRecyclerView()
+                    projectViewModel.updateProject(project)
+
                 }
                 .show()
 

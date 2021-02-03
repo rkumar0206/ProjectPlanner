@@ -29,6 +29,7 @@
             android:backgroundTint="@android:color/transparent"
             motion:layout_constraintEnd_toEndOf="parent"
             motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintEnd_toStartOf="@+id/delete_feature_btn"
             motion:srcCompat="@drawable/ic_baseline_keyboard_arrow_down_24"
 
             />
@@ -54,6 +55,18 @@
             motion:layout_constraintTop_toBottomOf="@id/expandedFeatureLL"
             motion:layout_constraintStart_toStartOf="parent"
             motion:layout_constraintEnd_toEndOf="parent" />
+
+        <Constraint
+            android:id="@+id/delete_feature_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@android:color/transparent"
+            android:visibility="visible"
+            motion:layout_constraintBottom_toBottomOf="@+id/expandFeatureBtn"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintTop_toTopOf="@+id/expandFeatureBtn"
+            motion:srcCompat="@drawable/ic_baseline_close_24" />
+
 
     </ConstraintSet>
 
@@ -83,6 +96,7 @@
             android:backgroundTint="@android:color/transparent"
             motion:layout_constraintEnd_toEndOf="parent"
             motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintEnd_toStartOf="@+id/delete_feature_btn"
             motion:srcCompat="@drawable/ic_baseline_keyboard_arrow_down_24"
 
             />
@@ -108,6 +122,18 @@
             motion:layout_constraintTop_toBottomOf="@id/expandedFeatureLL"
             motion:layout_constraintStart_toStartOf="parent"
             motion:layout_constraintEnd_toEndOf="parent" />
+
+        <Constraint
+            android:id="@+id/delete_feature_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@android:color/transparent"
+            android:visibility="gone"
+            motion:layout_constraintBottom_toBottomOf="@+id/expandFeatureBtn"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintTop_toTopOf="@+id/expandFeatureBtn"
+            motion:srcCompat="@drawable/ic_baseline_close_24" />
+
     </ConstraintSet>
 
     <Transition

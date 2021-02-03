@@ -30,9 +30,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:layout_marginEnd="8dp"
             android:backgroundTint="@android:color/transparent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/delete_feature_btn"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_baseline_keyboard_arrow_down_24" />
 
@@ -74,6 +73,16 @@
             android:background="?android:attr/listDivider"
             app:layout_constraintTop_toBottomOf="@+id/expandedFeatureLL"
             tools:layout_editor_absoluteY="47dp" />
+
+        <ImageButton
+            android:id="@+id/delete_feature_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@android:color/transparent"
+            app:layout_constraintBottom_toBottomOf="@+id/expandFeatureBtn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/expandFeatureBtn"
+            app:srcCompat="@drawable/ic_baseline_close_24" />
     </androidx.constraintlayout.motion.widget.MotionLayout>
 
 </com.google.android.material.card.MaterialCardView>
