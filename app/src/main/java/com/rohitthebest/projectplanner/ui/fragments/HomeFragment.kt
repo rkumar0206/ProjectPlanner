@@ -27,19 +27,15 @@ import com.rohitthebest.projectplanner.ui.adapters.*
 import com.rohitthebest.projectplanner.ui.viewModels.BugViewModel
 import com.rohitthebest.projectplanner.ui.viewModels.ProjectViewModel
 import com.rohitthebest.projectplanner.ui.viewModels.TaskViewModel
-import com.rohitthebest.projectplanner.utils.ClassForAddingProject
-import com.rohitthebest.projectplanner.utils.Functions
+import com.rohitthebest.projectplanner.utils.*
 import com.rohitthebest.projectplanner.utils.Functions.Companion.isInternetAvailable
 import com.rohitthebest.projectplanner.utils.Functions.Companion.openLinkInBrowser
 import com.rohitthebest.projectplanner.utils.Functions.Companion.showNoInternetMessage
-import com.rohitthebest.projectplanner.utils.Functions.Companion.showToast
 import com.rohitthebest.projectplanner.utils.ProjectHelperFunctions.Companion.showBottomSheetDialogForAddingFeature
 import com.rohitthebest.projectplanner.utils.ProjectHelperFunctions.Companion.showBottomSheetDialogForAddingLinkResource
 import com.rohitthebest.projectplanner.utils.ProjectHelperFunctions.Companion.showBottomSheetDialogForAddingTechnology
 import com.rohitthebest.projectplanner.utils.ProjectHelperFunctions.Companion.showDialogForAddingSkills
 import com.rohitthebest.projectplanner.utils.converters.GsonConverter
-import com.rohitthebest.projectplanner.utils.hide
-import com.rohitthebest.projectplanner.utils.show
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import java.util.*
@@ -173,7 +169,12 @@ class HomeFragment : Fragment(R.layout.fragment_home),
 
         if (featureList.isEmpty()) {
 
-            showToast(requireContext(), "You haven't added any features to this project yet", Toast.LENGTH_LONG)
+            "You haven't added any features to this project yet".showToasty(
+                requireContext(),
+                ToastyType.INFO,
+                true,
+                Toast.LENGTH_LONG
+            )
         } else {
 
             clickedProject = project
@@ -257,7 +258,13 @@ class HomeFragment : Fragment(R.layout.fragment_home),
 
         if (skillList.isEmpty()) {
 
-            showToast(requireContext(), "You haven't added any skills required to this project yet", Toast.LENGTH_LONG)
+            "You haven't added any skills required to this project yet".showToasty(
+                requireContext(),
+                ToastyType.INFO,
+                true,
+                Toast.LENGTH_LONG
+            )
+
         } else {
 
             skillAdapter.submitList(skillList)
@@ -341,7 +348,13 @@ class HomeFragment : Fragment(R.layout.fragment_home),
 
         if (technologyList.isEmpty()) {
 
-            showToast(requireContext(), "You haven't added any technology used in this project yet", Toast.LENGTH_LONG)
+            "You haven't added any technology used in this project yet".showToasty(
+                requireContext(),
+                ToastyType.INFO,
+                true,
+                Toast.LENGTH_LONG
+            )
+
         } else {
 
             technologyAdapter.submitList(technologyList)
@@ -422,7 +435,13 @@ class HomeFragment : Fragment(R.layout.fragment_home),
 
         if (linkResourceList?.isEmpty() == true) {
 
-            showToast(requireContext(), "You haven't added any resource to this project yet", Toast.LENGTH_LONG)
+            "You haven't added any resource to this project yet".showToasty(
+                requireContext(),
+                ToastyType.INFO,
+                true,
+                Toast.LENGTH_LONG
+            )
+
         } else {
 
             linkAdapter.submitList(linkResourceList)

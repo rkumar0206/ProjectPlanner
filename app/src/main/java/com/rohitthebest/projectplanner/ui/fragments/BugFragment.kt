@@ -20,9 +20,10 @@ import com.rohitthebest.projectplanner.db.entity.Bug
 import com.rohitthebest.projectplanner.ui.adapters.BugAdapter
 import com.rohitthebest.projectplanner.ui.viewModels.BugViewModel
 import com.rohitthebest.projectplanner.utils.Functions.Companion.generateKey
-import com.rohitthebest.projectplanner.utils.Functions.Companion.showToast
+import com.rohitthebest.projectplanner.utils.ToastyType
 import com.rohitthebest.projectplanner.utils.hide
 import com.rohitthebest.projectplanner.utils.show
+import com.rohitthebest.projectplanner.utils.showToasty
 import dagger.hilt.android.AndroidEntryPoint
 
 private const val TAG = "BugFragment"
@@ -132,11 +133,18 @@ class BugFragment : Fragment(R.layout.fragment_bug), BugAdapter.OnClickListener 
 
         recyclerViewPosition = position
 
-        bug.isResolved = if (bug.isResolved == TRUE) FALSE else TRUE
+        bug.isResolved = if (bug.isResolved == TRUE) FALSE else {
+
+            "Bug resolved".showToasty(
+                requireContext(),
+                ToastyType.SUCCESS,
+                true
+            )
+
+            TRUE
+        }
 
         bugViewModel.updateBug(bug)
-
-        showToast(requireContext(), "Bug resolved")
     }
 
     override fun onEditBugBtnClicked(bug: Bug, position: Int) {
