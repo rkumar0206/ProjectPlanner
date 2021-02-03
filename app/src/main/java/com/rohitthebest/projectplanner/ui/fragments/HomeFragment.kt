@@ -48,7 +48,11 @@ private const val TAG = "HomeFragment"
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home),
-        View.OnClickListener, ProjectAdapter.OnClickListener, LinkResourceAdapter.OnClickListener, FeatureAdapter.OnClickListener, StringAdapter.OnClickListener, TechnologyAdapter.OnClickListener {
+    View.OnClickListener, ProjectAdapter.OnClickListener,
+    LinkResourceAdapter.OnClickListener,
+    FeatureAdapter.OnClickListener,
+    StringAdapter.OnClickListener,
+    TechnologyAdapter.OnClickListener {
 
     private val projectViewModel by viewModels<ProjectViewModel>()
     private val taskViewModel by viewModels<TaskViewModel>()
@@ -160,6 +164,7 @@ class HomeFragment : Fragment(R.layout.fragment_home),
 
     /**[START OF PROJECT ADAPTER CLICK LISTENERS] **/
 
+    //-------------------------------FEATURE----------------------------------
     override fun onFeatureClicked(project: Project) {
 
         val featureList = project.features
@@ -217,16 +222,31 @@ class HomeFragment : Fragment(R.layout.fragment_home),
         openedDialog?.dismiss()
 
         Snackbar.make(binding.root, "Feature deleted", Snackbar.LENGTH_LONG)
-                .setAction("Undo") {
+            .setAction("Undo") {
 
-                    clickedProject!!.features.add(position, feature)
+                clickedProject!!.features.add(position, feature)
 
-                    projectViewModel.updateProject(clickedProject!!)
-                }
-                .show()
+                projectViewModel.updateProject(clickedProject!!)
+            }
+            .show()
     }
 
+    override fun onAddFeatureBtnClicked(project: Project) {
 
+        showBottomSheetDialogForAddingFeature(
+            classForAddingProject,
+            project,
+            position = if (project.features.size == 0) {
+                0
+            } else {
+                project.features.lastIndex + 1
+            }
+        )
+    }
+    //------------------------------------------------------------------------
+
+
+    //----------------------------------SKILL-------------------------------------
     override fun onSkillClicked(project: Project) {
 
         clickedProject = project
@@ -249,8 +269,8 @@ class HomeFragment : Fragment(R.layout.fragment_home),
                 title(text = "Skills required in ${project.description.name}")
 
                 customListAdapter(
-                        skillAdapter,
-                        LinearLayoutManager(requireContext())
+                    skillAdapter,
+                    LinearLayoutManager(requireContext())
                 )
 
 
@@ -285,16 +305,32 @@ class HomeFragment : Fragment(R.layout.fragment_home),
         openedDialog?.dismiss()
 
         Snackbar.make(binding.root, "Skill deleted", Snackbar.LENGTH_LONG)
-                .setAction("Undo") {
+            .setAction("Undo") {
 
-                    clickedProject!!.skillsRequired.add(position, text)
+                clickedProject!!.skillsRequired.add(position, text)
 
-                    projectViewModel.updateProject(clickedProject!!)
-                }
-                .show()
+                projectViewModel.updateProject(clickedProject!!)
+            }
+            .show()
     }
 
+    override fun onAddSkillBtnClicked(project: Project) {
 
+        showDialogForAddingSkills(
+            classForAddingProject,
+            project = project,
+            position = if (project.skillsRequired.size == 0) {
+                0
+            } else {
+
+                project.skillsRequired.lastIndex + 1
+            }
+        )
+    }
+    //-----------------------------------------------------------------------------
+
+
+    //--------------------------------TECHNOLOGY------------------------------------
     override fun onTechnologyClicked(project: Project) {
 
         clickedProject = project
@@ -316,8 +352,8 @@ class HomeFragment : Fragment(R.layout.fragment_home),
                 title(text = "Technologies used in ${project.description.name}")
 
                 customListAdapter(
-                        technologyAdapter,
-                        LinearLayoutManager(requireContext())
+                    technologyAdapter,
+                    LinearLayoutManager(requireContext())
                 )
 
                 positiveButton(text = "Add/Edit technologies") {
@@ -350,16 +386,32 @@ class HomeFragment : Fragment(R.layout.fragment_home),
         openedDialog?.dismiss()
 
         Snackbar.make(binding.root, "Technology deleted", Snackbar.LENGTH_LONG)
-                .setAction("Undo") {
+            .setAction("Undo") {
 
-                    clickedProject!!.technologyUsed.add(position, technology)
-                    projectViewModel.updateProject(clickedProject!!)
+                clickedProject!!.technologyUsed.add(position, technology)
+                projectViewModel.updateProject(clickedProject!!)
 
-                }
-                .show()
+            }
+            .show()
     }
 
+    override fun onAddTechnologyBtnClicked(project: Project) {
 
+        showBottomSheetDialogForAddingTechnology(
+            classForAddingProject,
+            project,
+            position = if (project.technologyUsed.size == 0) {
+                0
+            } else {
+
+                project.technologyUsed.lastIndex + 1
+            }
+        )
+    }
+    //-----------------------------------------------------------------------------
+
+
+    //----------------------------------RESOURCES----------------------------------
     override fun onResourcesClicked(project: Project) {
 
         clickedProject = project
@@ -381,8 +433,8 @@ class HomeFragment : Fragment(R.layout.fragment_home),
                 title(text = "Resources for ${project.description.name}")
 
                 customListAdapter(
-                        linkAdapter,
-                        LinearLayoutManager(requireContext())
+                    linkAdapter,
+                    LinearLayoutManager(requireContext())
                 )
 
                 positiveButton(text = "Add/Edit resource") {
@@ -438,17 +490,33 @@ class HomeFragment : Fragment(R.layout.fragment_home),
     override fun onShareLinkBtnClicked(url: String) {
 
         Functions.shareAsText(
-                url,
-                "URL",
-                requireContext()
+            url,
+            "URL",
+            requireContext()
         )
     }
+
+    override fun onAddResourceBtnClicked(project: Project) {
+
+        showBottomSheetDialogForAddingLinkResource(
+            classForAddingProject,
+            project,
+            position = if (
+                project.resources?.urls?.size == 0
+            ) {
+                0
+            } else {
+                project.resources?.urls?.lastIndex?.plus(1)!!
+            }
+        )
+    }
+    //-------------------------------------------------------------------------------
 
 
     override fun onTaskBtnClicked(projectKey: String) {
 
         val action = HomeFragmentDirections.actionHomeFragmentToTaskFragment(
-                projectKey
+            projectKey
         )
 
         findNavController().navigate(action)
@@ -466,6 +534,7 @@ class HomeFragment : Fragment(R.layout.fragment_home),
 
     override fun onShareBtnClicked(project: Project) {
         //TODO("Not yet implemented")
+
     }
 
     override fun onDeleteProjectBtnClicked(project: Project) {
@@ -491,62 +560,6 @@ class HomeFragment : Fragment(R.layout.fragment_home),
                 .show()
     }
 
-    override fun onAddFeatureBtnClicked(project: Project) {
-
-        showBottomSheetDialogForAddingFeature(
-                classForAddingProject,
-                project,
-                position = if (project.features.size == 0) {
-                    0
-                } else {
-                    project.features.lastIndex + 1
-                }
-        )
-    }
-
-    override fun onAddSkillBtnClicked(project: Project) {
-
-        showDialogForAddingSkills(
-                classForAddingProject,
-                project = project,
-                position = if (project.skillsRequired.size == 0) {
-                    0
-                } else {
-
-                    project.skillsRequired.lastIndex + 1
-                }
-        )
-    }
-
-    override fun onAddTechnologyBtnClicked(project: Project) {
-
-        showBottomSheetDialogForAddingTechnology(
-                classForAddingProject,
-                project,
-                position = if (project.technologyUsed.size == 0) {
-                    0
-                } else {
-
-                    project.technologyUsed.lastIndex + 1
-                }
-        )
-    }
-
-    override fun onAddResourceBtnClicked(project: Project) {
-
-        showBottomSheetDialogForAddingLinkResource(
-                classForAddingProject,
-                project,
-                position = if (
-                        project.resources?.urls?.size == 0
-                ) {
-                    0
-                } else {
-                    project.resources?.urls?.lastIndex?.plus(1)!!
-                }
-        )
-    }
-
     private fun deleteProject(project: Project) {
 
         projectViewModel.deleteProject(project)
@@ -556,7 +569,7 @@ class HomeFragment : Fragment(R.layout.fragment_home),
         bugViewModel.deleteByProjectKey(project.projectKey)
     }
 
-    /**[end OF PROJECT ADAPTER CLICK LISTENERS] **/
+    /**[END OF PROJECT ADAPTER CLICK LISTENERS] **/
 
     private fun initListeners() {
 

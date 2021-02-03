@@ -13,6 +13,7 @@ import android.view.animation.AnimationUtils
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.afollestad.materialdialogs.MaterialDialog
@@ -24,19 +25,30 @@ import com.rohitthebest.projectplanner.R
 import com.rohitthebest.projectplanner.utils.Functions.Companion.applyColor
 import com.rohitthebest.projectplanner.utils.Functions.Companion.showKeyboard
 import com.rohitthebest.projectplanner.utils.Functions.Companion.showToast
+import es.dmoral.toasty.Toasty
 import yuku.ambilwarna.AmbilWarnaDialog
 
+
+enum class ToastyType {
+
+    SUCCESS,
+    ERROR,
+    INFO,
+    WARNING,
+    NORMAL
+}
 
 fun View.showViewBySlidingAnimation(duration: Long = 600L) {
 
     this.show()
 
-    val animation = AnimationUtils.loadAnimation(context, R.anim.add_topic_button_visible_anim).apply {
+    val animation =
+        AnimationUtils.loadAnimation(context, R.anim.add_topic_button_visible_anim).apply {
 
-        this.duration = duration
-        interpolator = FastOutSlowInInterpolator()
-        this.startOffset = 0
-    }
+            this.duration = duration
+            interpolator = FastOutSlowInInterpolator()
+            this.startOffset = 0
+        }
     startAnimation(animation)
 }
 
@@ -281,78 +293,106 @@ fun String.isValidHexCode(): Boolean {
     return Regex(pattern, RegexOption.IGNORE_CASE).matches(this)
 }
 
+fun String.showToasty(
+    context: Context,
+    type: ToastyType = ToastyType.SUCCESS,
+    withIcon: Boolean = true,
+    duration: Int = Toast.LENGTH_SHORT
+) {
+
+    when (type) {
+
+        ToastyType.SUCCESS -> {
+            Toasty.success(context, this, duration, withIcon).show()
+        }
+        ToastyType.ERROR -> {
+            Toasty.error(context, this, duration, withIcon).show()
+        }
+        ToastyType.WARNING -> {
+            Toasty.warning(context, this, duration, withIcon).show()
+        }
+        ToastyType.INFO -> {
+            Toasty.info(context, this, duration, withIcon).show()
+        }
+        ToastyType.NORMAL -> {
+            Toasty.normal(context, this, duration).show()
+        }
+
+    }
+}
+
 fun Long.toStringM(radix: Int = 0): String {
 
     val values = arrayOf(
-            "0",
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "a",
-            "b",
-            "c",
-            "d",
-            "e",
-            "f",
-            "g",
-            "h",
-            "i",
-            "j",
-            "k",
-            "l",
-            "m",
-            "n",
-            "o",
-            "p",
-            "q",
-            "r",
-            "s",
-            "t",
-            "u",
-            "v",
-            "w",
-            "x",
-            "y",
-            "z",
-            "A",
-            "B",
-            "C",
-            "D",
-            "E",
-            "F",
-            "G",
-            "H",
-            "I",
-            "J",
-            "K",
-            "L",
-            "M",
-            "N",
-            "O",
-            "P",
-            "Q",
-            "R",
-            "S",
-            "T",
-            "U",
-            "V",
-            "W",
-            "X",
-            "Y",
-            "Z",
-            "!",
-            "@",
-            "#",
-            "$",
-            "%",
-            "^",
-            "&"
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h",
+        "i",
+        "j",
+        "k",
+        "l",
+        "m",
+        "n",
+        "o",
+        "p",
+        "q",
+        "r",
+        "s",
+        "t",
+        "u",
+        "v",
+        "w",
+        "x",
+        "y",
+        "z",
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "I",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "O",
+        "P",
+        "Q",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X",
+        "Y",
+        "Z",
+        "!",
+        "@",
+        "#",
+        "$",
+        "%",
+        "^",
+        "&"
     )
     var str = ""
     var d = this

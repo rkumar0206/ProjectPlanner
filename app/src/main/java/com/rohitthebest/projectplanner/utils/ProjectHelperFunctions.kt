@@ -1,5 +1,6 @@
 package com.rohitthebest.projectplanner.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.text.Editable
@@ -22,7 +23,9 @@ import com.rohitthebest.projectplanner.Constants
 import com.rohitthebest.projectplanner.R
 import com.rohitthebest.projectplanner.db.entity.*
 import com.rohitthebest.projectplanner.ui.viewModels.ProjectViewModel
+import com.rohitthebest.projectplanner.utils.Functions.Companion.showToast
 import yuku.ambilwarna.AmbilWarnaDialog
+import java.util.*
 
 data class ClassForAddingProject(
         val context: Context,
@@ -37,6 +40,7 @@ class ProjectHelperFunctions {
 
         /**[START OF FEATURE]*/
 
+        @SuppressLint("CheckResult")
         fun showBottomSheetDialogForAddingFeature(
                 classForAddingProject: ClassForAddingProject,
                 project: Project,
@@ -67,63 +71,96 @@ class ProjectHelperFunctions {
                 //adding text watcher on feature name editText
                 featureName?.addTextChangedListener(object : TextWatcher {
                     override fun beforeTextChanged(
-                            s: CharSequence?,
-                            start: Int,
-                            count: Int,
-                            after: Int
+                        s: CharSequence?,
+                        start: Int,
+                        count: Int,
+                        after: Int
                     ) {
                     }
 
-                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    override fun onTextChanged(
+                        s: CharSequence?,
+                        start: Int,
+                        before: Int,
+                        count: Int
+                    ) {
 
                         if (s?.isEmpty()!!) {
 
                             getCustomView().findViewById<TextInputLayout>(R.id.featureNameET).error =
-                                    "This is a mandatory field!!"
+                                "This is a mandatory field!!"
                         } else {
 
                             getCustomView().findViewById<TextInputLayout>(R.id.featureNameET).error =
-                                    null
+                                null
                         }
                     }
 
                     override fun afterTextChanged(s: Editable?) {}
                 })
 
+                var isDuplicateFeatureExists = false
+
                 positiveButton(text = "Save") {
 
                     if (featureName?.text.toString().trim().isEmpty()) {
 
-                        Functions.showToast(classForAddingProject.context, "Cannot add empty feature!!")
+                        showToast(
+                            classForAddingProject.context,
+                            "Cannot add empty feature!!"
+                        )
                     } else {
 
                         val featureToBeAdded = Feature(
-                                featureName?.text.toString().trim(),
-                                featureDescription?.text.toString().trim(),
-                                featureImplementation?.text.toString().trim()
+                            featureName?.text.toString().trim(),
+                            featureDescription?.text.toString().trim(),
+                            featureImplementation?.text.toString().trim()
                         )
 
-                        if (feature == null) {
+                        if (project.features.size != 0) {
 
-                            //add
+                            val featureNameList = project.features.map { f ->
 
-                            project.features.add(position, featureToBeAdded)
+                                f.name.toLowerCase(Locale.ROOT)
+                            }
 
-                            Log.d(
+                            if (featureNameList.contains(featureToBeAdded.name.toLowerCase(Locale.ROOT))) {
+
+                                isDuplicateFeatureExists = true
+                            }
+                        }
+
+                        if (!isDuplicateFeatureExists) {
+
+                            if (feature == null) {
+
+                                //add
+
+                                project.features.add(position, featureToBeAdded)
+
+                                Log.d(
                                     TAG,
                                     "openFeatureBottomSheetDialog: feature added at position $position " +
                                             ": $featureToBeAdded"
-                            )
-                        } else {
+                                )
+                            } else {
 
-                            //edit
+                                //edit
 
-                            project.features[position] = featureToBeAdded
+                                project.features[position] = featureToBeAdded
 
-                            Log.d(
+                                Log.d(
                                     TAG,
                                     "openFeatureBottomSheetDialog: feature edited at position $position " +
                                             ": $featureToBeAdded"
+                                )
+                            }
+                        } else {
+
+                            "This feature name already exits!!!".showToasty(
+                                classForAddingProject.context,
+                                ToastyType.ERROR,
+                                true
                             )
                         }
                         it.dismiss()
@@ -169,27 +206,51 @@ class ProjectHelperFunctions {
 
                 title(text = "Add Skill")
 
+                var isDuplicateSkillExits = false
+
+
                 if (skill != null) {
 
                     title(text = "Edit Skill")
 
                     input(
-                            hint = "Edit Skill", prefill = skill,
-                            inputType = InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
+                        hint = "Edit Skill", prefill = skill,
+                        inputType = InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
                     ) { _, charSequence ->
 
                         if (charSequence.toString().trim().isEmpty()) {
 
-                            Functions.showToast(classForAddingProject.context, "Cannot edit empty skill!!!")
+                            showToast(classForAddingProject.context, "Cannot edit empty skill!!!")
                         } else {
 
-                            project.skillsRequired[position] = charSequence.toString().trim()
-                            Log.d(
+                            if (project.skillsRequired.size != 0) {
+
+                                if (project.skillsRequired.contains(
+                                        charSequence.toString().trim()
+                                    )
+                                ) {
+
+                                    isDuplicateSkillExits = true
+                                }
+                            }
+
+                            if (!isDuplicateSkillExits) {
+
+                                project.skillsRequired[position] = charSequence.toString().trim()
+                                Log.d(
                                     TAG,
                                     "showDialogForAddingSkills: Skill edited at position $position Skill = ${
                                         charSequence.toString().trim()
                                     }"
-                            )
+                                )
+                            } else {
+
+                                "This Skill already exits!!".showToasty(
+                                    classForAddingProject.context,
+                                    ToastyType.ERROR,
+                                    true
+                                )
+                            }
                         }
                     }
                 } else {
@@ -198,20 +259,43 @@ class ProjectHelperFunctions {
 
                         if (charSequence.toString().trim().isEmpty()) {
 
-                            Functions.showToast(classForAddingProject.context, "Cannot add empty skill!!!")
+                            showToast(classForAddingProject.context, "Cannot add empty skill!!!")
                         } else {
 
-                            project.skillsRequired.add(position, charSequence.toString().trim())
+                            if (project.skillsRequired.size != 0) {
 
-                            Log.d(
+                                if (project.skillsRequired.contains(
+                                        charSequence.toString().trim()
+                                    )
+                                ) {
+
+                                    isDuplicateSkillExits = true
+                                }
+                            }
+
+                            if (!isDuplicateSkillExits) {
+
+                                project.skillsRequired.add(position, charSequence.toString().trim())
+
+                                Log.d(
                                     TAG,
                                     "showDialogForAddingSkills: Skill Added at position $position Skill = ${
                                         charSequence.toString().trim()
                                     }"
-                            )
+                                )
+                            } else {
+
+                                "This Skill already exits!!".showToasty(
+                                    classForAddingProject.context,
+                                    ToastyType.ERROR,
+                                    true
+                                )
+                            }
                         }
                     }
                 }
+
+
             }.negativeButton(text = "Cancel") {
 
                 it.dismiss()
@@ -306,41 +390,48 @@ class ProjectHelperFunctions {
 
                 techTextColorBtn.setOnClickListener {
 
-                    AmbilWarnaDialog(classForAddingProject.context,
-                            mDefaultTextColor,
-                            object : AmbilWarnaDialog.OnAmbilWarnaListener {
-                                override fun onCancel(dialog: AmbilWarnaDialog?) {}
+                    AmbilWarnaDialog(
+                        classForAddingProject.context,
+                        mDefaultTextColor,
+                        object : AmbilWarnaDialog.OnAmbilWarnaListener {
+                            override fun onCancel(dialog: AmbilWarnaDialog?) {}
 
-                                override fun onOk(dialog: AmbilWarnaDialog?, color: Int) {
+                            override fun onOk(dialog: AmbilWarnaDialog?, color: Int) {
 
-                                    mDefaultTextColor = color
+                                mDefaultTextColor = color
 
-                                    Functions.showToast(classForAddingProject.context,
-                                            mDefaultTextColor.convertToHexString())
+                                showToast(
+                                    classForAddingProject.context,
+                                    mDefaultTextColor.convertToHexString()
+                                )
 
-                                    previewText.setTextColor(mDefaultTextColor)
-                                    techTextColorBtn.setBackgroundColor(mDefaultTextColor)
-                                }
+                                previewText.setTextColor(mDefaultTextColor)
+                                techTextColorBtn.setBackgroundColor(mDefaultTextColor)
                             }
+                        }
                     ).show()
 
                 }
+
                 techBackgroundColorBtn.setOnClickListener {
 
-                    AmbilWarnaDialog(classForAddingProject.context,
-                            mDefaultBackgroundColor,
-                            object : AmbilWarnaDialog.OnAmbilWarnaListener {
-                                override fun onCancel(dialog: AmbilWarnaDialog?) {}
+                    AmbilWarnaDialog(
+                        classForAddingProject.context,
+                        mDefaultBackgroundColor,
+                        object : AmbilWarnaDialog.OnAmbilWarnaListener {
+                            override fun onCancel(dialog: AmbilWarnaDialog?) {}
 
-                                override fun onOk(dialog: AmbilWarnaDialog?, color: Int) {
+                            override fun onOk(dialog: AmbilWarnaDialog?, color: Int) {
 
-                                    mDefaultBackgroundColor = color
-                                    Functions.showToast(classForAddingProject.context, color.toString())
+                                mDefaultBackgroundColor = color
+                                showToast(classForAddingProject.context, color.toString())
 
-                                    previewBackgroundColor.setCardBackgroundColor(mDefaultBackgroundColor)
-                                    techBackgroundColorBtn.setBackgroundColor(mDefaultBackgroundColor)
-                                }
+                                previewBackgroundColor.setCardBackgroundColor(
+                                    mDefaultBackgroundColor
+                                )
+                                techBackgroundColorBtn.setBackgroundColor(mDefaultBackgroundColor)
                             }
+                        }
                     ).show()
                 }
 
@@ -348,35 +439,65 @@ class ProjectHelperFunctions {
 
                     if (techName?.text.toString().trim().isEmpty()) {
 
-                        Functions.showToast(classForAddingProject.context, "Cannot add empty technology...")
+                        showToast(classForAddingProject.context, "Cannot add empty technology...")
                     } else {
 
                         val technologyForAdding = Technology(
-                                techName?.text.toString().trim(),
-                                mDefaultBackgroundColor,
-                                mDefaultTextColor
+                            techName?.text.toString().trim(),
+                            mDefaultBackgroundColor,
+                            mDefaultTextColor
                         )
 
-                        if (technology == null) {
+                        var isDuplicateTechnologyExists = false
 
-                            //add
-                            project.technologyUsed.add(position, technologyForAdding)
+                        if (project.technologyUsed.size != 0) {
 
-                            Log.d(
+                            val technologyNameList = project.technologyUsed.map {
+
+                                it.name.toLowerCase(Locale.ROOT)
+                            }
+
+                            if (technologyNameList.contains(
+                                    technologyForAdding.name.toLowerCase(
+                                        Locale.ROOT
+                                    )
+                                )
+                            ) {
+
+                                isDuplicateTechnologyExists = true
+                            }
+                        }
+
+                        if (!isDuplicateTechnologyExists) {
+                            if (technology == null) {
+
+                                //add
+                                project.technologyUsed.add(position, technologyForAdding)
+
+                                Log.d(
                                     TAG,
                                     "showBottomSheetDialogForAddingTechnology: technology Added at position $position : $technologyForAdding"
-                            )
+                                )
 
-                        } else {
+                            } else {
 
-                            //edit
-                            project.technologyUsed[position] = technologyForAdding
+                                //edit
+                                project.technologyUsed[position] = technologyForAdding
 
-                            Log.d(
+                                Log.d(
                                     TAG,
                                     "showBottomSheetDialogForAddingTechnology: technology edited at position $position"
+                                )
+                            }
+                        } else {
+
+                            "This technology already exists!!!".showToasty(
+                                classForAddingProject.context,
+                                ToastyType.ERROR,
+                                true
                             )
                         }
+
                     }
                 }
 
@@ -490,33 +611,57 @@ class ProjectHelperFunctions {
                             linkNameET?.text.toString().trim().isEmpty()
                     ) {
 
-                        Functions.showToast(classForAddingProject.context, "Cannot add empty url!!!")
+                        showToast(classForAddingProject.context, "Cannot add empty url!!!")
                     } else {
 
                         val urlToBeAdded = Url(
-                                linkNameET?.text.toString().trim(),
-                                linkET?.text.toString().trim()
+                            linkNameET?.text.toString().trim(),
+                            linkET?.text.toString().trim()
                         )
 
-                        if (url == null) {
+                        var isDuplicateLinkExits = false
 
-                            //add
+                        if (project.resources?.urls?.size != 0) {
 
-                            project.resources?.urls?.add(position, urlToBeAdded)
+                            val linkUrlList = project.resources?.urls?.map {
 
-                            Log.d(
+                                it.url.toLowerCase(Locale.ROOT)
+                            }
+
+                            if (linkUrlList?.contains(urlToBeAdded.url.toLowerCase(Locale.ROOT))!!) {
+
+                                isDuplicateLinkExits = true
+                            }
+                        }
+
+                        if (!isDuplicateLinkExits) {
+                            if (url == null) {
+
+                                //add
+
+                                project.resources?.urls?.add(position, urlToBeAdded)
+
+                                Log.d(
                                     TAG,
                                     "showBottomSheetDialogForAddingLinkResource: url added at position : $position"
-                            )
-                        } else {
+                                )
+                            } else {
 
-                            //edit
+                                //edit
 
-                            project.resources?.urls?.set(position, urlToBeAdded)
+                                project.resources?.urls?.set(position, urlToBeAdded)
 
-                            Log.d(
+                                Log.d(
                                     TAG,
                                     "showBottomSheetDialogForAddingLinkResource: url edited at position : $position"
+                                )
+                            }
+                        } else {
+
+                            "This link is already there".showToasty(
+                                classForAddingProject.context,
+                                ToastyType.ERROR,
+                                true
                             )
                         }
 
@@ -605,7 +750,11 @@ class ProjectHelperFunctions {
                             colorHexEt.text.toString().trim().isEmpty() || colorNameET?.text.toString().trim().isEmpty()
                     ) {
 
-                        Functions.showToast(classForAddingProject.context, "Mandatory fields can't be empty!!!", Toast.LENGTH_LONG)
+                        showToast(
+                            classForAddingProject.context,
+                            "Mandatory fields can't be empty!!!",
+                            Toast.LENGTH_LONG
+                        )
                     } else {
 
                         val hexCode = if (colorHexEt.text.toString().trim().startsWith("#")) {
@@ -618,30 +767,66 @@ class ProjectHelperFunctions {
                         if (hexCode.isValidHexCode()) {
 
                             val colorToBeAdded = Colors(
-                                    colorNameET?.text.toString().trim(),
-                                    hexCode
+                                colorNameET?.text.toString().trim(),
+                                hexCode
                             )
 
-                            if (color != null) {
+                            var isDuplicateColorExits = false
 
-                                //edit
+                            if (project.colors.size != 0) {
 
-                                project.colors[position] = colorToBeAdded
+                                val colorHexList = project.colors.map {
 
-                                Log.d(TAG, "showBottomSheetDialogForAddingColor: color edited at position $position Color : $colorToBeAdded")
+                                    it.colorHexCode.toLowerCase(Locale.ROOT)
+                                }
 
+                                if (colorHexList.contains(
+                                        colorToBeAdded.colorHexCode.toLowerCase(
+                                            Locale.ROOT
+                                        )
+                                    )
+                                ) {
+
+                                    isDuplicateColorExits = true
+                                }
+                            }
+
+                            if (!isDuplicateColorExits) {
+                                if (color != null) {
+
+                                    //edit
+
+                                    project.colors[position] = colorToBeAdded
+
+                                    Log.d(
+                                        TAG,
+                                        "showBottomSheetDialogForAddingColor: color edited at position $position Color : $colorToBeAdded"
+                                    )
+
+                                } else {
+
+                                    //add
+
+                                    project.colors.add(position, colorToBeAdded)
+
+                                    Log.d(
+                                        TAG,
+                                        "showBottomSheetDialogForAddingColor: color added at position $position Color : $colorToBeAdded"
+                                    )
+
+                                }
                             } else {
 
-                                //add
-
-                                project.colors.add(position, colorToBeAdded)
-
-                                Log.d(TAG, "showBottomSheetDialogForAddingColor: color added at position $position Color : $colorToBeAdded")
-
+                                "This color already exists!!!".showToasty(
+                                    classForAddingProject.context,
+                                    ToastyType.ERROR,
+                                    true
+                                )
                             }
+
                         } else {
 
-                            Functions.showToast(classForAddingProject.context, "Incorrect hex code")
+                            showToast(classForAddingProject.context, "Incorrect hex code")
                         }
                     }
                 }
