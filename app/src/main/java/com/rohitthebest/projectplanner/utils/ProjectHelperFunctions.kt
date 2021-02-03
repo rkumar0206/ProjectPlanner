@@ -31,13 +31,13 @@ data class ClassForAddingProject(
 
 private const val TAG = "AddingToProjectFunction"
 
-class FunctionsForAddingElementsToProject {
+class ProjectHelperFunctions {
 
     companion object {
 
         /**[START OF FEATURE]*/
 
-        fun openFeatureBottomSheetDialog(
+        fun showBottomSheetDialogForAddingFeature(
                 classForAddingProject: ClassForAddingProject,
                 project: Project,
                 feature: Feature? = null,
@@ -151,6 +151,7 @@ class FunctionsForAddingElementsToProject {
             featureImplementation?.setText(feature.implementation)
 
         }
+
 
         /**[END OF FEATURE]**/
 

@@ -16,8 +16,10 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.afollestad.materialdialogs.list.customListAdapter
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.rohitthebest.projectplanner.R
 import com.rohitthebest.projectplanner.databinding.FragmentHomeBinding
+import com.rohitthebest.projectplanner.db.entity.Feature
 import com.rohitthebest.projectplanner.db.entity.Project
 import com.rohitthebest.projectplanner.db.entity.Url
 import com.rohitthebest.projectplanner.ui.adapters.*
@@ -30,10 +32,10 @@ import com.rohitthebest.projectplanner.utils.Functions.Companion.isInternetAvail
 import com.rohitthebest.projectplanner.utils.Functions.Companion.openLinkInBrowser
 import com.rohitthebest.projectplanner.utils.Functions.Companion.showNoInternetMessage
 import com.rohitthebest.projectplanner.utils.Functions.Companion.showToast
-import com.rohitthebest.projectplanner.utils.FunctionsForAddingElementsToProject.Companion.openFeatureBottomSheetDialog
-import com.rohitthebest.projectplanner.utils.FunctionsForAddingElementsToProject.Companion.showBottomSheetDialogForAddingLinkResource
-import com.rohitthebest.projectplanner.utils.FunctionsForAddingElementsToProject.Companion.showBottomSheetDialogForAddingTechnology
-import com.rohitthebest.projectplanner.utils.FunctionsForAddingElementsToProject.Companion.showDialogForAddingSkills
+import com.rohitthebest.projectplanner.utils.ProjectHelperFunctions.Companion.showBottomSheetDialogForAddingFeature
+import com.rohitthebest.projectplanner.utils.ProjectHelperFunctions.Companion.showBottomSheetDialogForAddingLinkResource
+import com.rohitthebest.projectplanner.utils.ProjectHelperFunctions.Companion.showBottomSheetDialogForAddingTechnology
+import com.rohitthebest.projectplanner.utils.ProjectHelperFunctions.Companion.showDialogForAddingSkills
 import com.rohitthebest.projectplanner.utils.converters.GsonConverter
 import com.rohitthebest.projectplanner.utils.hide
 import com.rohitthebest.projectplanner.utils.show
@@ -45,7 +47,7 @@ private const val TAG = "HomeFragment"
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home),
-        View.OnClickListener, ProjectAdapter.OnClickListener, LinkResourceAdapter.OnClickListener {
+        View.OnClickListener, ProjectAdapter.OnClickListener, LinkResourceAdapter.OnClickListener, FeatureAdapter.OnClickListener {
 
     private val projectViewModel by viewModels<ProjectViewModel>()
     private val taskViewModel by viewModels<TaskViewModel>()
@@ -152,22 +154,29 @@ class HomeFragment : Fragment(R.layout.fragment_home),
         }
     }
 
+    private var clickedProject: Project? = null
+    private var openedDialog: MaterialDialog? = null
+
     /**[START OF PROJECT ADAPTER CLICK LISTENERS] **/
 
     override fun onFeatureClicked(project: Project) {
 
         val featureList = project.features
 
-        val featureAdapter = FeatureAdapter("hide")
+        val featureAdapter = FeatureAdapter()
 
         if (featureList.isEmpty()) {
 
             showToast(requireContext(), "You haven't added any features to this project yet", Toast.LENGTH_LONG)
         } else {
 
+            clickedProject = project
+
             featureAdapter.submitList(featureList)
 
-            MaterialDialog(requireContext(), BottomSheet()).show {
+            featureAdapter.setOnClickListener(this)
+
+            openedDialog = MaterialDialog(requireContext(), BottomSheet()).show {
 
                 title(text = "Features of ${project.description.name}")
 
@@ -175,6 +184,7 @@ class HomeFragment : Fragment(R.layout.fragment_home),
                         featureAdapter,
                         LinearLayoutManager(requireContext())
                 )
+
 
                 positiveButton(text = "Add/Edit feature") {
 
@@ -184,6 +194,35 @@ class HomeFragment : Fragment(R.layout.fragment_home),
                 }
             }
         }
+    }
+
+    override fun onFeatureClicked(feature: Feature, position: Int) {
+
+        showBottomSheetDialogForAddingFeature(
+                classForAddingProject,
+                clickedProject!!,
+                feature,
+                position
+        )
+
+        openedDialog?.dismiss()
+    }
+
+    override fun onDeleteFeatureBtnClicked(feature: Feature, position: Int) {
+
+        clickedProject!!.features.remove(feature)
+        projectViewModel.updateProject(clickedProject!!)
+
+        openedDialog?.dismiss()
+
+        Snackbar.make(binding.root, "Feature deleted", Snackbar.LENGTH_LONG)
+                .setAction("Undo") {
+
+                    clickedProject!!.features.add(position, feature)
+
+                    projectViewModel.updateProject(clickedProject!!)
+                }
+                .show()
     }
 
     override fun onSkillClicked(project: Project) {
@@ -333,7 +372,7 @@ class HomeFragment : Fragment(R.layout.fragment_home),
 
     override fun onAddFeatureBtnClicked(project: Project) {
 
-        openFeatureBottomSheetDialog(
+        showBottomSheetDialogForAddingFeature(
                 classForAddingProject,
                 project,
                 position = if (project.features.size == 0) {

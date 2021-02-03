@@ -21,11 +21,11 @@ import com.rohitthebest.projectplanner.utils.Functions.Companion.generateKey
 import com.rohitthebest.projectplanner.utils.Functions.Companion.isInternetAvailable
 import com.rohitthebest.projectplanner.utils.Functions.Companion.openLinkInBrowser
 import com.rohitthebest.projectplanner.utils.Functions.Companion.showNoInternetMessage
-import com.rohitthebest.projectplanner.utils.FunctionsForAddingElementsToProject.Companion.openFeatureBottomSheetDialog
-import com.rohitthebest.projectplanner.utils.FunctionsForAddingElementsToProject.Companion.showBottomSheetDialogForAddingColor
-import com.rohitthebest.projectplanner.utils.FunctionsForAddingElementsToProject.Companion.showBottomSheetDialogForAddingLinkResource
-import com.rohitthebest.projectplanner.utils.FunctionsForAddingElementsToProject.Companion.showBottomSheetDialogForAddingTechnology
-import com.rohitthebest.projectplanner.utils.FunctionsForAddingElementsToProject.Companion.showDialogForAddingSkills
+import com.rohitthebest.projectplanner.utils.ProjectHelperFunctions.Companion.showBottomSheetDialogForAddingColor
+import com.rohitthebest.projectplanner.utils.ProjectHelperFunctions.Companion.showBottomSheetDialogForAddingFeature
+import com.rohitthebest.projectplanner.utils.ProjectHelperFunctions.Companion.showBottomSheetDialogForAddingLinkResource
+import com.rohitthebest.projectplanner.utils.ProjectHelperFunctions.Companion.showBottomSheetDialogForAddingTechnology
+import com.rohitthebest.projectplanner.utils.ProjectHelperFunctions.Companion.showDialogForAddingSkills
 import com.rohitthebest.projectplanner.utils.converters.GsonConverter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
@@ -223,7 +223,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
 
             includeBinding.addFeatureBtn.id -> {
 
-                openFeatureBottomSheetDialog(
+                showBottomSheetDialogForAddingFeature(
                         classForAddingProject = classForAddingProject,
                         project = project,
                         position = if (project.features.size == 0) {
@@ -430,7 +430,7 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
     //handling the clicks on feature
     override fun onFeatureClicked(feature: Feature, position: Int) {
 
-        openFeatureBottomSheetDialog(
+        showBottomSheetDialogForAddingFeature(
                 classForAddingProject = classForAddingProject,
                 project = project,
                 feature, position)
