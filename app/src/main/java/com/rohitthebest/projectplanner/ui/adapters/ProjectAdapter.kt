@@ -127,7 +127,7 @@ class ProjectAdapter(
 
             binding.addTasksToProjectBtn.setOnClickListener(this)
             binding.addBugsToTheProjectBtn.setOnClickListener(this)
-            binding.uploadProjectToCloudBtn.setOnClickListener(this)
+            binding.shareProjectBtn.setOnClickListener(this)
             binding.deleteProjectBtn.setOnClickListener(this)
 
             binding.addFeatureCV.setOnClickListener(this)
@@ -172,9 +172,9 @@ class ProjectAdapter(
 
                         mListener!!.onBugFixBtnClicked(getItem(absoluteAdapterPosition).projectKey)
                     }
-                    binding.uploadProjectToCloudBtn.id -> {
+                    binding.shareProjectBtn.id -> {
 
-                        mListener!!.onUploadBtnClicked(getItem(absoluteAdapterPosition))
+                        mListener!!.onShareBtnClicked(getItem(absoluteAdapterPosition))
                     }
                     binding.deleteProjectBtn.id -> {
 
@@ -258,7 +258,7 @@ class ProjectAdapter(
 
         fun onTaskBtnClicked(projectKey: String)
         fun onBugFixBtnClicked(projectKey: String)
-        fun onUploadBtnClicked(project: Project)
+        fun onShareBtnClicked(project: Project)
         fun onDeleteProjectBtnClicked(project: Project)
 
         fun onAddFeatureBtnClicked(project: Project)

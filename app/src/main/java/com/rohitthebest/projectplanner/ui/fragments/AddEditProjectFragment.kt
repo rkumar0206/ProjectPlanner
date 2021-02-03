@@ -104,11 +104,21 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
 
                 observeProject()
 
+                binding.addEditProjectProgressBar.show()
+
                 GlobalScope.launch {
 
                     delay(300)
 
                     withContext(Dispatchers.Main) {
+
+                        try {
+
+                            binding.addEditProjectProgressBar.hide()
+                        } catch (e: IllegalStateException) {
+
+                            e.printStackTrace()
+                        }
 
                         setUpRecyclerViews()
                     }

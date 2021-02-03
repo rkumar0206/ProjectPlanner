@@ -304,7 +304,7 @@ class HomeFragment : Fragment(R.layout.fragment_home),
 
     }
 
-    override fun onUploadBtnClicked(project: Project) {
+    override fun onShareBtnClicked(project: Project) {
         //TODO("Not yet implemented")
     }
 
