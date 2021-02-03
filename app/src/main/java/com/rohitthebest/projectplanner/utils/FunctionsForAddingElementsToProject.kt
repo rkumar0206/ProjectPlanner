@@ -583,23 +583,6 @@ class FunctionsForAddingElementsToProject {
 
                     //for editing
 
-                    getCustomView().findViewById<CardView>(R.id.deleteColorBtnOuter).show()
-                    getCustomView().findViewById<MaterialCardView>(R.id.deleteColorBtn).setOnClickListener {
-
-                        project.colors.remove(color)
-                        this.dismiss()
-
-/*
-                        Snackbar.make(binding.root, "Color deleted", Snackbar.LENGTH_LONG)
-                                .setAction("Undo") {
-
-                                    project.colors.add(position, color)
-                                    setUpColorsRecyclerView()
-                                }
-                                .show()
-*/
-                    }
-
                     initializeColorFields(getCustomView(), color)
                 }
 

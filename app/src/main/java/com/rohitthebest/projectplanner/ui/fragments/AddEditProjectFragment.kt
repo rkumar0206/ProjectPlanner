@@ -642,6 +642,21 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
         )
     }
 
+    override fun onDeleteColorBtn(color: Colors, position: Int) {
+
+        project.colors.remove(color)
+
+        projectViewModel.updateProject(project)
+
+        Snackbar.make(binding.root, "Color deleted", Snackbar.LENGTH_LONG)
+                .setAction("Undo") {
+
+                    project.colors.add(position, color)
+                    projectViewModel.updateProject(project)
+                }
+                .show()
+    }
+
     /**[END OF COLORS]**/
 
     private var shouldSaveOnPause = true

@@ -152,6 +152,8 @@ class HomeFragment : Fragment(R.layout.fragment_home),
         }
     }
 
+    /**[START OF PROJECT ADAPTER CLICK LISTENERS] **/
+
     override fun onFeatureClicked(project: Project) {
 
         val featureList = project.features
@@ -421,6 +423,8 @@ class HomeFragment : Fragment(R.layout.fragment_home),
                 requireContext()
         )
     }
+
+    /**[end OF PROJECT ADAPTER CLICK LISTENERS] **/
 
     private fun initListeners() {
 

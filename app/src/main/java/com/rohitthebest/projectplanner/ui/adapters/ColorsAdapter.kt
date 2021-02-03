@@ -37,6 +37,17 @@ class ColorsAdapter : ListAdapter<Colors, ColorsAdapter.ColorsViewHolder>(DiffUt
                     )
                 }
             }
+
+            binding.deleteColorBtn.setOnClickListener {
+
+                if (checkForNullability(absoluteAdapterPosition)) {
+
+                    mListener!!.onDeleteColorBtn(
+                            getItem(absoluteAdapterPosition),
+                            absoluteAdapterPosition
+                    )
+                }
+            }
         }
 
         private fun checkForNullability(position: Int): Boolean {
@@ -68,6 +79,7 @@ class ColorsAdapter : ListAdapter<Colors, ColorsAdapter.ColorsViewHolder>(DiffUt
     interface OnClickListener {
 
         fun onColorClicked(color: Colors, position: Int)
+        fun onDeleteColorBtn(color: Colors, position: Int)
     }
 
     fun setOnClickListener(listener: OnClickListener) {
