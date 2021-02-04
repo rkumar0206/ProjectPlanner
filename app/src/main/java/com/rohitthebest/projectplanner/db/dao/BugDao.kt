@@ -28,7 +28,7 @@ interface BugDao {
     @Query("SELECT * FROM bug_table ORDER BY timestamp DESC")
     fun getAllBugList(): Flow<List<Bug>>
 
-    @Query("SELECT * FROM bug_table WHERE projectKey= :projectKey ORDER BY timestamp DESC")
+    @Query("SELECT * FROM bug_table WHERE projectKey= :projectKey ORDER BY isResolved, timestamp DESC")
     fun getAllBugsByProjectKey(projectKey: String): Flow<List<Bug>>
 
 }
