@@ -184,39 +184,20 @@ class TaskFragment : Fragment(R.layout.fragment_task), View.OnClickListener,
                                 binding.addFirstTaskBtn.showViewBySlidingAnimation()
                             }
 
-                            when (sortingMethod) {
-
-                                SORT_BY_DATE_ASC -> {
-
-                                    setUpTaskRecyclerView(filteredList.sortedBy { t -> t.timeStamp })
-                                }
-
-                                SORT_BY_NAME_ASC -> {
-
-                                    setUpTaskRecyclerView(filteredList.sortedBy { t -> t.taskName })
-                                }
-
-                                SORT_BY_NAME_DESC -> {
-
-                                    setUpTaskRecyclerView(filteredList.sortedByDescending { t -> t.taskName })
-                                }
-
-                                else -> {
-
-                                    setUpTaskRecyclerView(filteredList)
-                                }
-                            }
+                            selectSortingMethodAndSetUpRecyclerView(filteredList)
 
                             isRefreshEnabled = false
 
                             try {
 
-                                Log.d(TAG, "getTasksFromProjectKey: receyclerViewPosition : $recyclerViewPosition")
+                                if (recyclerViewPosition !in 0..2) {
 
-                                binding.rvProjectTask.scrollToPosition(recyclerViewPosition)
+                                    Log.d(TAG, "getTasksFromProjectKey: recyclerViewPosition : $recyclerViewPosition")
 
-                                recyclerViewPosition = 0
+                                    binding.rvProjectTask.scrollToPosition(recyclerViewPosition)
 
+                                    recyclerViewPosition = 0
+                                }
                             } catch (e: Exception) {
 
                                 e.printStackTrace()
@@ -228,6 +209,38 @@ class TaskFragment : Fragment(R.layout.fragment_task), View.OnClickListener,
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
         }
+    }
+
+    private fun selectSortingMethodAndSetUpRecyclerView(filteredList: List<Task>) {
+
+        try {
+            when (sortingMethod) {
+
+                SORT_BY_DATE_ASC -> {
+
+                    setUpTaskRecyclerView(filteredList.sortedBy { t -> t.timeStamp })
+                }
+
+                SORT_BY_NAME_ASC -> {
+
+                    setUpTaskRecyclerView(filteredList.sortedBy { t -> t.taskName })
+                }
+
+                SORT_BY_NAME_DESC -> {
+
+                    setUpTaskRecyclerView(filteredList.sortedByDescending { t -> t.taskName })
+                }
+
+                else -> {
+
+                    setUpTaskRecyclerView(filteredList)
+                }
+            }
+        } catch (e: Exception) {
+
+            e.printStackTrace()
+        }
+
     }
 
     private fun setUpTaskRecyclerView(taskList: List<Task>?) {

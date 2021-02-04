@@ -18,6 +18,7 @@ import com.rohitthebest.projectplanner.ui.adapters.*
 import com.rohitthebest.projectplanner.ui.viewModels.ProjectViewModel
 import com.rohitthebest.projectplanner.utils.*
 import com.rohitthebest.projectplanner.utils.Functions.Companion.generateKey
+import com.rohitthebest.projectplanner.utils.Functions.Companion.hideKeyBoard
 import com.rohitthebest.projectplanner.utils.Functions.Companion.isInternetAvailable
 import com.rohitthebest.projectplanner.utils.Functions.Companion.openLinkInBrowser
 import com.rohitthebest.projectplanner.utils.Functions.Companion.showNoInternetMessage
@@ -690,6 +691,8 @@ class AddEditProjectFragment : Fragment(R.layout.fragment_add_edit_project),
 
     override fun onPause() {
         super.onPause()
+
+        hideKeyBoard(requireActivity())
 
         if (shouldSaveOnPause) {
 
