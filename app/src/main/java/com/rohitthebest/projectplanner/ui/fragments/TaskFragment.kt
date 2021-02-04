@@ -13,6 +13,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.input.input
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.rohitthebest.projectplanner.Constants.SORT_BY_DATE_ASC
 import com.rohitthebest.projectplanner.Constants.SORT_BY_DATE_DESC
@@ -27,13 +28,10 @@ import com.rohitthebest.projectplanner.db.entity.Task
 import com.rohitthebest.projectplanner.ui.adapters.TaskAdapter
 import com.rohitthebest.projectplanner.ui.viewModels.ProjectViewModel
 import com.rohitthebest.projectplanner.ui.viewModels.TaskViewModel
+import com.rohitthebest.projectplanner.utils.*
 import com.rohitthebest.projectplanner.utils.Functions.Companion.generateKey
 import com.rohitthebest.projectplanner.utils.Functions.Companion.hideKeyBoard
 import com.rohitthebest.projectplanner.utils.Functions.Companion.showKeyboard
-import com.rohitthebest.projectplanner.utils.hide
-import com.rohitthebest.projectplanner.utils.hideViewBySlidingAnimation
-import com.rohitthebest.projectplanner.utils.removeFocus
-import com.rohitthebest.projectplanner.utils.showViewBySlidingAnimation
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 
@@ -54,7 +52,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), View.OnClickListener,
 
     private lateinit var taskAdapter: TaskAdapter
 
-    private var recyclerViewPosition = 1
+    private var recyclerViewPosition = 0
 
     private lateinit var taskMenuDataStore: TaskMenuValuesDataStore
 
@@ -217,7 +215,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), View.OnClickListener,
 
                                 binding.rvProjectTask.scrollToPosition(recyclerViewPosition)
 
-                                recyclerViewPosition = 1
+                                recyclerViewPosition = 0
 
                             } catch (e: Exception) {
 
@@ -400,9 +398,34 @@ class TaskFragment : Fragment(R.layout.fragment_task), View.OnClickListener,
                 saveTaskMenuValues(sortingMethod, item.isChecked)
                 return true
             }
+
             R.id.menu_action_delete_all_completed -> {
 
+                MaterialAlertDialogBuilder(requireContext())
+                        .setMessage("After deleting you cannot retrieve it back.")
+                        .setTitle("Delete all completed tasks?")
+                        .setPositiveButton("Delete") { d, _ ->
 
+                            taskViewModel.deleteTaskByProjectKeyAndIsCompleted(
+                                    projectKey,
+                                    true
+                            )
+
+                            "Deleted all completed tasks".showToasty(
+                                    requireContext(),
+                                    ToastyType.INFO,
+                                    true
+                            )
+
+                            isRefreshEnabled = true
+                            d.dismiss()
+                        }
+                        .setNegativeButton("Cancel") { d, _ ->
+
+                            d.dismiss()
+                        }
+                        .create()
+                        .show()
                 return true
             }
 
@@ -465,6 +488,10 @@ class TaskFragment : Fragment(R.layout.fragment_task), View.OnClickListener,
         taskAdapter = TaskAdapter()
 
         taskViewModel.insertTask(task)
+
+        isRefreshEnabled = true
+
+        recyclerViewPosition = 0
     }
 
     override fun onDestroyView() {

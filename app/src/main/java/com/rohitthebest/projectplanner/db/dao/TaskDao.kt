@@ -24,10 +24,13 @@ interface TaskDao {
     suspend fun deleteAllTasks()
 
     @Query("DELETE FROM task_table WHERE isCompleted = :isCompleted")
-    suspend fun deleteTaskByIsCompleted(isCompleted: String)
+    suspend fun deleteTaskByIsCompleted(isCompleted: Boolean)
 
     @Query("DELETE FROM task_table WHERE projectKey= :projectKey")
     suspend fun deleteTaskByProjectKey(projectKey: String)
+
+    @Query("DELETE FROM task_table WHERE (projectKey= :projectKey AND isCompleted= :isCompleted)")
+    suspend fun deleteTaskByProjectKeyAndIsCompleted(projectKey: String, isCompleted: Boolean)
 
     @Query("SELECT * FROM task_table ORDER BY timeStamp DESC")
     fun getAllTasks(): Flow<List<Task>>

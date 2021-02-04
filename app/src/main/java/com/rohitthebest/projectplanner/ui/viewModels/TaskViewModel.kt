@@ -36,7 +36,7 @@ class TaskViewModel @ViewModelInject constructor(
         repository.deleteAllTasks()
     }
 
-    fun deleteTaskByIsCompleted(isCompleted: String) = viewModelScope.launch {
+    fun deleteTaskByIsCompleted(isCompleted: Boolean) = viewModelScope.launch {
 
         repository.deleteTaskByIsCompleted(isCompleted)
     }
@@ -45,6 +45,12 @@ class TaskViewModel @ViewModelInject constructor(
 
         repository.deleteTaskByProjectKey(projectKey)
     }
+
+    fun deleteTaskByProjectKeyAndIsCompleted(projectKey: String, isCompleted: Boolean) =
+            viewModelScope.launch {
+
+                repository.deleteTaskByProjectKeyAndIsCompleted(projectKey, isCompleted)
+            }
 
     var allTasks = repository.getAllTasks().asLiveData()
 

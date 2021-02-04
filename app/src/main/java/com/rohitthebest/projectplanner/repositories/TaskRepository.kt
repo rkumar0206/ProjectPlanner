@@ -18,9 +18,12 @@ class TaskRepository @Inject constructor(
 
     suspend fun deleteAllTasks() = dao.deleteAllTasks()
 
-    suspend fun deleteTaskByIsCompleted(isCompleted: String) = dao.deleteTaskByIsCompleted(isCompleted)
+    suspend fun deleteTaskByIsCompleted(isCompleted: Boolean) = dao.deleteTaskByIsCompleted(isCompleted)
 
     suspend fun deleteTaskByProjectKey(projectKey: String) = dao.deleteTaskByProjectKey(projectKey)
+
+    suspend fun deleteTaskByProjectKeyAndIsCompleted(projectKey: String, isCompleted: Boolean) =
+            dao.deleteTaskByProjectKeyAndIsCompleted(projectKey, isCompleted)
 
     fun getAllTasks() = dao.getAllTasks()
 
