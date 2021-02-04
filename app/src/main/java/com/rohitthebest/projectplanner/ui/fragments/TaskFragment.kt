@@ -269,6 +269,8 @@ class TaskFragment : Fragment(R.layout.fragment_task), View.OnClickListener,
 
     }
 
+    /**[START OF TASK ADAPTER LISTENERS]**/
+
     override fun onCheckChanged(task: Task, position: Int) {
 
         binding.etNewTask.editText?.removeFocus()
@@ -276,6 +278,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), View.OnClickListener,
         recyclerViewPosition = position
 
         task.isCompleted = !task.isCompleted
+        task.isImportant = false
 
         taskViewModel.updateTask(task)
 
@@ -330,6 +333,38 @@ class TaskFragment : Fragment(R.layout.fragment_task), View.OnClickListener,
                 }
                 .show()
     }
+
+    override fun onLabelAsImportantClicked(task: Task, position: Int) {
+
+        binding.etNewTask.editText?.removeFocus()
+
+        recyclerViewPosition = position
+
+        isRefreshEnabled = true
+
+        task.isImportant = if (task.isImportant) {
+
+            "Removed from important".showToasty(
+                    requireContext(),
+                    ToastyType.INFO,
+                    true
+            )
+            !task.isImportant
+        } else {
+
+            "Task added to important".showToasty(
+                    requireContext(),
+                    ToastyType.INFO,
+                    true
+            )
+
+            !task.isImportant
+        }
+
+        taskViewModel.updateTask(task)
+    }
+
+    /**[END OF TASK ADAPTER LISTENERS]**/
 
     private fun getProjectFromDatabase(projectKey: String) {
 

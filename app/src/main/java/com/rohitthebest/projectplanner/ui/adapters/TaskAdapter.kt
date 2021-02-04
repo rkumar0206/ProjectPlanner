@@ -30,6 +30,7 @@ class TaskAdapter : ListAdapter<Task, TaskAdapter.TaskViewHolder>(DiffUtilCallba
 
                     binding.checkBoxTaskName.isChecked = true
                     binding.editTaskButton.hide()
+                    binding.labelAsImportantBtn.hide()
                     binding.checkBoxTaskName.strikeThrough(it.taskName)
                     binding.checkBoxTaskName.changeTextColor(
                             itemView.context,
@@ -40,9 +41,18 @@ class TaskAdapter : ListAdapter<Task, TaskAdapter.TaskViewHolder>(DiffUtilCallba
                     Log.d(TAG, "setData: FALSE")
 
                     binding.editTaskButton.show()
+                    binding.labelAsImportantBtn.show()
                     binding.checkBoxTaskName.isChecked = false
                     binding.checkBoxTaskName.text = it.taskName
                     binding.checkBoxTaskName.changeTextColor(itemView.context, R.color.primary_text_color)
+                }
+
+                if (it.isImportant) {
+
+                    binding.labelAsImportantBtn.setImageResource(R.drawable.ic_baseline_label_important_24)
+                } else {
+
+                    binding.labelAsImportantBtn.setImageResource(R.drawable.ic_important_outline)
                 }
 
                 binding.taskAddedOnTV.setDateInTextView(
@@ -56,10 +66,9 @@ class TaskAdapter : ListAdapter<Task, TaskAdapter.TaskViewHolder>(DiffUtilCallba
         init {
 
             binding.checkBoxTaskName.setOnClickListener(this)
-
             binding.clearTopicButton.setOnClickListener(this)
-
             binding.editTaskButton.setOnClickListener(this)
+            binding.labelAsImportantBtn.setOnClickListener(this)
         }
 
         override fun onClick(v: View?) {
@@ -87,6 +96,14 @@ class TaskAdapter : ListAdapter<Task, TaskAdapter.TaskViewHolder>(DiffUtilCallba
                         mListener!!.onDeleteTaskClicked(getItem(
                                 absoluteAdapterPosition
                         ), absoluteAdapterPosition)
+                    }
+
+                    binding.labelAsImportantBtn.id -> {
+
+                        mListener!!.onLabelAsImportantClicked(
+                                getItem(absoluteAdapterPosition),
+                                absoluteAdapterPosition
+                        )
                     }
                 }
             }
@@ -124,6 +141,7 @@ class TaskAdapter : ListAdapter<Task, TaskAdapter.TaskViewHolder>(DiffUtilCallba
         fun onCheckChanged(task: Task, position: Int)
         fun onEditTaskClicked(task: Task, position: Int)
         fun onDeleteTaskClicked(task: Task, position: Int)
+        fun onLabelAsImportantClicked(task: Task, position: Int)
     }
 
     fun setOnClickListener(listener: OnClickListener) {

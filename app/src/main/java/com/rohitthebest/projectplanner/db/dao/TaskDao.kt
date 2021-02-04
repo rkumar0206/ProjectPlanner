@@ -36,7 +36,7 @@ interface TaskDao {
     fun getAllTasks(): Flow<List<Task>>
 
     //if hideCompleted is true show all un-completed task and if the hideComplete is false show all tasks
-    @Query("SELECT * FROM task_table WHERE projectKey= :projectKey ORDER BY isImportant DESC,timeStamp DESC")
+    @Query("SELECT * FROM task_table WHERE projectKey= :projectKey ORDER BY isImportant DESC,isCompleted, timeStamp DESC")
     fun getAllTaskByProjectKey(projectKey: String): Flow<List<Task>>
 
     @Query("SELECT COUNT(taskKey) FROM task_table WHERE projectKey= :projectKey")

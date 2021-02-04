@@ -14,9 +14,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="3dp"
-        android:layout_marginEnd="5dp"
+        android:layout_marginEnd="8dp"
         android:padding="3dp"
-        app:layout_constraintEnd_toStartOf="@+id/editTaskButton"
+        app:layout_constraintEnd_toStartOf="@+id/labelAsImportantBtn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -25,7 +25,7 @@
         android:id="@+id/clearTopicButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="5dp"
+        android:layout_marginEnd="3dp"
         android:backgroundTint="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="@+id/checkBoxTaskName"
         app:layout_constraintEnd_toEndOf="parent"
@@ -49,6 +49,7 @@
         android:id="@+id/editTaskButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="2dp"
         android:backgroundTint="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="@+id/clearTopicButton"
         app:layout_constraintEnd_toStartOf="@+id/clearTopicButton"
@@ -66,6 +67,17 @@
         app:layout_constraintStart_toStartOf="@+id/checkBoxTaskName"
         app:layout_constraintTop_toBottomOf="@+id/checkBoxTaskName"
         tools:text="Added On : 12-01-2021" />
+
+    <ImageButton
+        android:id="@+id/labelAsImportantBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="2dp"
+        android:backgroundTint="@android:color/transparent"
+        app:layout_constraintBottom_toBottomOf="@+id/editTaskButton"
+        app:layout_constraintEnd_toStartOf="@+id/editTaskButton"
+        app:layout_constraintTop_toTopOf="@+id/editTaskButton"
+        app:srcCompat="@drawable/ic_important_outline" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
