@@ -2,6 +2,7 @@ package com.rohitthebest.projectplanner.ui.adapters
 
 import android.annotation.SuppressLint
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,8 @@ import com.rohitthebest.projectplanner.ui.viewModels.TaskViewModel
 import com.rohitthebest.projectplanner.utils.hide
 import com.rohitthebest.projectplanner.utils.setDateInTextView
 import com.rohitthebest.projectplanner.utils.show
+
+private const val TAG = "ProjectAdapter"
 
 class ProjectAdapter(
         val taskViewModel: TaskViewModel,
@@ -60,18 +63,17 @@ class ProjectAdapter(
 
                         if (it.isNotEmpty()) {
 
-                            val inCompleted = it.filter { t ->
+                            val filteredList = it.filter { t -> !t.isCompleted }
 
-                                t.isCompleted != TRUE
-                            }
+                            Log.d(TAG, "setData: filteredListSize = ${filteredList.size}")
 
                             when {
-                                inCompleted.size in 1..99 -> {
+                                filteredList.size in 1..99 -> {
 
                                     numberOfTasksCV.show()
-                                    numberOfTasksTV.text = "${inCompleted.size}"
+                                    numberOfTasksTV.text = "${filteredList.size}"
                                 }
-                                inCompleted.size > 99 -> {
+                                filteredList.size > 99 -> {
 
                                     numberOfTasksCV.show()
                                     numberOfTasksTV.text = "99+"

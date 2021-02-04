@@ -2,7 +2,6 @@ package com.rohitthebest.projectplanner.db.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.rohitthebest.projectplanner.Constants.FALSE
 
 @Entity(tableName = "task_table")
 data class Task(
@@ -11,7 +10,8 @@ data class Task(
         var projectKey: String = "",
         var taskName: String,
         var taskDescription: String? = null,
-        var isCompleted: String = FALSE
+        var isCompleted: Boolean = false,
+        var isImportant: Boolean = false
 ) {
 
     constructor() : this(
@@ -20,6 +20,8 @@ data class Task(
             "",
             "",
             "",
-            FALSE
+            false,
+            false
     )
 }
+

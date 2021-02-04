@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <item
+        android:icon="@drawable/ic_baseline_sort_24"
+        android:title="@string/sort"
+        app:showAsAction="always"
+        tools:ignore="AlwaysShowAction">
+
+        <menu>
+
+            <item
+                android:id="@+id/menu_action_sort_by_date_created_DESC"
+                android:title="@string/sort_by_date_created_DESC" />
+
+            <item
+                android:id="@+id/menu_action_sort_by_date_created_ASC"
+                android:title="@string/sort_by_date_created_ASC" />
+
+            <item
+                android:id="@+id/menu_action_sort_by_name_ASC"
+                android:title="@string/sort_by_name_ASC" />
+
+            <item
+                android:id="@+id/menu_action_sort_by_name_DESC"
+                android:title="@string/sort_by_name_DESC" />
+
+        </menu>
+    </item>
+
+    <item
+        android:id="@+id/menu_action_hieCompletedCB"
+        android:checkable="true"
+        android:checked="false"
+        android:title="@string/hide_completed"
+        app:showAsAction="never" />
+
+
+    <item
+        android:id="@+id/menu_action_delete_all_completed"
+        android:title="@string/delete_all_completed"
+        app:showAsAction="never" />
+
+</menu>

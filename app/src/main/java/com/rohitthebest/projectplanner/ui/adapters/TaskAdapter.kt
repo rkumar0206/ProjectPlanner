@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.rohitthebest.projectplanner.Constants.TRUE
 import com.rohitthebest.projectplanner.R
 import com.rohitthebest.projectplanner.databinding.AdapterTaskLayoutBinding
 import com.rohitthebest.projectplanner.db.entity.Task
@@ -25,14 +24,17 @@ class TaskAdapter : ListAdapter<Task, TaskAdapter.TaskViewHolder>(DiffUtilCallba
 
             task?.let {
 
-                if (it.isCompleted == TRUE) {
+                if (it.isCompleted) {
 
                     Log.d(TAG, "setData: TRUE")
 
                     binding.checkBoxTaskName.isChecked = true
                     binding.editTaskButton.hide()
                     binding.checkBoxTaskName.strikeThrough(it.taskName)
-                    binding.checkBoxTaskName.changeTextColor(itemView.context, R.color.secondary_text_color)
+                    binding.checkBoxTaskName.changeTextColor(
+                            itemView.context,
+                            R.color.secondary_text_color
+                    )
                 } else {
 
                     Log.d(TAG, "setData: FALSE")

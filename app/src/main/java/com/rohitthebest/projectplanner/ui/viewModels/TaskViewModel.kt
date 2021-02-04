@@ -48,7 +48,9 @@ class TaskViewModel @ViewModelInject constructor(
 
     var allTasks = repository.getAllTasks().asLiveData()
 
-    fun getAllTaskByProjectKey(projectKey: String) = repository.getAllTaskByProjectKey(projectKey).asLiveData()
+    fun getAllTaskByProjectKey(projectKey: String) =
+            repository.getAllTaskByProjectKey(projectKey).asLiveData()
 
-    fun getTaskCountByProjectKey(projectKey: String) = repository.getTaskCountByProjectKey(projectKey)
+    fun getTaskCountByProjectKey(projectKey: String) =
+            repository.getTaskCountByProjectKey(projectKey)
 }

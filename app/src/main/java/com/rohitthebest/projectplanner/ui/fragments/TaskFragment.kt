@@ -4,6 +4,9 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -11,10 +14,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.input.input
 import com.google.android.material.snackbar.Snackbar
-import com.rohitthebest.projectplanner.Constants.FALSE
-import com.rohitthebest.projectplanner.Constants.TRUE
+import com.rohitthebest.projectplanner.Constants.SORT_BY_DATE_ASC
+import com.rohitthebest.projectplanner.Constants.SORT_BY_DATE_DESC
+import com.rohitthebest.projectplanner.Constants.SORT_BY_NAME_ASC
+import com.rohitthebest.projectplanner.Constants.SORT_BY_NAME_DESC
 import com.rohitthebest.projectplanner.R
 import com.rohitthebest.projectplanner.databinding.FragmentTaskBinding
+import com.rohitthebest.projectplanner.datastore.TaskMenuValues
+import com.rohitthebest.projectplanner.datastore.TaskMenuValuesDataStore
 import com.rohitthebest.projectplanner.db.entity.Project
 import com.rohitthebest.projectplanner.db.entity.Task
 import com.rohitthebest.projectplanner.ui.adapters.TaskAdapter
@@ -28,11 +35,13 @@ import com.rohitthebest.projectplanner.utils.hideViewBySlidingAnimation
 import com.rohitthebest.projectplanner.utils.removeFocus
 import com.rohitthebest.projectplanner.utils.showViewBySlidingAnimation
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.*
 
 private const val TAG = "TaskFragment"
 
 @AndroidEntryPoint
-class TaskFragment : Fragment(R.layout.fragment_task), View.OnClickListener, TaskAdapter.OnClickListener {
+class TaskFragment : Fragment(R.layout.fragment_task), View.OnClickListener,
+        TaskAdapter.OnClickListener {
 
     private val projectViewModel by viewModels<ProjectViewModel>()
     private val taskViewModel by viewModels<TaskViewModel>()
@@ -41,10 +50,18 @@ class TaskFragment : Fragment(R.layout.fragment_task), View.OnClickListener, Tas
     private val binding get() = _binding!!
 
     private lateinit var project: Project
+    private var projectKey: String = ""
 
     private lateinit var taskAdapter: TaskAdapter
 
     private var recyclerViewPosition = 1
+
+    private lateinit var taskMenuDataStore: TaskMenuValuesDataStore
+
+    private var sortingMethod = ""
+    private var hideCompleted: Boolean = false
+
+    private var isRefreshEnabled = true
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -53,11 +70,17 @@ class TaskFragment : Fragment(R.layout.fragment_task), View.OnClickListener, Tas
 
         taskAdapter = TaskAdapter()
 
+        taskMenuDataStore = TaskMenuValuesDataStore(requireContext())
+
         initListeners()
 
         getMessage()
 
+        observeSortingMethodChange()
+
         textWatcher()
+
+        setHasOptionsMenu(true)
     }
 
     private fun getMessage() {
@@ -71,16 +94,37 @@ class TaskFragment : Fragment(R.layout.fragment_task), View.OnClickListener, Tas
                     TaskFragmentArgs.fromBundle(it)
                 }
 
-                val projectKey = args?.message
+                projectKey = args?.message!!
 
-                getProjectFromDatabase(projectKey!!)
+                observeSortingMethodChange()
 
-                getTasksFromProjectKey(projectKey)
+                getProjectFromDatabase(projectKey)
 
+                //getTasksFromProjectKey()
             }
 
         } catch (e: Exception) {
             e.printStackTrace()
+        }
+    }
+
+    private fun observeSortingMethodChange() {
+
+        taskMenuDataStore.sortingFlow.observe(viewLifecycleOwner) {
+
+            Log.d(TAG, "observeSortingMethodChange: ")
+
+            sortingMethod = it.sortingMethod
+            hideCompleted = it.hideCompletedTask
+
+            if (isRefreshEnabled) {
+
+                Log.d(TAG, "observeSortingMethodChange: isRefreshEnabled enters")
+
+                getTasksFromProjectKey()
+
+                //isRefreshEnabled = false
+            }
         }
     }
 
@@ -109,34 +153,79 @@ class TaskFragment : Fragment(R.layout.fragment_task), View.OnClickListener, Tas
         })
     }
 
-    private fun getTasksFromProjectKey(projectKey: String) {
+    private fun getTasksFromProjectKey() {
 
         try {
 
-            taskViewModel.getAllTaskByProjectKey(projectKey).observe(viewLifecycleOwner) {
+            //added value 'isRefreshEnabled' because this viewModel function was called several times
+            //when the elements inside this list was updated, causing the recyclerView to be setUp
+            //many times
+            taskViewModel.getAllTaskByProjectKey(projectKey)
+                    .observe(viewLifecycleOwner) {
 
-                if (it.isNotEmpty()) {
+                        if (isRefreshEnabled) {
 
-                    binding.addFirstTaskBtn.hide()
-                } else {
+                            var filteredList = it
 
-                    binding.addFirstTaskBtn.showViewBySlidingAnimation()
-                }
+                            if (hideCompleted) {
 
-                setUpTaskRecyclerView(it)
+                                filteredList = it.filter { t ->
 
-                try {
-                    if (recyclerViewPosition !in -1..7) {
+                                    !t.isCompleted
+                                }
+                            }
 
-                        binding.rvProjectTask.scrollToPosition(recyclerViewPosition - 1)
+                            Log.d(TAG, "getTasksFromProjectKey: $hideCompleted")
+                            Log.d(TAG, "getTasksFromProjectKey: $sortingMethod")
 
-                        recyclerViewPosition = 1
+                            if (filteredList.isNotEmpty()) {
+
+                                binding.addFirstTaskBtn.hide()
+                            } else {
+
+                                binding.addFirstTaskBtn.showViewBySlidingAnimation()
+                            }
+
+                            when (sortingMethod) {
+
+                                SORT_BY_DATE_ASC -> {
+
+                                    setUpTaskRecyclerView(filteredList.sortedBy { t -> t.timeStamp })
+                                }
+
+                                SORT_BY_NAME_ASC -> {
+
+                                    setUpTaskRecyclerView(filteredList.sortedBy { t -> t.taskName })
+                                }
+
+                                SORT_BY_NAME_DESC -> {
+
+                                    setUpTaskRecyclerView(filteredList.sortedByDescending { t -> t.taskName })
+                                }
+
+                                else -> {
+
+                                    setUpTaskRecyclerView(filteredList)
+                                }
+                            }
+
+                            isRefreshEnabled = false
+
+                            try {
+
+                                Log.d(TAG, "getTasksFromProjectKey: receyclerViewPosition : $recyclerViewPosition")
+
+                                binding.rvProjectTask.scrollToPosition(recyclerViewPosition)
+
+                                recyclerViewPosition = 1
+
+                            } catch (e: Exception) {
+
+                                e.printStackTrace()
+                            }
+                        }
+
                     }
-                } catch (e: Exception) {
-
-                    e.printStackTrace()
-                }
-            }
 
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
@@ -146,6 +235,8 @@ class TaskFragment : Fragment(R.layout.fragment_task), View.OnClickListener, Tas
     private fun setUpTaskRecyclerView(taskList: List<Task>?) {
 
         try {
+
+            Log.d(TAG, "setUpTaskRecyclerView: ")
 
             taskList?.let {
 
@@ -173,9 +264,11 @@ class TaskFragment : Fragment(R.layout.fragment_task), View.OnClickListener, Tas
 
         recyclerViewPosition = position
 
-        task.isCompleted = if (task.isCompleted == FALSE) TRUE else FALSE
+        task.isCompleted = !task.isCompleted
 
         taskViewModel.updateTask(task)
+
+        isRefreshEnabled = true
     }
 
     override fun onEditTaskClicked(task: Task, position: Int) {
@@ -197,6 +290,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), View.OnClickListener, Tas
                 task.taskName = charSequence.toString()
                 taskViewModel.updateTask(task)
 
+                isRefreshEnabled = true
                 dismiss()
             }
 
@@ -213,11 +307,15 @@ class TaskFragment : Fragment(R.layout.fragment_task), View.OnClickListener, Tas
 
         taskViewModel.deleteTask(task)
 
+        isRefreshEnabled = true
+
         Snackbar.make(binding.root, "task deleted", Snackbar.LENGTH_LONG)
                 .setAction("Undo") {
 
                     recyclerViewPosition = position
                     taskViewModel.insertTask(task)
+
+                    isRefreshEnabled = true
                 }
                 .show()
     }
@@ -227,6 +325,8 @@ class TaskFragment : Fragment(R.layout.fragment_task), View.OnClickListener, Tas
         try {
 
             projectViewModel.getProjectByProjectKey(projectKey).observe(viewLifecycleOwner) {
+
+                Log.d(TAG, "getProjectFromDatabase: ")
 
                 if (it != null) {
 
@@ -246,6 +346,81 @@ class TaskFragment : Fragment(R.layout.fragment_task), View.OnClickListener, Tas
     private fun updateUi() {
 
         binding.tvProjectName.text = project.description.name
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+
+        Log.d(TAG, "onCreateOptionsMenu: hideCompleted : $hideCompleted")
+
+        inflater.inflate(R.menu.task_menu, menu)
+
+        GlobalScope.launch {
+            delay(200)
+
+            withContext(Dispatchers.Main) {
+
+                Log.d(TAG, "onCreateOptionsMenu: $hideCompleted")
+
+                menu.findItem(R.id.menu_action_hieCompletedCB).isChecked = hideCompleted
+            }
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        return when (item.itemId) {
+
+            R.id.menu_action_sort_by_date_created_ASC -> {
+
+                saveTaskMenuValues(SORT_BY_DATE_ASC, hideCompleted)
+                return true
+            }
+
+            R.id.menu_action_sort_by_name_ASC -> {
+
+                saveTaskMenuValues(SORT_BY_NAME_ASC, hideCompleted)
+                return true
+            }
+
+            R.id.menu_action_sort_by_date_created_DESC -> {
+
+                saveTaskMenuValues(SORT_BY_DATE_DESC, hideCompleted)
+                return true
+            }
+
+            R.id.menu_action_sort_by_name_DESC -> {
+
+                saveTaskMenuValues(SORT_BY_NAME_DESC, hideCompleted)
+                return true
+            }
+
+            R.id.menu_action_hieCompletedCB -> {
+
+                item.isChecked = !item.isChecked
+                saveTaskMenuValues(sortingMethod, item.isChecked)
+                return true
+            }
+            R.id.menu_action_delete_all_completed -> {
+
+
+                return true
+            }
+
+            else -> false
+
+        }
+
+    }
+
+    private fun saveTaskMenuValues(sortBY: String, shouldHideComplete: Boolean) {
+
+        Log.d(TAG, "saveTaskMenuValues: sortBy : $sortBY and hideCompleted = $shouldHideComplete")
+
+        isRefreshEnabled = true
+        GlobalScope.launch {
+
+            taskMenuDataStore.storeSortingMethod(TaskMenuValues(sortBY, shouldHideComplete))
+        }
     }
 
     private fun initListeners() {
@@ -284,7 +459,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), View.OnClickListener, Tas
                 project.projectKey,
                 taskName,
                 "",
-                FALSE
+                false
         )
 
         taskAdapter = TaskAdapter()

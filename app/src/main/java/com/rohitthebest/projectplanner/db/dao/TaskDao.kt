@@ -32,7 +32,8 @@ interface TaskDao {
     @Query("SELECT * FROM task_table ORDER BY timeStamp DESC")
     fun getAllTasks(): Flow<List<Task>>
 
-    @Query("SELECT * FROM task_table WHERE projectKey= :projectKey ORDER BY timeStamp DESC")
+    //if hideCompleted is true show all un-completed task and if the hideComplete is false show all tasks
+    @Query("SELECT * FROM task_table WHERE projectKey= :projectKey ORDER BY isImportant DESC,timeStamp DESC")
     fun getAllTaskByProjectKey(projectKey: String): Flow<List<Task>>
 
     @Query("SELECT COUNT(taskKey) FROM task_table WHERE projectKey= :projectKey")
