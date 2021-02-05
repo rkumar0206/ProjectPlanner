@@ -16,6 +16,7 @@
         android:layout_marginTop="3dp"
         android:layout_marginEnd="8dp"
         android:padding="3dp"
+        tools:text="This task has to be completed"
         app:layout_constraintEnd_toStartOf="@+id/labelAsImportantBtn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
