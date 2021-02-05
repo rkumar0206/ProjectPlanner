@@ -124,9 +124,30 @@ class ProjectHelperFunctions {
                                 f.name.toLowerCase(Locale.ROOT)
                             }
 
-                            if (featureNameList.contains(featureToBeAdded.name.toLowerCase(Locale.ROOT))) {
+                            if (feature == null) {
 
-                                isDuplicateFeatureExists = true
+                                if (featureNameList.contains(featureToBeAdded.name.toLowerCase(Locale.ROOT))) {
+
+                                    isDuplicateFeatureExists = true
+                                }
+                            } else {
+
+                                // if feature is in edit mode then checking for duplicates excluding
+                                // the passes feature name
+                                for (f in featureNameList) {
+
+                                    if (f == featureToBeAdded.name.toLowerCase(Locale.ROOT)) {
+
+                                        if (f == feature.name.toLowerCase(Locale.ROOT)) {
+
+                                            continue
+                                        } else {
+
+                                            isDuplicateFeatureExists = true
+                                            break
+                                        }
+                                    }
+                                }
                             }
                         }
 
@@ -156,11 +177,10 @@ class ProjectHelperFunctions {
                                 )
                             }
                         } else {
-
                             "This feature name already exits!!!".showToasty(
-                                classForAddingProject.context,
-                                ToastyType.ERROR,
-                                true
+                                    classForAddingProject.context,
+                                    ToastyType.ERROR,
+                                    true
                             )
                         }
                         it.dismiss()
@@ -457,14 +477,29 @@ class ProjectHelperFunctions {
                                 it.name.toLowerCase(Locale.ROOT)
                             }
 
-                            if (technologyNameList.contains(
-                                    technologyForAdding.name.toLowerCase(
-                                        Locale.ROOT
-                                    )
-                                )
-                            ) {
+                            if (technology == null) {
+                                if (technologyNameList.contains(technologyForAdding.name.toLowerCase(Locale.ROOT))) {
 
-                                isDuplicateTechnologyExists = true
+                                    isDuplicateTechnologyExists = true
+                                }
+                            } else {
+
+                                //for edit mode
+
+                                for (t in technologyNameList) {
+
+                                    if (t == technologyForAdding.name.toLowerCase(Locale.ROOT)) {
+
+                                        if (t == technology.name.toLowerCase(Locale.ROOT)) {
+
+                                            continue
+                                        } else {
+
+                                            isDuplicateTechnologyExists = true
+                                            break
+                                        }
+                                    }
+                                }
                             }
                         }
 
@@ -628,9 +663,28 @@ class ProjectHelperFunctions {
                                 it.url.toLowerCase(Locale.ROOT)
                             }
 
-                            if (linkUrlList?.contains(urlToBeAdded.url.toLowerCase(Locale.ROOT))!!) {
+                            if (url == null) {
 
-                                isDuplicateLinkExits = true
+                                if (linkUrlList?.contains(urlToBeAdded.url.toLowerCase(Locale.ROOT))!!) {
+
+                                    isDuplicateLinkExits = true
+                                }
+                            } else {
+
+                                for (u in linkUrlList!!) {
+
+                                    if (u == urlToBeAdded.url.toLowerCase(Locale.ROOT)) {
+
+                                        if (u == url.url.toLowerCase(Locale.ROOT)) {
+
+                                            continue
+                                        } else {
+
+                                            isDuplicateLinkExits = true
+                                            break
+                                        }
+                                    }
+                                }
                             }
                         }
 
@@ -780,14 +834,32 @@ class ProjectHelperFunctions {
                                     it.colorHexCode.toLowerCase(Locale.ROOT)
                                 }
 
-                                if (colorHexList.contains(
-                                        colorToBeAdded.colorHexCode.toLowerCase(
-                                            Locale.ROOT
-                                        )
-                                    )
-                                ) {
+                                if (color == null) {
+                                    if (colorHexList.contains(
+                                                    colorToBeAdded.colorHexCode.toLowerCase(
+                                                            Locale.ROOT
+                                                    )
+                                            )
+                                    ) {
 
-                                    isDuplicateColorExits = true
+                                        isDuplicateColorExits = true
+                                    }
+                                } else {
+
+                                    for (c in colorHexList) {
+
+                                        if (c == colorToBeAdded.colorHexCode.toLowerCase(Locale.ROOT)) {
+
+                                            if (c == color.colorHexCode.toLowerCase(Locale.ROOT)) {
+
+                                                continue
+                                            } else {
+
+                                                isDuplicateColorExits = true
+                                                break
+                                            }
+                                        }
+                                    }
                                 }
                             }
 

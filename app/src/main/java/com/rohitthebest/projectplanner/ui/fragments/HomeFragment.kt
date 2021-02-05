@@ -30,6 +30,7 @@ import com.rohitthebest.projectplanner.ui.viewModels.TaskViewModel
 import com.rohitthebest.projectplanner.utils.*
 import com.rohitthebest.projectplanner.utils.Functions.Companion.isInternetAvailable
 import com.rohitthebest.projectplanner.utils.Functions.Companion.openLinkInBrowser
+import com.rohitthebest.projectplanner.utils.Functions.Companion.shareAsText
 import com.rohitthebest.projectplanner.utils.Functions.Companion.showNoInternetMessage
 import com.rohitthebest.projectplanner.utils.ProjectHelperFunctions.Companion.showBottomSheetDialogForAddingFeature
 import com.rohitthebest.projectplanner.utils.ProjectHelperFunctions.Companion.showBottomSheetDialogForAddingLinkResource
@@ -508,10 +509,10 @@ class HomeFragment : Fragment(R.layout.fragment_home),
 
     override fun onShareLinkBtnClicked(url: String) {
 
-        Functions.shareAsText(
-            url,
-            "URL",
-            requireContext()
+        shareAsText(
+                url,
+                "URL",
+                requireContext()
         )
     }
 
@@ -554,6 +555,75 @@ class HomeFragment : Fragment(R.layout.fragment_home),
     override fun onShareBtnClicked(project: Project) {
         //TODO("Not yet implemented")
 
+        val projectAsString: StringBuilder = StringBuilder()
+
+        val message = "--------------------------- ${project.description.name} ---------------------------" +
+                "\n\nProject Description : ${project.description.desc}"
+
+        projectAsString.append(message)
+
+        if (project.features.size != 0) {
+
+            projectAsString.append("\n\n******** Features ********")
+
+            for (i in 0 until project.features.size) {
+
+                val feature = project.features[i]
+
+                val s = "\n\n${i + 1}. ${feature.name}\nDescription : ${feature.description}\n" +
+                        "Implementation : ${feature.implementation}\n-------------------------------"
+
+                projectAsString.append(s)
+            }
+        }
+
+        if (project.skillsRequired.size != 0) {
+
+            projectAsString.append("\n\n******** Skills Required ********")
+
+            for (i in 0 until project.skillsRequired.size) {
+
+                val skill = project.skillsRequired[i]
+
+                val s = "\n\n${i + 1}. ${skill}\n-------------------------------"
+
+                projectAsString.append(s)
+            }
+        }
+
+        if (project.technologyUsed.size != 0) {
+
+            projectAsString.append("\n\n******** Technology used ********")
+
+            for (i in 0 until project.technologyUsed.size) {
+
+                val technology = project.technologyUsed[i]
+
+                val s = "\n\n${i + 1}. ${technology.name}\n-------------------------------"
+
+                projectAsString.append(s)
+            }
+        }
+
+        if (project.resources?.urls?.size != 0) {
+
+            projectAsString.append("\n\n******** Resources ********")
+
+            for (i in 0 until project.resources?.urls?.size!!) {
+
+                val url = project.resources?.urls!![i]
+
+                val s = "\n\n${i + 1}. ${url.urlName}\n ${url.url}\n-------------------------------"
+
+                projectAsString.append(s)
+            }
+        }
+
+        shareAsText(
+                "$projectAsString",
+                project.description.name,
+                requireContext()
+        )
     }
 
     override fun onDeleteProjectBtnClicked(project: Project) {
