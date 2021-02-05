@@ -23,10 +23,8 @@ import com.rohitthebest.projectplanner.R
 import com.rohitthebest.projectplanner.databinding.FragmentTaskBinding
 import com.rohitthebest.projectplanner.datastore.TaskMenuValues
 import com.rohitthebest.projectplanner.datastore.TaskMenuValuesDataStore
-import com.rohitthebest.projectplanner.db.entity.Project
 import com.rohitthebest.projectplanner.db.entity.Task
 import com.rohitthebest.projectplanner.ui.adapters.TaskAdapter
-import com.rohitthebest.projectplanner.ui.viewModels.ProjectViewModel
 import com.rohitthebest.projectplanner.ui.viewModels.TaskViewModel
 import com.rohitthebest.projectplanner.utils.*
 import com.rohitthebest.projectplanner.utils.Functions.Companion.generateKey
@@ -41,13 +39,11 @@ private const val TAG = "TaskFragment"
 class TaskFragment : Fragment(R.layout.fragment_task), View.OnClickListener,
         TaskAdapter.OnClickListener {
 
-    private val projectViewModel by viewModels<ProjectViewModel>()
     private val taskViewModel by viewModels<TaskViewModel>()
 
     private var _binding: FragmentTaskBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var project: Project
     private var projectKey: String = ""
 
     private lateinit var taskAdapter: TaskAdapter
@@ -95,10 +91,6 @@ class TaskFragment : Fragment(R.layout.fragment_task), View.OnClickListener,
                 projectKey = args?.message!!
 
                 observeSortingMethodChange()
-
-                getProjectFromDatabase(projectKey)
-
-                //getTasksFromProjectKey()
             }
 
         } catch (e: Exception) {
@@ -269,6 +261,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), View.OnClickListener,
 
     }
 
+
     /**[START OF TASK ADAPTER LISTENERS]**/
 
     override fun onCheckChanged(task: Task, position: Int) {
@@ -338,7 +331,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), View.OnClickListener,
 
         binding.etNewTask.editText?.removeFocus()
 
-        recyclerViewPosition = position
+        recyclerViewPosition = 0
 
         isRefreshEnabled = true
 
@@ -366,33 +359,6 @@ class TaskFragment : Fragment(R.layout.fragment_task), View.OnClickListener,
 
     /**[END OF TASK ADAPTER LISTENERS]**/
 
-    private fun getProjectFromDatabase(projectKey: String) {
-
-        try {
-
-            projectViewModel.getProjectByProjectKey(projectKey).observe(viewLifecycleOwner) {
-
-                Log.d(TAG, "getProjectFromDatabase: ")
-
-                if (it != null) {
-
-                    project = it
-
-                    Log.d(TAG, "getProjectFromDatabase: $project")
-
-                    updateUi()
-                }
-            }
-
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-    private fun updateUi() {
-
-        binding.tvProjectName.text = project.description.name
-    }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 
@@ -527,7 +493,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), View.OnClickListener,
         val task = Task(
                 System.currentTimeMillis(),
                 generateKey(),
-                project.projectKey,
+                projectKey,
                 taskName,
                 "",
                 false

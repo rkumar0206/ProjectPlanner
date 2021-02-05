@@ -25,6 +25,8 @@ import com.rohitthebest.projectplanner.Constants
 import com.rohitthebest.projectplanner.R
 import com.rohitthebest.projectplanner.db.entity.*
 import com.rohitthebest.projectplanner.ui.viewModels.ProjectViewModel
+import com.rohitthebest.projectplanner.utils.Functions.Companion.isInternetAvailable
+import com.rohitthebest.projectplanner.utils.Functions.Companion.showNoInternetMessage
 import com.rohitthebest.projectplanner.utils.Functions.Companion.showToast
 import yuku.ambilwarna.AmbilWarnaDialog
 import java.util.*
@@ -653,8 +655,16 @@ class ProjectHelperFunctions {
 
                     if (linkET?.text.toString().trim().isNotEmpty()) {
 
-                        progressBar.show()
-                        webView.loadUrl(linkET?.text.toString().trim())
+                        if (isInternetAvailable(classForAddingProject.context)) {
+
+                            progressBar.show()
+                            webView.loadUrl(linkET?.text.toString().trim())
+                        } else {
+
+                            showNoInternetMessage(
+                                    classForAddingProject.context
+                            )
+                        }
                     } else {
 
                         getCustomView().findViewById<TextInputLayout>(R.id.linkET)
