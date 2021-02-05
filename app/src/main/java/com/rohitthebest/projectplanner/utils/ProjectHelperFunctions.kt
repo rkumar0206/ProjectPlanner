@@ -3,15 +3,17 @@ package com.rohitthebest.projectplanner.utils
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
+import android.net.http.SslError
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
+import android.webkit.SslErrorHandler
+import android.webkit.WebChromeClient
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import android.widget.*
 import androidx.cardview.widget.CardView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
@@ -583,6 +585,12 @@ class ProjectHelperFunctions {
 
                 val linkET = getCustomView().findViewById<TextInputLayout>(R.id.linkET).editText
                 val linkNameET = getCustomView().findViewById<TextInputLayout>(R.id.linkNameET).editText
+                val progressBar = getCustomView().findViewById<ProgressBar>(R.id.urlProgressBar)
+                val webView = getCustomView().findViewById<WebView>(R.id.urlWebView)
+                val finAutomatically = getCustomView().findViewById<Button>(R.id.findUrlNameAutomatically)
+
+                initWebView(webView)
+                setWebChromeClient(webView, progressBar, linkNameET!!)
 
                 if (url != null) {
 
@@ -614,7 +622,7 @@ class ProjectHelperFunctions {
                     override fun afterTextChanged(s: Editable?) {}
                 })
 
-                linkNameET?.addTextChangedListener(object : TextWatcher {
+                linkNameET.addTextChangedListener(object : TextWatcher {
 
                     override fun beforeTextChanged(
                             s: CharSequence?,
@@ -633,25 +641,40 @@ class ProjectHelperFunctions {
                         } else {
 
                             getCustomView().findViewById<TextInputLayout>(R.id.linkNameET).error = null
+                            webView.stopLoading()
+                            progressBar.hide()
                         }
                     }
 
                     override fun afterTextChanged(s: Editable?) {}
                 })
 
+                finAutomatically.setOnClickListener {
+
+                    if (linkET?.text.toString().trim().isNotEmpty()) {
+
+                        progressBar.show()
+                        webView.loadUrl(linkET?.text.toString().trim())
+                    } else {
+
+                        getCustomView().findViewById<TextInputLayout>(R.id.linkET)
+                                .error = Constants.EDIT_TEXT_EMPTY_MESSAGE
+                    }
+                }
+
                 positiveButton(text = "Save") {
 
                     if (
                             linkET?.text.toString().trim().isEmpty() ||
-                            linkNameET?.text.toString().trim().isEmpty()
+                            linkNameET.text.toString().trim().isEmpty()
                     ) {
 
                         showToast(classForAddingProject.context, "Cannot add empty url!!!")
                     } else {
 
                         val urlToBeAdded = Url(
-                            linkNameET?.text.toString().trim(),
-                            linkET?.text.toString().trim()
+                                linkNameET.text.toString().trim(),
+                                linkET?.text.toString().trim()
                         )
 
                         var isDuplicateLinkExits = false
@@ -713,18 +736,29 @@ class ProjectHelperFunctions {
                         } else {
 
                             "This link is already there".showToasty(
-                                classForAddingProject.context,
-                                ToastyType.ERROR,
-                                true
+                                    classForAddingProject.context,
+                                    ToastyType.ERROR,
+                                    true
                             )
                         }
 
                     }
                 }
 
-            }.setOnDismissListener {
+                setOnDismissListener {
 
-                classForAddingProject.projectViewModel.updateProject(project)
+                    try {
+                        webView.clearCache(true)
+                        webView.clearHistory()
+                        webView.clearSslPreferences()
+                        webView.clearMatches()
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                    classForAddingProject.projectViewModel.updateProject(project)
+
+                }
+
             }
         }
 
@@ -736,6 +770,71 @@ class ProjectHelperFunctions {
             linkET?.setText(url.url)
             linkNameET?.setText(url.urlName)
         }
+
+        private fun setWebChromeClient(
+                webView: WebView?,
+                progressBar: ProgressBar,
+                linkTitleET: EditText
+        ) {
+
+            webView?.let {
+
+                it.webChromeClient = object : WebChromeClient() {
+
+                    override fun onProgressChanged(
+                            view: WebView,
+                            newProgress: Int
+                    ) {
+                        super.onProgressChanged(view, newProgress)
+
+                        if (newProgress >= 60) {
+
+                            progressBar.hide()
+                        }
+                    }
+
+                    override fun onReceivedTitle(view: WebView?, title: String?) {
+                        super.onReceivedTitle(view, title)
+
+                        linkTitleET.setText(title)
+                        progressBar.hide()
+
+                        try {
+
+                            webView.stopLoading()
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+
+                    }
+                }
+            }
+
+        }
+
+        @SuppressLint("SetJavaScriptEnabled")
+        private fun initWebView(webView: WebView?) {
+
+            webView?.let {
+
+                it.settings.apply {
+
+                    javaScriptEnabled = true
+                }
+
+                it.webViewClient = object : WebViewClient() {
+                    override
+                    fun onReceivedSslError(
+                            view: WebView?,
+                            handler: SslErrorHandler?,
+                            error: SslError?
+                    ) {
+                        handler?.proceed()
+                    }
+                }
+            }
+        }
+
 
         /**[END OF LINK RESOURCE]**/
 
